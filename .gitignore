@@ -1,0 +1,23 @@
+node_modules
+.next
+out
+build
+coverage
+
+.env
+.env.local
+.env.*.local
+# O arquivo de exemplo (sem segredos) precisa ser versionado. A regra
+# .env.* do .gitignore da raiz o pegaria sem esta excecao.
+!.env.local.example
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+.DS_Store
+Thumbs.db
+*.tsbuildinfo
+next-env.d.ts
+.vercel
