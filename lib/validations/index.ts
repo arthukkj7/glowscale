@@ -35,7 +35,7 @@ export const cadastroSchema = z
       .regex(/[a-zA-Z]/, "A senha deve conter ao menos uma letra.")
       .regex(/\d/, "A senha deve conter ao menos um número."),
     confirmarSenha: z.string(),
-    clinicaNome: textoObrigatorio("Nome da clínica"),
+    clinicaNome: textoObrigatorio("Nome do seu negócio"),
     telefone: telefoneOpcional,
   })
   .refine((dados) => dados.senha === dados.confirmarSenha, {

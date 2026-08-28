@@ -8,7 +8,7 @@ import { provedoresHabilitados } from "@/lib/auth/oauth";
 
 export const metadata: Metadata = {
   title: "Entrar",
-  description: "Acesse o painel da sua clínica no GlowScale.",
+  description: "Acesse o painel do seu negócio no GlowScale.",
   robots: { index: false, follow: false },
 };
 
@@ -40,7 +40,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         Entrar no GlowScale
       </h1>
       <p className="mb-6 mt-2 text-center text-sm text-muted-foreground">
-        Acesse a agenda, os atendimentos e as comissões da sua clínica.
+        Acesse a agenda, os atendimentos e as comissões do seu negócio.
       </p>
 
       <LoginForm proximo={proximo} />

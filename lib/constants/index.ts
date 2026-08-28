@@ -9,7 +9,18 @@ export const BUSINESS_TIMEZONE = "America/Sao_Paulo";
 
 export const APP_NAME = "GlowScale";
 export const APP_DESCRIPTION =
-  "Gestão de escalas, atendimentos e comissões para clínicas de estética.";
+  "Gestão inteligente para negócios de beleza e estética.";
+
+/**
+ * Termo usado na interface para o negocio do usuario.
+ *
+ * O schema continua chamando a tabela de `clinicas`: renomea-la exigiria
+ * mexer nas chaves compostas (id, clinica_id) que sustentam o isolamento
+ * entre inquilinos, e nada disso e visivel para quem usa. O que a pessoa le
+ * e este rotulo - e "negócio" cabe tanto na manicure que atende em casa
+ * quanto na clinica com dez profissionais.
+ */
+export const TERMO_NEGOCIO = "negócio";
 
 /** Status de clinica que liberam o uso do dashboard. */
 export const CLINICA_STATUS_COM_ACESSO: readonly ClinicaStatus[] = [
@@ -66,13 +77,13 @@ export const PLANO_PADRAO = {
   slug: "essencial",
   valor: Number(process.env.NEXT_PUBLIC_PLANO_VALOR ?? "97.00"),
   ciclo: "MONTHLY" as const,
-  descricao: "Gestão completa de escalas, atendimentos e comissões.",
+  descricao: "Agenda, serviços, equipe, comissões e financeiro em um lugar só.",
   beneficios: [
-    "Profissionais e procedimentos ilimitados",
-    "Escala semanal com múltiplos turnos",
+    "Profissionais e serviços ilimitados",
+    "Agenda semanal com múltiplos turnos",
     "Cálculo automático de comissão com snapshot",
     "Relatório financeiro por período e profissional",
-    "Isolamento total dos dados da sua clínica",
+    "Isolamento total dos dados do seu negócio",
   ],
 } as const;
 

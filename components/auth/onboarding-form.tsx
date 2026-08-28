@@ -15,7 +15,7 @@ import { concluirOnboarding } from "@/lib/actions/auth";
 import { telefoneOpcional, textoObrigatorio } from "@/lib/validations/common";
 
 const schema = z.object({
-  clinicaNome: textoObrigatorio("Nome da clínica"),
+  clinicaNome: textoObrigatorio("Nome do seu negócio"),
   usuarioNome: textoObrigatorio("Seu nome"),
   telefone: telefoneOpcional,
 });
@@ -64,7 +64,7 @@ export function OnboardingForm({ nomeSugerido, clinicaSugerida }: OnboardingForm
     <form onSubmit={handleSubmit(aoEnviar)} className="space-y-5" noValidate>
       <FormField
         id="clinicaNome"
-        rotulo="Nome da clínica"
+        rotulo="Nome do seu negócio"
         erro={errors.clinicaNome?.message}
         obrigatorio
       >

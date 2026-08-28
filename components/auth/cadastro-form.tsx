@@ -99,7 +99,7 @@ export function CadastroForm() {
 
       <FormField
         id="clinicaNome"
-        rotulo="Nome da clínica"
+        rotulo="Nome do seu negócio"
         erro={errors.clinicaNome?.message}
         obrigatorio
       >
@@ -107,7 +107,7 @@ export function CadastroForm() {
           {...camposAria("clinicaNome", errors.clinicaNome?.message)}
           {...register("clinicaNome")}
           autoComplete="organization"
-          placeholder="Studio Bella Estética"
+          placeholder="Studio Bella, Ateliê da Ana, Barbearia Central..."
           disabled={pendente}
         />
       </FormField>

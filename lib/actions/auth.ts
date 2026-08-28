@@ -130,7 +130,7 @@ export async function cadastrar(
 }
 
 const onboardingSchema = z.object({
-  clinicaNome: textoObrigatorio("Nome da clínica"),
+  clinicaNome: textoObrigatorio("Nome do seu negócio"),
   usuarioNome: textoObrigatorio("Seu nome"),
   telefone: telefoneOpcional,
 });
