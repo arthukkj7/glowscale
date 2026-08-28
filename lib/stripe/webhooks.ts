@@ -142,13 +142,20 @@ export function extrairDados(evento: Stripe.Event): DadosDoEvento | null {
 
     case "invoice.paid":
     case "invoice.payment_failed": {
-      const fatura = evento.data.object as Stripe.Invoice & {
-        subscription?: string | { id: string } | null;
-      };
+      const fatura = evento.data.object as Stripe.Invoice;
+
+      // A fatura nao tem mais `subscription` no topo: desde a reformulacao do
+      // objeto, ela aponta para quem a gerou atraves de `parent`. Ler o campo
+      // antigo compila (o tipo e amplo) e devolve undefined em runtime, entao
+      // a origem da fatura se perderia silenciosamente.
+      const detalhes = fatura.parent?.subscription_details ?? null;
+
       return {
-        clinicaId: fatura.metadata?.clinica_id ?? null,
+        // `subscription_details.metadata` e um retrato do metadata da
+        // assinatura no momento da fatura - e ali que o nosso clinica_id esta.
+        clinicaId: detalhes?.metadata?.clinica_id ?? fatura.metadata?.clinica_id ?? null,
         customerId: comoId(fatura.customer),
-        subscriptionId: comoId(fatura.subscription ?? null),
+        subscriptionId: comoId(detalhes?.subscription ?? null),
         status: evento.type === "invoice.paid" ? "active" : "past_due",
       };
     }

@@ -141,3 +141,43 @@ describe("extrairDados", () => {
     expect(d?.clinicaId).toBeNull();
   });
 });
+
+describe("extrairDados - faturas", () => {
+  /**
+   * A fatura nao carrega mais `subscription` no topo. Ler o campo antigo
+   * compila e devolve undefined em runtime: o teste abaixo passaria a falhar
+   * silenciosamente na producao, nao no CI. Por isso o formato aqui e o real.
+   */
+  it("acha a assinatura em parent.subscription_details", () => {
+    const d = extrairDados(
+      evento("invoice.paid", {
+        customer: "cus_7",
+        parent: {
+          type: "subscription_details",
+          subscription_details: {
+            subscription: "sub_7",
+            metadata: { clinica_id: "clinica-7" },
+          },
+        },
+      }),
+    );
+    expect(d?.subscriptionId).toBe("sub_7");
+    expect(d?.clinicaId).toBe("clinica-7");
+    expect(d?.status).toBe("active");
+  });
+
+  it("ignora o campo antigo no topo, que não existe mais", () => {
+    // Se alguem reintroduzir a leitura de fatura.subscription, este caso
+    // devolveria "sub_antigo" em vez de null.
+    const d = extrairDados(
+      evento("invoice.paid", { customer: "cus_8", subscription: "sub_antigo" }),
+    );
+    expect(d?.subscriptionId).toBeNull();
+  });
+
+  it("ainda acha a clínica pelo customer quando a fatura não tem parent", () => {
+    const d = extrairDados(evento("invoice.payment_failed", { customer: "cus_9" }));
+    expect(d?.customerId).toBe("cus_9");
+    expect(d?.status).toBe("past_due");
+  });
+});
