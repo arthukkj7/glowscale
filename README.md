@@ -116,7 +116,7 @@ A aplicacao sobe em `http://localhost:3000`.
    - **desligada** - o cadastro ja cria clinica e perfil e leva para `/assinatura`;
    - **ligada** - o cadastro pede confirmacao; ao confirmar, o usuario cai em
      `/onboarding` e conclui a criacao da clinica.
-5. Rode as migrations (secao seguinte).
+5. Rode o schema: cole `supabase/instalar.sql` no SQL Editor (secao seguinte).
 
 ---
 
@@ -179,8 +179,13 @@ As migrations sao SQL puro, na ordem numerica:
 - `supabase/seed.sql` - clinica de demonstracao com profissionais, procedimentos,
   atendimentos e escala da semana corrente. Nao cria usuarios de Auth.
 
-**Opcao A - SQL Editor do Supabase** (mais rapido): cole e execute cada arquivo na
-ordem.
+Para facilitar o primeiro setup, `supabase/instalar.sql` traz as duas migrations
+concatenadas na ordem, num arquivo so. E gerado por `npm run sql:instalar` - as
+migrations continuam sendo a fonte; nao edite o arquivo gerado.
+
+**Opcao A - SQL Editor do Supabase** (mais rapido): cole `supabase/instalar.sql`
+inteiro e execute. Rodar de novo e seguro: todo o DDL e `if not exists` ou
+`create or replace`.
 
 **Opcao B - Supabase CLI**:
 

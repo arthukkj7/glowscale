@@ -55,8 +55,8 @@ export function SetupNecessario() {
               do projeto.
             </>,
             <>
-              No <strong>SQL Editor</strong>, rode os arquivos de{" "}
-              <code className="font-mono text-xs">supabase/migrations/</code> na ordem.
+              No <strong>SQL Editor</strong>, cole o conteúdo de{" "}
+              <code className="font-mono text-xs">supabase/instalar.sql</code> e rode.
             </>,
             <>Reinicie o servidor.</>,
           ].map((passo, indice) => (

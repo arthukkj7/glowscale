@@ -48,14 +48,21 @@ normalmente, porque a clinica nasce em periodo de teste.
 
 ## 3. Criar as tabelas
 
-No painel do Supabase, abra o **SQL Editor** e execute, **nesta ordem**:
+No painel do Supabase, abra o **SQL Editor**, clique em **New query**, cole o
+conteudo inteiro de `supabase/instalar.sql` e clique em **Run**.
 
-1. `supabase/migrations/001_initial_schema.sql`
-2. `supabase/migrations/002_funcoes_relatorio.sql`
+Esse arquivo e as duas migrations concatenadas na ordem certa - existe so para
+voce nao precisar abrir dois arquivos nem lembrar qual vem primeiro. Se preferir
+rodar migration por migration, os arquivos originais continuam em
+`supabase/migrations/` e a ordem e a numerica.
 
-Cole o conteudo de cada arquivo, rode, confira que terminou sem erro e so
-entao passe para o proximo. Mensagens de `NOTICE ... does not exist, skipping`
-sao esperadas: sao os `drop policy if exists` do inicio.
+Duas coisas normais e que assustam:
+
+- Mensagens de `NOTICE ... does not exist, skipping` sao esperadas: sao os
+  `drop policy if exists` do inicio.
+- Rodar o arquivo duas vezes nao quebra nada. Tudo nele e `if not exists` ou
+  `create or replace`, entao se voce ficou na duvida se deu certo, pode rodar
+  de novo.
 
 Pular este passo e o segundo tropeco mais comum. Se acontecer, o cadastro vai
 avisar que o banco nao tem o schema do GlowScale.

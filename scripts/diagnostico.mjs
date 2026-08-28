@@ -187,7 +187,7 @@ if (indeterminadas > 0) {
 if (faltando === TABELAS.length) {
   erro(
     "nenhuma tabela do GlowScale existe no banco",
-    "rode supabase/migrations/001_initial_schema.sql e depois 002_funcoes_relatorio.sql no SQL Editor",
+    "cole supabase/instalar.sql no SQL Editor do Supabase e rode",
   );
 } else if (faltando > 0) {
   erro(

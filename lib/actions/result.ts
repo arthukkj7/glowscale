@@ -58,7 +58,7 @@ function mensagemDeErroDoBanco(codigo: string | undefined): string | null {
     case "PGRST202":
       return (
         "O banco conectado ainda não tem o schema do GlowScale. " +
-        "Rode os arquivos de supabase/migrations/ no SQL Editor do Supabase."
+        "Cole supabase/instalar.sql no SQL Editor do Supabase e rode."
       );
     default:
       return null;

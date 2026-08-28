@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "doutor": "node scripts/diagnostico.mjs"
+    "doutor": "node scripts/diagnostico.mjs",
+    "sql:instalar": "bash scripts/gerar-instalar-sql.sh"
   },
   "engines": {
     "node": ">=20"

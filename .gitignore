@@ -21,3 +21,9 @@ Thumbs.db
 *.tsbuildinfo
 next-env.d.ts
 .vercel
+
+# Skills instaladas por ferramentas de agente (npx skills add).
+# Sao documentacao de terceiros, nao fazem parte do produto.
+.agents/
+.claude/
+skills-lock.json
