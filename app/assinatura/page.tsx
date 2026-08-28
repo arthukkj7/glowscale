@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CheckIcon } from "lucide-react";
 
 import { CheckoutForm } from "@/components/assinatura/checkout-form";
+import { StripeCheckout } from "@/components/assinatura/stripe-checkout";
 import { Logo } from "@/components/layout/logo";
 import { UserMenu } from "@/components/layout/user-menu";
 import {
@@ -11,7 +12,9 @@ import {
 } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { asaasEstaConfigurado } from "@/lib/asaas/config";
+import { provedorAtivo } from "@/lib/pagamentos/provedor";
+import { buscarPrecoDoPlano } from "@/lib/stripe/checkout";
+import { stripeEmProducao } from "@/lib/stripe/config";
 import { assinaturaLiberaAcesso, requireSessao } from "@/lib/auth/session";
 import { formatCurrency } from "@/lib/calculations/money";
 import { PLANO_PADRAO } from "@/lib/constants";
@@ -29,7 +32,25 @@ export const metadata: Metadata = {
 export default async function AssinaturaPage() {
   const { clinica, usuario, assinatura, email } = await requireSessao();
   const acessoLiberado = assinaturaLiberaAcesso(clinica);
-  const integracaoDisponivel = asaasEstaConfigurado() && serviceRoleDisponivel();
+
+  const provedor = provedorAtivo();
+  const integracaoDisponivel = provedor !== null && serviceRoleDisponivel();
+
+  // O preco vem do Stripe quando e ele quem cobra: com dois lugares definindo
+  // valor, um dia a vitrine anuncia um e o cartao e cobrado outro. Se a leitura
+  // falhar, a constante local cobre a exibicao - errar o rotulo e melhor do que
+  // derrubar a pagina onde a cliente regulariza o pagamento.
+  let precoExibido = PLANO_PADRAO.valor;
+  if (provedor === "stripe") {
+    try {
+      const preco = await buscarPrecoDoPlano();
+      if (preco) precoExibido = preco.valor;
+    } catch (erro) {
+      console.error("[assinatura] não foi possível ler o preço no Stripe", {
+        erro: erro instanceof Error ? erro.message : "desconhecido",
+      });
+    }
+  }
 
   return (
     <div className="flex min-h-dvh flex-col bg-muted/40">
@@ -60,7 +81,7 @@ export default async function AssinaturaPage() {
               <CardContent className="space-y-5">
                 <p className="flex items-baseline gap-1.5">
                   <span className="texto-display text-4xl font-semibold">
-                    {formatCurrency(PLANO_PADRAO.valor)}
+                    {formatCurrency(precoExibido)}
                   </span>
                   <span className="text-sm text-muted-foreground">/ mes</span>
                 </p>
@@ -106,18 +127,28 @@ export default async function AssinaturaPage() {
               <CardHeader>
                 <CardTitle>Pagamento</CardTitle>
                 <CardDescription>
-                  Cobrança recorrente processada pelo Asaas. Os dados do cartão nunca passam
-                  pelo GlowScale.
+                  {provedor === "stripe"
+                    ? "Assinatura mensal recorrente, cobrada automaticamente no cartão."
+                    : "Cobrança recorrente processada pelo Asaas. Os dados do cartão nunca passam pelo GlowScale."}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
-                <CheckoutForm
-                  documentoAtual={clinica.documento}
-                  telefoneAtual={clinica.telefone}
-                  urlPagamentoAtual={assinatura?.url_pagamento ?? null}
-                  assinaturaIniciada={Boolean(assinatura?.asaas_subscription_id)}
-                  integracaoDisponivel={integracaoDisponivel}
-                />
+                {provedor === "stripe" ? (
+                  <StripeCheckout
+                    assinaturaIniciada={Boolean(assinatura?.stripe_subscription_id)}
+                    temCadastroDeCobranca={Boolean(assinatura?.stripe_customer_id)}
+                    integracaoDisponivel={integracaoDisponivel}
+                    emProducao={stripeEmProducao()}
+                  />
+                ) : (
+                  <CheckoutForm
+                    documentoAtual={clinica.documento}
+                    telefoneAtual={clinica.telefone}
+                    urlPagamentoAtual={assinatura?.url_pagamento ?? null}
+                    assinaturaIniciada={Boolean(assinatura?.asaas_subscription_id)}
+                    integracaoDisponivel={integracaoDisponivel}
+                  />
+                )}
 
                 {acessoLiberado ? (
                   <Button variant="outline" className="w-full" asChild>

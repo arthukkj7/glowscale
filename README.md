@@ -16,6 +16,7 @@ comissao com snapshot historico e relatorio financeiro por periodo e por profiss
 - [Configuracao do Asaas](#configuracao-do-asaas)
 - [Variaveis de ambiente](#variaveis-de-ambiente)
 - [Migrations e seed](#migrations-e-seed)
+- [Cobranca (Stripe ou Asaas)](#cobranca-stripe-ou-asaas)
 - [Desenvolvimento, testes e build](#desenvolvimento-testes-e-build)
 - [Verificando o banco de verdade](#verificando-o-banco-de-verdade)
 - [Marca](#marca)
@@ -120,6 +121,31 @@ A aplicacao sobe em `http://localhost:3000`.
 
 ---
 
+## Cobranca (Stripe ou Asaas)
+
+A mensalidade pode ser cobrada por **Stripe** ou **Asaas**. `PAGAMENTO_PROVEDOR`
+decide (`stripe` | `asaas`); sem ela, vale o que estiver configurado, com
+preferencia para o Stripe.
+
+O Stripe usa **Checkout hospedado**: a aplicacao cria a sessao e redireciona,
+entao nenhum dado de cartao passa pelo servidor. O passo a passo completo -
+criar o preco, registrar o webhook, testar sem cobrar de verdade e a tabela de
+status - esta em [docs/stripe.md](docs/stripe.md).
+
+Resumo das variaveis (nenhuma leva `NEXT_PUBLIC_`):
+
+```bash
+PAGAMENTO_PROVEDOR=stripe
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PRICE_ID=price_...        # o preco recorrente, nao o produto
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+Depois de um build, `npm run auditar:segredos` confere que nenhum formato de
+credencial foi parar no bundle do navegador.
+
+---
+
 ## Configuracao do Asaas
 
 1. Crie a conta em <https://www.asaas.com> e gere a API Key.
@@ -176,6 +202,8 @@ As migrations sao SQL puro, na ordem numerica:
   grants por coluna e todas as policies de RLS.
 - `supabase/migrations/002_funcoes_relatorio.sql` - funcoes de consolidacao
   financeira (`relatorio_financeiro` e `resumo_financeiro`).
+- `supabase/migrations/003_stripe.sql` - colunas e tabela de eventos do Stripe,
+  mantendo as do Asaas intactas.
 - `supabase/seed.sql` - clinica de demonstracao com profissionais, procedimentos,
   atendimentos e escala da semana corrente. Nao cria usuarios de Auth.
 

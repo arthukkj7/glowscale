@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "doutor": "node scripts/diagnostico.mjs",
-    "sql:instalar": "bash scripts/gerar-instalar-sql.sh"
+    "sql:instalar": "bash scripts/gerar-instalar-sql.sh",
+    "auditar:segredos": "bash scripts/auditar-segredos.sh"
   },
   "engines": {
     "node": ">=20"
@@ -44,6 +45,7 @@
     "react-hook-form": "^7.86.0",
     "server-only": "^0.0.1",
     "sonner": "^2.0.8",
+    "stripe": "^22.6.0",
     "tailwind-merge": "^3.6.0",
     "zod": "^4.4.3"
   },

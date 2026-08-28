@@ -115,11 +115,17 @@ export type EscalaRow = Timestamps & {
   observacoes: string | null;
 }
 
+/** Quem cobra a mensalidade desta clinica. */
+export type ProvedorDePagamento = "asaas" | "stripe";
+
 export type AssinaturaRow = Timestamps & {
   id: string;
   clinica_id: string;
+  provedor: ProvedorDePagamento;
   asaas_customer_id: string | null;
   asaas_subscription_id: string | null;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
   status: AssinaturaStatus;
   plano: string;
   valor: number;
@@ -130,13 +136,17 @@ export type AssinaturaRow = Timestamps & {
   data_fim: string | null;
 }
 
-export type AsaasWebhookEventoRow = {
+export type WebhookEventoRow = {
   id: string;
   event_id: string;
   event_type: string;
   payload: Json;
   processado_em: string;
 }
+
+/** As duas tabelas de eventos tem a mesma forma; o namespace do id e que muda. */
+export type AsaasWebhookEventoRow = WebhookEventoRow;
+export type StripeWebhookEventoRow = WebhookEventoRow;
 
 type Insertable<Row, Required extends keyof Row, Generated extends keyof Row = never> = Partial<
   Omit<Row, Required | Generated>
@@ -232,6 +242,12 @@ export type Database = {
         Row: AsaasWebhookEventoRow;
         Insert: Insertable<AsaasWebhookEventoRow, "event_id" | "event_type" | "payload", "id" | "processado_em">;
         Update: Partial<Omit<AsaasWebhookEventoRow, "id">>;
+        Relationships: [];
+      };
+      stripe_webhook_eventos: {
+        Row: StripeWebhookEventoRow;
+        Insert: Insertable<StripeWebhookEventoRow, "event_id" | "event_type" | "payload", "id" | "processado_em">;
+        Update: Partial<Omit<StripeWebhookEventoRow, "id">>;
         Relationships: [];
       };
     };
