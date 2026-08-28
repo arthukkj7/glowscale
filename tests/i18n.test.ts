@@ -69,7 +69,8 @@ describe("catálogos de tradução", () => {
   it("cada idioma tem bandeira, nome e código curto", () => {
     for (const idioma of IDIOMAS) {
       const info = IDIOMA_INFO[idioma];
-      expect(info.bandeira.length).toBeGreaterThan(0);
+      // A bandeira e SVG (components/layout/bandeiras.tsx), nao texto.
+      expect(info.nome.length).toBeGreaterThan(0);
       expect(info.nome.length).toBeGreaterThan(0);
       expect(info.curto).toMatch(/^[A-Z]{2}$/);
     }

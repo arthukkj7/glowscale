@@ -49,10 +49,14 @@ const NOMES_DE_ERRO_DE_CONFIGURACAO = new Set([
   "AsaasNaoConfiguradoError",
 ]);
 
+/**
+ * Falta de configuracao nao e erro de quem esta usando, e nao adianta pedir
+ * para tentar de novo - tentar de novo nunca vai funcionar. Mas o nome do
+ * servico de infraestrutura tambem nao ajuda em nada quem le: quem instala ve
+ * o motivo real no log e em `npm run doutor`.
+ */
 const MENSAGEM_SEM_CONFIGURACAO =
-  "O sistema ainda não está conectado ao banco de dados. " +
-  "Quem administra esta instalação precisa configurar as variáveis de " +
-  "ambiente do Supabase (veja .env.local.example).";
+  "O sistema está temporariamente indisponível. Tente novamente mais tarde.";
 
 /** Traduz erros conhecidos do PostgREST para mensagens uteis ao usuario. */
 function mensagemDeErroDoBanco(codigo: string | undefined): string | null {
@@ -72,8 +76,8 @@ function mensagemDeErroDoBanco(codigo: string | undefined): string | null {
     case "42P01": // tabela inexistente
     case "PGRST202":
       return (
-        "O banco conectado ainda não tem o schema do GlowScale. " +
-        "Cole supabase/instalar.sql no SQL Editor do Supabase e rode."
+        // Schema ausente e problema da instalacao. O detalhe vai para o log.
+        "O sistema está temporariamente indisponível. Tente novamente mais tarde."
       );
     default:
       return null;

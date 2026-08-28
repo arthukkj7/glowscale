@@ -16,9 +16,17 @@ export const IDIOMA_PADRAO: Idioma = "pt-BR";
 /** Cookie lido no servidor a cada requisicao. */
 export const COOKIE_IDIOMA = "glowscale_idioma";
 
-export const IDIOMA_INFO: Record<Idioma, { nome: string; bandeira: string; curto: string }> = {
-  "pt-BR": { nome: "Português (Brasil)", bandeira: "🇧🇷", curto: "PT" },
-  "en-US": { nome: "English (US)", bandeira: "🇺🇸", curto: "EN" },
+/**
+ * A bandeira NAO fica aqui como emoji.
+ *
+ * O Windows nao traz as fontes de bandeira: o navegador cai no par de letras e
+ * mostra "BR" e "US" como texto no lugar do desenho. Como boa parte do publico
+ * usa Windows, o emoji falha justamente onde precisa funcionar. O desenho vive
+ * em components/layout/bandeiras.tsx, em SVG.
+ */
+export const IDIOMA_INFO: Record<Idioma, { nome: string; curto: string }> = {
+  "pt-BR": { nome: "Português (Brasil)", curto: "PT" },
+  "en-US": { nome: "English (US)", curto: "EN" },
 };
 
 export function ehIdioma(valor: string | undefined): valor is Idioma {

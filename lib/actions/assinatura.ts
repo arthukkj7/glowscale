@@ -25,12 +25,12 @@ export interface ResultadoDoCheckout {
 function garantirIntegracaoDisponivel(): void {
   if (!asaasEstaConfigurado()) {
     throw new ErroDeNegocio(
-      "A cobrança ainda não esta configurada nesta instalação. Configure ASAAS_API_KEY no servidor.",
+      "O pagamento está temporariamente indisponível. Tente novamente mais tarde.",
     );
   }
   if (!serviceRoleDisponivel()) {
     throw new ErroDeNegocio(
-      "A cobrança ainda não esta configurada nesta instalação. Configure SUPABASE_SERVICE_ROLE_KEY no servidor.",
+      "O pagamento está temporariamente indisponível. Tente novamente mais tarde.",
     );
   }
 }

@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
  * de saida o que falta - por isso esta tela substitui o formulario em vez de
  * conviver com ele.
  */
-export function SetupNecessario() {
+export function SetupNecessario({ diagnostico = false }: { diagnostico?: boolean }) {
   return (
     <Card className="p-8">
       <div className="space-y-5">
@@ -23,15 +23,18 @@ export function SetupNecessario() {
 
         <div className="space-y-1.5">
           <h1 className="texto-display text-xl font-semibold tracking-tight">
-            Falta conectar o banco de dados
+            Estamos quase lá
           </h1>
           <p className="text-sm text-muted-foreground">
-            O GlowScale guarda clínicas, profissionais e atendimentos no Supabase. Enquanto
-            as credenciais não estiverem configuradas, não é possível criar conta nem
-            entrar.
+            Esta instalação do GlowScale ainda não terminou de ser configurada. Enquanto
+            isso, não é possível criar conta nem entrar.
           </p>
         </div>
 
+        {/* O passo a passo cita o painel do Supabase, e so serve a quem
+            instala. Para uma visitante, seria ruido sobre um servico que ela
+            nem sabe que existe. */}
+        {diagnostico ? (
         <ol className="space-y-3 text-sm">
           {[
             <>
@@ -71,12 +74,20 @@ export function SetupNecessario() {
             </li>
           ))}
         </ol>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Se você administra esta instalação, rode{" "}
+            <code className="font-mono text-xs">npm run doutor</code> para ver o que falta.
+          </p>
+        )}
 
-        <p className="border-t border-border pt-4 text-xs text-muted-foreground">
-          O passo a passo completo está no{" "}
-          <code className="font-mono">README.md</code> e o modelo das variáveis em{" "}
-          <code className="font-mono">.env.local.example</code>.
-        </p>
+        {diagnostico ? (
+          <p className="border-t border-border pt-4 text-xs text-muted-foreground">
+            O passo a passo completo está no{" "}
+            <code className="font-mono">README.md</code> e o modelo das variáveis em{" "}
+            <code className="font-mono">.env.local.example</code>.
+          </p>
+        ) : null}
       </div>
     </Card>
   );

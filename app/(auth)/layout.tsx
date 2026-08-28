@@ -5,6 +5,7 @@ import { SeletorIdioma } from "@/components/layout/seletor-idioma";
 import { SetupNecessario } from "@/components/layout/setup-necessario";
 import { supabaseEstaConfigurado } from "@/lib/supabase/config";
 import { idiomaAtual } from "@/lib/i18n/acoes";
+import { diagnosticoLigado } from "@/lib/actions/mensagens-auth";
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const idioma = await idiomaAtual();
@@ -24,9 +25,9 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
         className="flex flex-1 items-center justify-center px-4 pb-16 sm:px-6"
       >
         <div className="w-full max-w-md">
-          {/* Sem Supabase nao existe login nem cadastro possivel: mostrar o
+          {/* Sem banco nao existe login nem cadastro possivel: mostrar o
               formulario so para ele falhar depois de preenchido seria pior. */}
-          {supabaseEstaConfigurado ? children : <SetupNecessario />}
+          {supabaseEstaConfigurado ? children : <SetupNecessario diagnostico={diagnosticoLigado()} />}
         </div>
       </main>
     </div>

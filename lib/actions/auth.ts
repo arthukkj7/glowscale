@@ -12,7 +12,12 @@ import {
 } from "@/lib/validations";
 import { createClient } from "@/lib/supabase/server";
 import { ErroDeNegocio, falha, sucesso, tratarErro, type ActionResult } from "./result";
-import { traduzirErroDeCadastro } from "./mensagens-auth";
+import {
+  diagnosticoLigado,
+  mensagemParaOUsuario,
+  traduzirErroDeCadastro,
+  traduzirErroDeLogin,
+} from "./mensagens-auth";
 import { linkDoPainel } from "@/lib/supabase/config";
 import { z } from "zod";
 import { telefoneOpcional } from "@/lib/validations/common";
@@ -28,22 +33,6 @@ async function getAppUrl(): Promise<string> {
   return host ? `${protocolo}://${host}` : "http://localhost:3000";
 }
 
-/**
- * Mensagens de erro do Supabase Auth sao traduzidas sem revelar se o e-mail
- * existe na base (evita enumeracao de contas).
- */
-function traduzirErroDeLogin(mensagem: string): string {
-  if (/invalid login credentials/i.test(mensagem)) {
-    return "E-mail ou senha incorretos.";
-  }
-  if (/email not confirmed/i.test(mensagem)) {
-    return "Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada.";
-  }
-  if (/rate limit|too many/i.test(mensagem)) {
-    return "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
-  }
-  return "Não foi possível entrar. Verifique os dados e tente novamente.";
-}
 
 export async function entrar(dados: unknown): Promise<ActionResult<{ destino: string }>> {
   try {
@@ -56,8 +45,10 @@ export async function entrar(dados: unknown): Promise<ActionResult<{ destino: st
     });
 
     if (error) {
-      console.warn("[auth] login recusado", { motivo: error.message });
-      return falha(traduzirErroDeLogin(error.message));
+      // O motivo real fica sempre no log do servidor. A tela mostra a versao
+      // publica, que nunca cita infraestrutura.
+      console.warn("[auth] login recusado", { motivo: error.message, codigo: error.code });
+      return falha(mensagemParaOUsuario(traduzirErroDeLogin(error.message)));
     }
 
     revalidatePath("/", "layout");
@@ -91,9 +82,13 @@ export async function cadastrar(
         status: error.status,
       });
       const recusa = traduzirErroDeCadastro(error.message);
-      const url = recusa.pagina ? linkDoPainel(recusa.pagina) : null;
+
+      // O link para o painel do Supabase so faz sentido para quem instala.
+      // Para quem usa, seria um convite a mexer numa conta que nao e dela.
+      const url = diagnosticoLigado() && recusa.pagina ? linkDoPainel(recusa.pagina) : null;
+
       return falha(
-        recusa.mensagem,
+        mensagemParaOUsuario(recusa),
         undefined,
         url && recusa.rotulo ? { texto: recusa.rotulo, url } : undefined,
       );

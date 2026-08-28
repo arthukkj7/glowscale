@@ -27,14 +27,12 @@ import { ErroDeNegocio, sucesso, tratarErro, type ActionResult } from "./result"
 function garantirIntegracaoDisponivel(): void {
   if (!stripeEstaConfigurado()) {
     throw new ErroDeNegocio(
-      "A cobrança ainda não está configurada nesta instalação. " +
-        "Configure STRIPE_SECRET_KEY e STRIPE_PRICE_ID no servidor.",
+      "O pagamento está temporariamente indisponível. Tente novamente mais tarde.",
     );
   }
   if (!serviceRoleDisponivel()) {
     throw new ErroDeNegocio(
-      "A cobrança ainda não está configurada nesta instalação. " +
-        "Configure SUPABASE_SERVICE_ROLE_KEY no servidor.",
+      "O pagamento está temporariamente indisponível. Tente novamente mais tarde.",
     );
   }
 }

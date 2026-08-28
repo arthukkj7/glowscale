@@ -13,6 +13,7 @@ import {
 import { trocarIdioma } from "@/lib/i18n/acoes";
 import { IDIOMAS, IDIOMA_INFO, type Idioma } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
+import { Bandeira } from "./bandeiras";
 
 /**
  * Troca o idioma da interface.
@@ -41,9 +42,7 @@ export function SeletorIdioma({
           aria-label={`Idioma: ${atual.nome}`}
           className={cn("gap-1.5", className)}
         >
-          <span aria-hidden="true" className="text-base leading-none">
-            {atual.bandeira}
-          </span>
+          <Bandeira idioma={idioma} className="h-3.5 w-[18px]" />
           <span className="text-xs font-medium">{atual.curto}</span>
         </Button>
       </DropdownMenuTrigger>
@@ -58,9 +57,7 @@ export function SeletorIdioma({
               onSelect={() => startTransition(() => void trocarIdioma(valor))}
               className="gap-2.5"
             >
-              <span aria-hidden="true" className="text-base leading-none">
-                {info.bandeira}
-              </span>
+              <Bandeira idioma={valor} className="h-3.5 w-[18px] shrink-0" />
               <span className="flex-1">{info.nome}</span>
               {selecionado ? (
                 <CheckIcon className="size-4 text-primary" aria-hidden="true" />
@@ -93,9 +90,7 @@ export function SeletorIdiomaCompacto({ idioma }: { idioma: Idioma }) {
               onSelect={() => startTransition(() => void trocarIdioma(valor))}
               className="gap-2.5"
             >
-              <span aria-hidden="true" className="text-base leading-none">
-                {info.bandeira}
-              </span>
+              <Bandeira idioma={valor} className="h-3.5 w-[18px] shrink-0" />
               <span className="flex-1">{info.nome}</span>
               {valor === idioma ? (
                 <CheckIcon className="size-4 text-primary" aria-hidden="true" />
