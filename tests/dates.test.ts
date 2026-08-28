@@ -11,6 +11,7 @@ import {
   primeiroDiaDoMes,
   somarDias,
   ultimoDiaDoMes,
+  mesAnterior,
 } from "@/lib/utils/date";
 
 describe("datas de negocio", () => {
@@ -63,5 +64,24 @@ describe("datas de negocio", () => {
 
   it("devolve hoje no fuso da clínica", () => {
     expect(isDateOnly(hojeNaClinica("America/Sao_Paulo"))).toBe(true);
+  });
+});
+
+describe("mesAnterior", () => {
+  it("volta um mês inteiro, não 30 dias", () => {
+    expect(mesAnterior("2026-08-28")).toEqual({ inicio: "2026-07-01", fim: "2026-07-31" });
+  });
+
+  it("atravessa a virada do ano", () => {
+    expect(mesAnterior("2026-01-15")).toEqual({ inicio: "2025-12-01", fim: "2025-12-31" });
+  });
+
+  it("não transborda a partir de um dia 31", () => {
+    // Date("2026-03-31").setMonth(-1) daria 3 de marco: fevereiro nao tem 31.
+    expect(mesAnterior("2026-03-31")).toEqual({ inicio: "2026-02-01", fim: "2026-02-28" });
+  });
+
+  it("acerta fevereiro em ano bissexto", () => {
+    expect(mesAnterior("2028-03-10")).toEqual({ inicio: "2028-02-01", fim: "2028-02-29" });
   });
 });

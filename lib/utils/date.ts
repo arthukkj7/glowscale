@@ -127,3 +127,36 @@ export function formatDateTimeBR(
   if (!isValid(data)) return "-";
   return format(new TZDate(data, timezone), "dd/MM/yyyy 'as' HH:mm");
 }
+
+/**
+ * Primeiro e ultimo dia do mes anterior a referencia.
+ *
+ * Feito com aritmetica sobre a string "yyyy-MM-dd" em vez de Date: 31 de marco
+ * menos um mes em JavaScript da 3 de marco (o dia 31 nao existe em fevereiro e
+ * o Date transborda). Aqui o mes anterior e sempre o mes inteiro.
+ */
+export function mesAnterior(referencia: DateOnly): { inicio: DateOnly; fim: DateOnly } {
+  const [ano, mes] = referencia.split("-").map(Number) as [number, number, number];
+  const anoAnterior = mes === 1 ? ano - 1 : ano;
+  const mesAnterior = mes === 1 ? 12 : mes - 1;
+  const inicio = `${anoAnterior}-${String(mesAnterior).padStart(2, "0")}-01` as DateOnly;
+  return { inicio, fim: ultimoDiaDoMes(inicio) };
+}
+
+/**
+ * Saudacao conforme a hora no fuso do negocio.
+ * Usa o fuso da clinica, nao o do servidor: a Vercel roda em UTC, e sem isso
+ * "boa noite" apareceria as 21h de Brasilia... e as 18h tambem.
+ */
+export function saudacaoDoDia(timezone: string = BUSINESS_TIMEZONE): string {
+  const hora = Number(
+    new Intl.DateTimeFormat("pt-BR", {
+      timeZone: timezone,
+      hour: "numeric",
+      hour12: false,
+    }).format(new Date()),
+  );
+  if (hora < 12) return "Bom dia";
+  if (hora < 18) return "Boa tarde";
+  return "Boa noite";
+}

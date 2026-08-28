@@ -159,6 +159,16 @@ export type ClienteRow = Timestamps & {
   ativo: boolean;
 }
 
+/** Cliente que nao volta ha um tempo. Devolvida por clientes_inativos(). */
+export type ClienteInativo = {
+  id: string;
+  nome: string;
+  telefone: string | null;
+  ultimo_atendimento: string;
+  dias_sem_vir: number;
+  total_gasto: number;
+}
+
 /** Linha devolvida por clientes_com_resumo(): cadastro + agregados. */
 export type ClienteComResumo = {
   id: string;
@@ -333,6 +343,10 @@ export type Database = {
       get_user_role: {
         Args: Record<string, never>;
         Returns: UsuarioRole | null;
+      };
+      clientes_inativos: {
+        Args: { p_dias?: number; p_limite?: number };
+        Returns: ClienteInativo[];
       };
       clientes_com_resumo: {
         Args: {
