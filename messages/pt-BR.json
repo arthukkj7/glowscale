@@ -66,7 +66,7 @@
   },
   "planos": {
     "titulo": "Escolha seu plano",
-    "subtitulo": "{dias} dias de teste. Você só é cobrado depois disso, e pode cancelar a qualquer momento.",
+    "subtitulo": "{dias} dias para testar o Pro. Depois você continua no Free, sem perder nada — ou assina e economiza {economia} no plano anual.",
     "porMes": "/mês",
     "assinar": "Começar teste de {dias} dias",
     "assinarSemTeste": "Assinar {plano}",
@@ -76,7 +76,7 @@
     "testeRestante": "{dias} de teste restantes",
     "testeUltimoDia": "Último dia de teste",
     "testeVencido": "Seu período de teste terminou",
-    "testeVencidoTexto": "Escolha um plano para voltar a usar o GlowScale. Seus dados continuam aqui, intactos.",
+    "testeVencidoTexto": "Você continua no GlowScale, agora no plano Free. Nada foi apagado.",
     "cobrancaApos": "Primeira cobrança em {data}",
     "gerenciar": "Gerenciar pagamento e faturas",
     "atualizarSituacao": "Atualizar situação da assinatura",

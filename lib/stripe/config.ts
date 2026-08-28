@@ -1,6 +1,6 @@
 import "server-only";
 
-import { PLANOS, PLANOS_PAGOS, type PlanoPago } from "@/lib/planos";
+import { OFERTAS, OFERTAS_PAGAS, type Nivel, type OfertaPaga } from "@/lib/planos";
 
 /**
  * Configuracao da integracao Stripe.
@@ -34,7 +34,7 @@ const ler = (nome: string): string | null => process.env[nome]?.trim() || null;
  */
 export function stripeEstaConfigurado(): boolean {
   if (!ler("STRIPE_SECRET_KEY")) return false;
-  return PLANOS_PAGOS.some((p) => ler(PLANOS[p].variavelDoPreco) !== null);
+  return OFERTAS_PAGAS.some((oferta) => precoDaOferta(oferta) !== null);
 }
 
 export function getConfiguracaoStripe(): ConfiguracaoStripe {
@@ -43,19 +43,33 @@ export function getConfiguracaoStripe(): ConfiguracaoStripe {
   return { secretKey };
 }
 
-/** price_... do plano, ou null quando aquele plano nao esta a venda aqui. */
-export function precoDoPlano(plano: PlanoPago): string | null {
-  return ler(PLANOS[plano].variavelDoPreco);
+/** price_... da oferta, ou null quando ela nao esta a venda aqui. */
+export function precoDaOferta(oferta: OfertaPaga): string | null {
+  const variavel = OFERTAS[oferta].variavelDoPreco;
+  return variavel ? ler(variavel) : null;
 }
 
-/** Planos efetivamente a venda nesta instalacao. */
-export function planosDisponiveis(): PlanoPago[] {
-  return PLANOS_PAGOS.filter((p) => precoDoPlano(p) !== null);
+/** Ofertas efetivamente a venda nesta instalacao. */
+export function ofertasDisponiveis(): OfertaPaga[] {
+  return OFERTAS_PAGAS.filter((oferta) => precoDaOferta(oferta) !== null);
 }
 
-/** Descobre o plano a partir do price_... que voltou do Stripe. */
-export function planoDoPreco(priceId: string): PlanoPago | null {
-  return PLANOS_PAGOS.find((p) => precoDoPlano(p) === priceId) ?? null;
+/**
+ * Descobre a oferta a partir do price_... que voltou do Stripe.
+ * Serve para saber se a assinatura e mensal ou anual.
+ */
+export function ofertaDoPreco(priceId: string): OfertaPaga | null {
+  return OFERTAS_PAGAS.find((oferta) => precoDaOferta(oferta) === priceId) ?? null;
+}
+
+/**
+ * Nivel de acesso correspondente ao preco cobrado.
+ *
+ * Mensal e anual levam ao MESMO nivel: e ele que o banco usa para os limites.
+ */
+export function nivelDoPreco(priceId: string): Nivel | null {
+  const oferta = ofertaDoPreco(priceId);
+  return oferta ? OFERTAS[oferta].nivel : null;
 }
 
 /** Segredo da assinatura do webhook (whsec_...). */

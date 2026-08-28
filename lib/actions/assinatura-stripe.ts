@@ -4,12 +4,13 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { diasRestantesDeTeste, requireSessao } from "@/lib/auth/session";
+import { OFERTAS } from "@/lib/planos";
 import {
   buscarAssinaturaStripe,
   criarSessaoDeCheckout,
   criarSessaoDoPortal,
 } from "@/lib/stripe/checkout";
-import { planosDisponiveis, stripeEstaConfigurado } from "@/lib/stripe/config";
+import { ofertasDisponiveis, stripeEstaConfigurado } from "@/lib/stripe/config";
 import { interpretarStatus } from "@/lib/stripe/webhooks";
 import { createAdminClient, serviceRoleDisponivel } from "@/lib/supabase/admin";
 import { getAppUrl } from "@/lib/utils/app-url";
@@ -48,8 +49,8 @@ export async function iniciarCheckoutStripe(
   dados: unknown,
 ): Promise<ActionResult<{ url: string }>> {
   try {
-    const { plano } = z
-      .object({ plano: z.enum(["solo", "studio", "scale"]) })
+    const { oferta } = z
+      .object({ oferta: z.enum(["pro_mensal", "pro_anual"]) })
       .parse(dados);
 
     const { clinica, email } = await requireSessao();
@@ -57,8 +58,8 @@ export async function iniciarCheckoutStripe(
 
     // O plano vem do formulario, mas so vale se estiver a venda aqui: sem esta
     // checagem, um valor forjado pediria um checkout de plano inexistente.
-    if (!planosDisponiveis().includes(plano)) {
-      throw new ErroDeNegocio("Este plano não está disponível nesta instalação.");
+    if (!ofertasDisponiveis().includes(oferta)) {
+      throw new ErroDeNegocio("Este plano não está disponível no momento.");
     }
 
     const admin = createAdminClient();
@@ -74,7 +75,7 @@ export async function iniciarCheckoutStripe(
     const sessao = await criarSessaoDeCheckout({
       clinicaId: clinica.id,
       clinicaNome: clinica.nome,
-      plano,
+      oferta,
       // Quem assina no 2o dia de teste fica com 5 dias gratis no Stripe, nao
       // com 7: o total continua sendo 7 dias desde o cadastro.
       diasDeTesteRestantes: diasRestantesDeTeste(clinica) ?? 0,
@@ -95,7 +96,7 @@ export async function iniciarCheckoutStripe(
         clinica_id: clinica.id,
         provedor: "stripe",
         status: assinaturaAtual?.status ?? "pending",
-        plano,
+        plano: OFERTAS[oferta].nivel,
         ciclo: "MONTHLY",
         forma_pagamento: "STRIPE",
         ...(assinaturaAtual?.stripe_customer_id

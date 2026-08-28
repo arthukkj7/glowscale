@@ -3,8 +3,8 @@ import "server-only";
 import type Stripe from "stripe";
 
 import { getStripe } from "./client";
-import { precoDoPlano } from "./config";
-import { DIAS_DE_TESTE, type PlanoPago } from "@/lib/planos";
+import { precoDaOferta } from "./config";
+import { DIAS_DE_TESTE, type OfertaPaga } from "@/lib/planos";
 
 /**
  * Checkout e portal do cliente.
@@ -17,7 +17,7 @@ import { DIAS_DE_TESTE, type PlanoPago } from "@/lib/planos";
 export interface DadosDaSessao {
   clinicaId: string;
   clinicaNome: string;
-  plano: PlanoPago;
+  oferta: OfertaPaga;
   /**
    * Dias de teste que ainda restam. O Stripe so comeca a cobrar depois deles,
    * entao quem assina no 2o dia de teste continua com 7 no total - e nao 7 + 7.
@@ -44,9 +44,9 @@ export async function criarSessaoDeCheckout(
   dados: DadosDaSessao,
 ): Promise<Stripe.Checkout.Session> {
   const stripe = getStripe();
-  const priceId = precoDoPlano(dados.plano);
+  const priceId = precoDaOferta(dados.oferta);
   if (!priceId) {
-    throw new Error(`Plano ${dados.plano} não está à venda nesta instalação.`);
+    throw new Error(`A oferta ${dados.oferta} não está à venda nesta instalação.`);
   }
 
   const diasDeTeste = Math.max(0, Math.min(dados.diasDeTesteRestantes, DIAS_DE_TESTE));
@@ -69,10 +69,10 @@ export async function criarSessaoDeCheckout(
         metadata: {
           clinica_id: dados.clinicaId,
           clinica_nome: dados.clinicaNome,
-          plano: dados.plano,
+          oferta: dados.oferta,
         },
       },
-      metadata: { clinica_id: dados.clinicaId, plano: dados.plano },
+      metadata: { clinica_id: dados.clinicaId, oferta: dados.oferta },
 
       success_url: dados.urlSucesso,
       cancel_url: dados.urlCancelamento,
@@ -83,7 +83,7 @@ export async function criarSessaoDeCheckout(
     },
     // Uma sessao por clinica por hora: absorve o duplo clique sem impedir que
     // a pessoa volte mais tarde e tente de novo.
-    { idempotencyKey: `checkout:${dados.clinicaId}:${new Date().toISOString().slice(0, 13)}` },
+    { idempotencyKey: `checkout:${dados.clinicaId}:${dados.oferta}:${new Date().toISOString().slice(0, 13)}` },
   );
 }
 
@@ -124,8 +124,8 @@ export interface PrecoNoStripe {
  * definindo preco, um dia a vitrine anuncia um valor e o cartao e cobrado
  * outro. O Stripe e a fonte porque e ele quem cobra.
  */
-export async function buscarPrecoNoStripe(plano: PlanoPago): Promise<PrecoNoStripe | null> {
-  const priceId = precoDoPlano(plano);
+export async function buscarPrecoNoStripe(oferta: OfertaPaga): Promise<PrecoNoStripe | null> {
+  const priceId = precoDaOferta(oferta);
   if (!priceId) return null;
   const preco = await getStripe().prices.retrieve(priceId);
 

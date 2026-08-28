@@ -16,16 +16,29 @@ const PERGUNTAS = [
       "e o lançamento de atendimento. Não precisa instalar nada: abre no navegador.",
   },
   {
-    pergunta: "Preciso cadastrar cartão para testar?",
+    pergunta: "Preciso cadastrar cartão?",
     resposta:
-      "Você usa 7 dias sem compromisso. O cartão só entra quando você escolhe um plano, e a " +
-      "primeira cobrança acontece no fim do teste — nunca antes.",
+      "Não para começar. O plano Free é gratuito por tempo indeterminado e não pede cartão. " +
+      "Toda conta nova ainda ganha 7 dias de Pro para experimentar tudo — o cartão só entra " +
+      "se você decidir assinar, e a primeira cobrança acontece no fim do teste, nunca antes.",
+  },
+  {
+    pergunta: "O que acontece quando o teste de 7 dias acaba?",
+    resposta:
+      "Você não perde o acesso. A conta passa a valer como Free e nada é apagado: o que " +
+      "exceder o limite gratuito continua guardado, só não dá para adicionar mais até assinar.",
   },
   {
     pergunta: "Posso cancelar quando quiser?",
     resposta:
       "Pode, e sem falar com ninguém. O cancelamento fica na própria tela de assinatura e vale " +
-      "para o fim do período já pago.",
+      "para o fim do período já pago. Depois disso você volta para o Free — não perde a conta.",
+  },
+  {
+    pergunta: "Vale mais a pena o mensal ou o anual?",
+    resposta:
+      "O anual sai por R$ 397, contra R$ 564 pagando mês a mês: são 3 meses grátis, R$ 167 de " +
+      "economia por ano. Os dois liberam exatamente as mesmas coisas — a diferença é só o preço.",
   },
   {
     pergunta: "Meus dados ficam seguros?",

@@ -4,9 +4,9 @@ import type Stripe from "stripe";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { AssinaturaStatus, ClinicaStatus } from "@/types/database";
-import { ehPlanoPago, type PlanoPago } from "@/lib/planos";
+import { OFERTAS, ehOfertaPaga, type Nivel } from "@/lib/planos";
 import { getStripe } from "./client";
-import { getWebhookSecret, planoDoPreco } from "./config";
+import { getWebhookSecret, nivelDoPreco } from "./config";
 
 /**
  * Processamento dos webhooks do Stripe.
@@ -100,8 +100,8 @@ interface DadosDoEvento {
   customerId: string | null;
   subscriptionId: string | null;
   status: Stripe.Subscription.Status | null;
-  /** Plano contratado, quando o evento permite identifica-lo. */
-  plano: PlanoPago | null;
+  /** Nivel de acesso contratado, quando o evento permite identifica-lo. */
+  nivel: Nivel | null;
 }
 
 const comoId = (valor: string | { id: string } | null | undefined): string | null => {
@@ -119,7 +119,7 @@ export function extrairDados(evento: Stripe.Event): DadosDoEvento | null {
   switch (evento.type) {
     case "checkout.session.completed": {
       const sessao = evento.data.object as Stripe.Checkout.Session;
-      const doMetadata = sessao.metadata?.plano;
+      const doMetadata = sessao.metadata?.oferta;
       return {
         clinicaId: sessao.client_reference_id ?? sessao.metadata?.clinica_id ?? null,
         customerId: comoId(sessao.customer),
@@ -127,7 +127,7 @@ export function extrairDados(evento: Stripe.Event): DadosDoEvento | null {
         // A sessao nao carrega o status da assinatura; o evento
         // customer.subscription.* que vem junto e quem define isso.
         status: null,
-        plano: doMetadata && ehPlanoPago(doMetadata) ? doMetadata : null,
+        nivel: doMetadata && ehOfertaPaga(doMetadata) ? OFERTAS[doMetadata].nivel : null,
       };
     }
 
@@ -136,12 +136,12 @@ export function extrairDados(evento: Stripe.Event): DadosDoEvento | null {
     case "customer.subscription.deleted": {
       const assinatura = evento.data.object as Stripe.Subscription;
 
-      // O plano sai do preco realmente cobrado, nao do metadata: se a pessoa
-      // trocar de plano pelo portal do Stripe, o metadata continua com o
-      // antigo e o preco ja e o novo. O preco e quem diz a verdade.
+      // O nivel sai do preco realmente cobrado, nao do metadata: se a pessoa
+      // trocar de mensal para anual pelo portal do Stripe, o metadata continua
+      // com o antigo e o preco ja e o novo. O preco e quem diz a verdade.
       const priceId = assinatura.items?.data?.[0]?.price?.id ?? null;
-      const doPreco = priceId ? planoDoPreco(priceId) : null;
-      const doMetadata = assinatura.metadata?.plano;
+      const doPreco = priceId ? nivelDoPreco(priceId) : null;
+      const doMetadata = assinatura.metadata?.oferta;
 
       return {
         clinicaId: assinatura.metadata?.clinica_id ?? null,
@@ -150,7 +150,8 @@ export function extrairDados(evento: Stripe.Event): DadosDoEvento | null {
         // Um evento "deleted" pode chegar com status ainda 'active' no corpo;
         // o que ele significa e cancelamento.
         status: evento.type === "customer.subscription.deleted" ? "canceled" : assinatura.status,
-        plano: doPreco ?? (doMetadata && ehPlanoPago(doMetadata) ? doMetadata : null),
+        nivel:
+          doPreco ?? (doMetadata && ehOfertaPaga(doMetadata) ? OFERTAS[doMetadata].nivel : null),
       };
     }
 
@@ -171,7 +172,7 @@ export function extrairDados(evento: Stripe.Event): DadosDoEvento | null {
         customerId: comoId(fatura.customer),
         subscriptionId: comoId(detalhes?.subscription ?? null),
         status: evento.type === "invoice.paid" ? "active" : "past_due",
-        plano: null,
+        nivel: null,
       };
     }
 
@@ -251,7 +252,7 @@ export async function processarEvento(evento: Stripe.Event): Promise<ResultadoDo
   const vinculo: Record<string, string> = { provedor: "stripe" };
   if (dados.customerId) vinculo.stripe_customer_id = dados.customerId;
   if (dados.subscriptionId) vinculo.stripe_subscription_id = dados.subscriptionId;
-  if (dados.plano) vinculo.plano = dados.plano;
+  if (dados.nivel) vinculo.plano = dados.nivel;
 
   const efeito = dados.status ? interpretarStatus(dados.status) : null;
 
@@ -266,10 +267,10 @@ export async function processarEvento(evento: Stripe.Event): Promise<ResultadoDo
   if (erroAssinatura) throw erroAssinatura;
 
   // O plano do NEGOCIO e o que os triggers de limite consultam. Sem gravar
-  // aqui, alguem pagaria pelo Scale e continuaria travado no limite do Solo.
-  const mudancasNaClinica: { status?: ClinicaStatus; plano?: PlanoPago } = {};
+  // aqui, alguem pagaria e continuaria travado nos limites do gratuito.
+  const mudancasNaClinica: { status?: ClinicaStatus; plano?: Nivel } = {};
   if (efeito?.statusClinica) mudancasNaClinica.status = efeito.statusClinica;
-  if (dados.plano) mudancasNaClinica.plano = dados.plano;
+  if (dados.nivel) mudancasNaClinica.plano = dados.nivel;
 
   if (Object.keys(mudancasNaClinica).length > 0) {
     const { error: erroClinica } = await admin

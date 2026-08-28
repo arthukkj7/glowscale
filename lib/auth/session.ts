@@ -3,6 +3,7 @@ import "server-only";
 import { redirect } from "next/navigation";
 
 import { hojeNaClinica } from "@/lib/utils/date";
+import type { Plano } from "@/lib/planos";
 import { cache } from "react";
 
 import { createClient } from "@/lib/supabase/server";
@@ -111,15 +112,31 @@ export async function requireSessao(): Promise<SessaoClinica> {
  * A verificacao de verdade acontece no servidor a cada navegacao
  * (requireActiveSubscription), nao no navegador.
  */
-export function assinaturaLiberaAcesso(clinica: ClinicaRow): boolean {
-  if (clinica.status === "active") return true;
-  if (clinica.status !== "trial") return false;
+/**
+ * Nivel de acesso que vale AGORA. Espelha plano_efetivo() no banco.
+ *
+ * Diferente de clinica.plano, que guarda o contratado: quem parou de pagar
+ * mantem 'pro' gravado e passa a valer como 'free'.
+ */
+export function nivelEfetivo(clinica: ClinicaRow): Plano {
+  if (clinica.status === "blocked") return "free";
+  if (clinica.status === "active") return clinica.plano === "pro" ? "pro" : "free";
+  if (clinica.status === "trial" && dentroDoTeste(clinica)) return "trial";
+  // Teste vencido, inadimplente ou cancelado caem para o gratuito - com os
+  // dados intactos. Tirar o acesso a propria agenda no meio do expediente e a
+  // forma mais rapida de a pessoa nao voltar.
+  return "free";
+}
 
-  // Trial sem data e de um cadastro anterior a esta regra: a migration
-  // preencheu todos, mas se algum escapar, o certo e liberar - tirar acesso
-  // por causa de um dado ausente puniria quem nao fez nada errado.
+function dentroDoTeste(clinica: ClinicaRow): boolean {
   if (!clinica.trial_termina_em) return true;
   return clinica.trial_termina_em >= hojeNaClinica(clinica.timezone);
+}
+
+export function assinaturaLiberaAcesso(clinica: ClinicaRow): boolean {
+  // So o bloqueio administrativo fecha a porta. Fim de teste, inadimplencia e
+  // cancelamento rebaixam para o gratuito, nao expulsam.
+  return clinica.status !== "blocked";
 }
 
 /** Dias que faltam para o teste acabar. null quando nao esta em teste. */
@@ -128,7 +145,10 @@ export function diasRestantesDeTeste(clinica: ClinicaRow): number | null {
   const hoje = hojeNaClinica(clinica.timezone);
   const fim = new Date(`${clinica.trial_termina_em}T12:00:00Z`).getTime();
   const agora = new Date(`${hoje}T12:00:00Z`).getTime();
-  return Math.max(0, Math.round((fim - agora) / 86_400_000));
+  const dias = Math.round((fim - agora) / 86_400_000);
+  // Teste encerrado devolve null, nao zero: "0 dias restantes" no cabecalho
+  // seria um contador parado, quando na verdade nao ha mais contagem.
+  return dias > 0 ? dias : null;
 }
 
 /**

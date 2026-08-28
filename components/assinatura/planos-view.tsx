@@ -1,7 +1,6 @@
 "use client";
 
 import { CheckIcon, CreditCardIcon, ExternalLinkIcon, Loader2Icon, RefreshCwIcon } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -15,85 +14,54 @@ import {
   sincronizarAssinaturaStripe,
 } from "@/lib/actions/assinatura-stripe";
 import { formatCurrency } from "@/lib/calculations/money";
-import { DIAS_DE_TESTE, PLANOS, type PlanoPago } from "@/lib/planos";
+import { DIAS_DE_TESTE, OFERTAS, ORDEM_DAS_OFERTAS, type OfertaPaga } from "@/lib/planos";
+import {
+  PARA_QUEM,
+  VANTAGEM,
+  beneficiosDoNivel,
+  equivalenciaMensal,
+} from "@/lib/planos/beneficios";
 import { cn } from "@/lib/utils";
 
 interface PlanosViewProps {
-  /** Planos com preco configurado nesta instalacao. */
-  disponiveis: PlanoPago[];
-  planoAtual: string;
-  /** Ja concluiu um checkout: mostra portal e sincronizacao. */
+  /** Ofertas com preço configurado nesta instalação. */
+  disponiveis: OfertaPaga[];
+  /** Nível de acesso que vale agora: "trial", "free" ou "pro". */
+  nivelAtual: string;
   assinaturaIniciada: boolean;
   temCadastroDeCobranca: boolean;
   emProducao: boolean;
   diasRestantes: number | null;
-  testeVencido: boolean;
-}
-
-/** Lista de beneficios de um plano, montada a partir da propria definicao. */
-function beneficios(plano: PlanoPago, t: ReturnType<typeof useTranslations>): string[] {
-  const { limites, recursos } = PLANOS[plano];
-  const linhas: string[] = [];
-
-  linhas.push(
-    limites.profissionais === null
-      ? t("recursos.profissionaisIlimitados")
-      : limites.profissionais === 1
-        ? t("recursos.profissional_um")
-        : t("recursos.profissionais", { limite: limites.profissionais }),
-  );
-  linhas.push(
-    limites.usuarios === null
-      ? t("recursos.usuariosIlimitados")
-      : limites.usuarios === 1
-        ? t("recursos.usuario_um")
-        : t("recursos.usuarios", { limite: limites.usuarios }),
-  );
-  linhas.push(
-    limites.clientes === null
-      ? t("recursos.clientesIlimitados")
-      : t("recursos.clientes", { limite: limites.clientes.toLocaleString() }),
-  );
-
-  linhas.push(t("recursos.agenda"));
-  linhas.push(t("recursos.servicos"));
-  linhas.push(t("recursos.comissoes"));
-
-  if (recursos.reativacao) linhas.push(t("recursos.reativacao"));
-  if (recursos.relatorio_profissional) linhas.push(t("recursos.relatorioProfissional"));
-  if (recursos.exportar) linhas.push(t("recursos.exportar"));
-
-  return linhas;
+  /** O teste acabou e o negócio caiu para o gratuito. */
+  caiuParaGratuito: boolean;
 }
 
 export function PlanosView({
   disponiveis,
-  planoAtual,
+  nivelAtual,
   assinaturaIniciada,
   temCadastroDeCobranca,
   emProducao,
   diasRestantes,
-  testeVencido,
+  caiuParaGratuito,
 }: PlanosViewProps) {
-  const t = useTranslations("planos");
   const router = useRouter();
-  const [assinando, setAssinando] = useState<PlanoPago | null>(null);
+  const [assinando, setAssinando] = useState<OfertaPaga | null>(null);
   const [sincronizando, startSincronizacao] = useTransition();
   const [abrindoPortal, startPortal] = useTransition();
   const [erroGeral, setErroGeral] = useState<string | null>(null);
 
-  function assinar(plano: PlanoPago) {
+  function assinar(oferta: OfertaPaga) {
     setErroGeral(null);
-    setAssinando(plano);
+    setAssinando(oferta);
     void (async () => {
-      const resultado = await iniciarCheckoutStripe({ plano });
+      const resultado = await iniciarCheckoutStripe({ oferta });
       if (!resultado.ok) {
         setErroGeral(resultado.erro);
         setAssinando(null);
         return;
       }
-      // Navegacao de saida: manter o spinner evita o botao piscar ativo
-      // durante o redirecionamento.
+      // Navegação de saída: manter o spinner evita o botão piscar ativo.
       window.location.assign(resultado.data.url);
     })();
   }
@@ -102,10 +70,7 @@ export function PlanosView({
     setErroGeral(null);
     startPortal(async () => {
       const resultado = await abrirPortalStripe();
-      if (!resultado.ok) {
-        setErroGeral(resultado.erro);
-        return;
-      }
+      if (!resultado.ok) return setErroGeral(resultado.erro);
       window.location.assign(resultado.data.url);
     });
   }
@@ -122,99 +87,123 @@ export function PlanosView({
     });
   }
 
-  if (disponiveis.length === 0) {
-    return (
-      <div className="rounded-lg border border-warning/40 bg-warning/10 p-4 text-sm">
-        <p className="font-medium">{t("semConfiguracao")}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
-      {testeVencido ? (
-        <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-4">
-          <p className="font-medium text-destructive">{t("testeVencido")}</p>
-          <p className="mt-1 text-sm text-muted-foreground">{t("testeVencidoTexto")}</p>
+      {caiuParaGratuito ? (
+        <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
+          <p className="font-medium">Seu período de teste terminou</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Você continua no GlowScale, agora no plano Free. Nada foi apagado — o que passou
+            do limite gratuito continua guardado, só não dá para adicionar mais.
+          </p>
         </div>
       ) : diasRestantes !== null ? (
         <div className="rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm">
           <strong className="text-foreground">
             {diasRestantes <= 1
-              ? t("testeUltimoDia")
-              : t("testeRestante", { dias: `${diasRestantes} dias` })}
+              ? "Último dia de teste"
+              : `${diasRestantes} dias de teste restantes`}
           </strong>
+          <span className="ml-1 text-muted-foreground">
+            — depois seu acesso continua no plano Free.
+          </span>
         </div>
       ) : null}
 
       {!emProducao ? (
         <p className="rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-muted-foreground">
-          {t("modoTeste")}
+          Modo de teste. Nenhuma cobrança real acontece. Use o cartão 4242 4242 4242 4242,
+          validade futura e qualquer CVC.
         </p>
       ) : null}
 
       <div className="grid gap-5 lg:grid-cols-3">
-        {disponiveis.map((id) => {
-          const plano = PLANOS[id];
-          const atual = planoAtual === id;
+        {ORDEM_DAS_OFERTAS.map((id) => {
+          const oferta = OFERTAS[id];
+          const gratuito = id === "free";
+          const atual = nivelAtual === oferta.nivel && (gratuito || assinaturaIniciada);
           const carregando = assinando === id;
+          const aVenda = gratuito || disponiveis.includes(id as OfertaPaga);
 
           return (
             <Card
               key={id}
               className={cn(
                 "relative flex flex-col p-6",
-                plano.destaque && "border-primary/50 shadow-lg shadow-primary/5",
+                oferta.destaque && "border-primary/50 shadow-lg shadow-primary/5",
                 atual && "border-success/60",
               )}
             >
-              {plano.destaque && !atual ? (
-                <Badge className="absolute -top-2.5 left-6">{t("maisEscolhido")}</Badge>
-              ) : null}
               {atual ? (
                 <Badge variant="outline" className="absolute -top-2.5 left-6 bg-card">
-                  {t("planoAtual")}
+                  Seu plano
                 </Badge>
+              ) : oferta.destaque ? (
+                <Badge className="absolute -top-2.5 left-6">Melhor valor</Badge>
               ) : null}
 
-              <h3 className="texto-display text-xl font-semibold">{plano.nome}</h3>
+              <h3 className="texto-display text-xl font-semibold">{oferta.nome}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{PARA_QUEM[id]}</p>
 
-              <p className="mt-3 flex items-baseline gap-1">
-                <span className="texto-display text-4xl font-semibold">
-                  {formatCurrency(plano.precoMensal)}
+              <p className="mt-4 flex items-baseline gap-1.5">
+                <span className="texto-display text-3xl font-semibold">
+                  {gratuito ? "R$ 0" : formatCurrency(oferta.preco)}
                 </span>
-                <span className="text-sm text-muted-foreground">{t("porMes")}</span>
+                <span className="text-sm text-muted-foreground">
+                  {gratuito ? "para sempre" : oferta.periodo === "ano" ? "/ ano" : "/ mês"}
+                </span>
+              </p>
+              <p className="mt-1 h-5 text-sm text-muted-foreground">
+                {equivalenciaMensal(id) ?? ""}
               </p>
 
-              <ul className="mt-6 flex-1 space-y-2.5 text-sm">
-                {beneficios(id, t).map((linha) => (
+              {VANTAGEM[id] ? (
+                <p
+                  className={cn(
+                    "mt-3 rounded-md px-3 py-2 text-sm",
+                    oferta.destaque
+                      ? "bg-success/12 font-medium text-success"
+                      : "bg-muted text-muted-foreground",
+                  )}
+                >
+                  {VANTAGEM[id]}
+                </p>
+              ) : null}
+
+              <ul className="mt-5 flex-1 space-y-2 text-sm">
+                {beneficiosDoNivel(oferta.nivel).map((linha) => (
                   <li key={linha} className="flex gap-2.5">
-                    <CheckIcon
-                      className="mt-0.5 size-4 shrink-0 text-success"
-                      aria-hidden="true"
-                    />
+                    <CheckIcon className="mt-0.5 size-4 shrink-0 text-success" aria-hidden="true" />
                     <span className="text-muted-foreground">{linha}</span>
                   </li>
                 ))}
               </ul>
 
-              <Button
-                className="mt-6 w-full"
-                variant={plano.destaque ? "default" : "outline"}
-                disabled={assinando !== null || atual}
-                onClick={() => assinar(id)}
-              >
-                {carregando ? (
-                  <Loader2Icon className="size-4 animate-spin" aria-hidden="true" />
-                ) : (
-                  <CreditCardIcon className="size-4" aria-hidden="true" />
-                )}
-                {atual
-                  ? t("planoAtual")
-                  : testeVencido
-                    ? t("assinarSemTeste", { plano: plano.nome })
-                    : t("assinar", { dias: DIAS_DE_TESTE })}
-              </Button>
+              {gratuito ? (
+                <p className="mt-6 text-center text-sm text-muted-foreground">
+                  {atual ? "É onde você está agora" : "Incluído em qualquer momento"}
+                </p>
+              ) : (
+                <Button
+                  className="mt-6 w-full"
+                  variant={oferta.destaque ? "default" : "outline"}
+                  disabled={assinando !== null || atual || !aVenda}
+                  onClick={() => assinar(id as OfertaPaga)}
+                >
+                  {carregando ? (
+                    <Loader2Icon className="size-4 animate-spin" aria-hidden="true" />
+                  ) : (
+                    <CreditCardIcon className="size-4" aria-hidden="true" />
+                  )}
+                  {atual
+                    ? "Seu plano"
+                    : !aVenda
+                      ? "Indisponível"
+                      : caiuParaGratuito
+                        ? `Assinar ${oferta.nome}`
+                        : `Testar ${DIAS_DE_TESTE} dias grátis`}
+                </Button>
+              )}
             </Card>
           );
         })}
@@ -234,7 +223,7 @@ export function PlanosView({
             ) : (
               <RefreshCwIcon className="size-4" aria-hidden="true" />
             )}
-            {t("atualizarSituacao")}
+            Atualizar situação da assinatura
           </Button>
         ) : null}
 
@@ -245,12 +234,14 @@ export function PlanosView({
             ) : (
               <ExternalLinkIcon className="size-4" aria-hidden="true" />
             )}
-            {t("gerenciar")}
+            Gerenciar pagamento e faturas
           </Button>
         ) : null}
       </div>
 
-      <p className="text-center text-xs text-muted-foreground">{t("pagamentoSeguro")}</p>
+      <p className="text-center text-xs text-muted-foreground">
+        Pagamento processado pelo Stripe. Os dados do cartão nunca passam pelo GlowScale.
+      </p>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AvisoDeRascunho, IdentificacaoDaEmpresa } from "@/components/marketing/aviso-rascunho";
 import { EMPRESA } from "@/lib/constants/empresa";
 import { formatCurrency } from "@/lib/calculations/money";
-import { DIAS_DE_TESTE, ORDEM_DOS_PLANOS, PLANOS } from "@/lib/planos";
+import { DIAS_DE_TESTE, OFERTAS, ORDEM_DAS_OFERTAS, economiaAnual } from "@/lib/planos";
 import { formatDateBR } from "@/lib/utils/date";
 
 export const metadata: Metadata = {
@@ -49,30 +49,53 @@ export default function TermosPage() {
         <li>Cada plano permite um número de logins; compartilhar credenciais para exceder esse número não é permitido.</li>
       </ul>
 
-      <H2>Período de teste e cobrança</H2>
+      <H2>Plano gratuito, teste e cobrança</H2>
       <ul className="ml-5 list-disc space-y-1.5">
         <li>
-          Você tem <strong>{DIAS_DE_TESTE} dias</strong> de teste a partir da criação da conta,
-          sem necessidade de cartão.
+          O plano <strong>Free</strong> é gratuito por tempo indeterminado, sem cartão, dentro
+          dos limites descritos na página inicial.
         </li>
         <li>
-          Ao escolher um plano, o cartão é cadastrado e a{" "}
+          Toda conta nova começa com <strong>{DIAS_DE_TESTE} dias</strong> de acesso ao plano
+          Pro, para você experimentar tudo.
+        </li>
+        <li>
+          <strong>Terminado o teste sem assinatura, você não perde o acesso:</strong> a conta
+          passa a valer como Free. Nada é apagado — o que exceder os limites gratuitos continua
+          guardado, apenas não é possível adicionar mais.
+        </li>
+        <li>
+          Ao assinar o Pro, o cartão é cadastrado e a{" "}
           <strong>primeira cobrança ocorre ao fim do teste</strong>, automaticamente. Se você
           assinar durante o teste, os dias restantes são preservados — o total continua sendo{" "}
           {DIAS_DE_TESTE} dias desde o cadastro.
         </li>
-        <li>Depois disso a cobrança é mensal e automática, no mesmo dia de cada mês.</li>
-        <li>Terminado o teste sem assinatura, o acesso é bloqueado, mas seus dados permanecem guardados.</li>
+        <li>
+          A renovação é automática, mensal ou anual conforme o plano escolhido. Se um pagamento
+          falhar, a conta volta ao Free em vez de ser bloqueada.
+        </li>
       </ul>
 
       <H2>Planos e preços</H2>
       <ul className="ml-5 list-disc space-y-1.5">
-        {ORDEM_DOS_PLANOS.map((id) => (
-          <li key={id}>
-            <strong>{PLANOS[id].nome}</strong> — {formatCurrency(PLANOS[id].precoMensal)} por mês.
-          </li>
-        ))}
+        {ORDEM_DAS_OFERTAS.map((id) => {
+          const oferta = OFERTAS[id];
+          return (
+            <li key={id}>
+              <strong>{oferta.nome}</strong> —{" "}
+              {oferta.preco === 0
+                ? "gratuito, por tempo indeterminado"
+                : `${formatCurrency(oferta.preco)} por ${oferta.periodo === "ano" ? "ano" : "mês"}`}
+              .
+            </li>
+          );
+        })}
       </ul>
+      <p>
+        O plano anual custa {formatCurrency(OFERTAS.pro_anual.preco)} contra{" "}
+        {formatCurrency(OFERTAS.pro_mensal.preco * 12)} pagando mês a mês — uma economia de{" "}
+        {formatCurrency(economiaAnual())} por ano.
+      </p>
       <p>
         Os limites de cada plano estão descritos na{" "}
         <Link href="/#planos" className="text-primary underline-offset-4 hover:underline">

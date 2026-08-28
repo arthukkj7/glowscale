@@ -66,7 +66,7 @@
   },
   "planos": {
     "titulo": "Choose your plan",
-    "subtitulo": "{dias}-day free trial. You're only charged after that, and you can cancel anytime.",
+    "subtitulo": "{dias} days to try Pro. After that you stay on Free without losing anything — or subscribe and save {economia} with the annual plan.",
     "porMes": "/month",
     "assinar": "Start {dias}-day trial",
     "assinarSemTeste": "Subscribe to {plano}",
@@ -76,7 +76,7 @@
     "testeRestante": "{dias} left in your trial",
     "testeUltimoDia": "Last day of your trial",
     "testeVencido": "Your trial has ended",
-    "testeVencidoTexto": "Pick a plan to get back into GlowScale. Your data is still here, untouched.",
+    "testeVencidoTexto": "You're still on GlowScale, now on the Free plan. Nothing was deleted.",
     "cobrancaApos": "First charge on {data}",
     "gerenciar": "Manage payment and invoices",
     "atualizarSituacao": "Refresh subscription status",

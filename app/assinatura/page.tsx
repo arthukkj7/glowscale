@@ -9,10 +9,10 @@ import { SeletorTema } from "@/components/layout/seletor-tema";
 import { UserMenu } from "@/components/layout/user-menu";
 import { StatusClinicaBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
-import { assinaturaLiberaAcesso, diasRestantesDeTeste, requireSessao } from "@/lib/auth/session";
+import { diasRestantesDeTeste, nivelEfetivo, requireSessao } from "@/lib/auth/session";
 import { idiomaAtual } from "@/lib/i18n/acoes";
-import { DIAS_DE_TESTE } from "@/lib/planos";
-import { planosDisponiveis, stripeEmProducao } from "@/lib/stripe/config";
+import { DIAS_DE_TESTE, economiaAnual } from "@/lib/planos";
+import { ofertasDisponiveis, stripeEmProducao } from "@/lib/stripe/config";
 import { serviceRoleDisponivel } from "@/lib/supabase/admin";
 
 export const metadata: Metadata = {
@@ -28,11 +28,12 @@ export default async function AssinaturaPage() {
   const { clinica, usuario, assinatura, email } = await requireSessao();
   const [t, idioma] = await Promise.all([getTranslations("planos"), idiomaAtual()]);
 
-  const acessoLiberado = assinaturaLiberaAcesso(clinica);
   const diasRestantes = diasRestantesDeTeste(clinica);
-  const testeVencido = clinica.status === "trial" && !acessoLiberado;
+  // Ninguem mais e bloqueado: quem termina o teste sem assinar continua
+  // usando, no plano Free. Isto so muda o texto do aviso.
+  const caiuParaGratuito = clinica.status === "trial" && diasRestantes === null;
 
-  const disponiveis = serviceRoleDisponivel() ? planosDisponiveis() : [];
+  const disponiveis = serviceRoleDisponivel() ? ofertasDisponiveis() : [];
 
   return (
     <div className="flex min-h-dvh flex-col bg-muted/40">
@@ -52,7 +53,7 @@ export default async function AssinaturaPage() {
               {t("titulo")}
             </h1>
             <p className="text-muted-foreground">
-              {t("subtitulo", { dias: DIAS_DE_TESTE })}
+              {t("subtitulo", { dias: DIAS_DE_TESTE, economia: `R$ ${economiaAnual()}` })}
             </p>
             <p className="flex items-center justify-center gap-2 pt-1 text-sm">
               <span className="text-muted-foreground">{clinica.nome}</span>
@@ -62,21 +63,19 @@ export default async function AssinaturaPage() {
 
           <PlanosView
             disponiveis={disponiveis}
-            planoAtual={clinica.plano}
+            nivelAtual={nivelEfetivo(clinica)}
             assinaturaIniciada={Boolean(assinatura?.stripe_subscription_id)}
             temCadastroDeCobranca={Boolean(assinatura?.stripe_customer_id)}
             emProducao={stripeEmProducao()}
             diasRestantes={diasRestantes}
-            testeVencido={testeVencido}
+            caiuParaGratuito={caiuParaGratuito}
           />
 
-          {acessoLiberado ? (
-            <div className="text-center">
-              <Button variant="outline" asChild>
-                <Link href="/dashboard">Ir para o painel</Link>
-              </Button>
-            </div>
-          ) : null}
+          <div className="text-center">
+            <Button variant="outline" asChild>
+              <Link href="/dashboard">Ir para o painel</Link>
+            </Button>
+          </div>
         </div>
       </main>
     </div>

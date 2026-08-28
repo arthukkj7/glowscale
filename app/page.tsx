@@ -130,8 +130,9 @@ export default function LandingPage() {
               Um preço para cada tamanho de negócio
             </h2>
             <p className="text-muted-foreground">
-              {DIAS_DE_TESTE} dias para testar sem compromisso. Você só é cobrada depois
-              disso, e cancela quando quiser.
+              Comece de graça, sem cartão e sem prazo. Toda conta nova ganha{" "}
+              {DIAS_DE_TESTE} dias de Pro para experimentar tudo — e se você não assinar,
+              continua no Free em vez de perder o acesso.
             </p>
           </div>
           <PlanosVitrine />
