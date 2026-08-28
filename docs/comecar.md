@@ -82,7 +82,22 @@ Ainda em **Authentication -> URL Configuration**, adicione em
 http://localhost:3000/auth/callback
 ```
 
-## 5. Subir
+## 5. Conferir e subir
+
+Antes de subir, peca um diagnostico:
+
+```bash
+npm run doutor
+```
+
+Ele checa, em ordem: o `.env.local` existe e esta preenchido? o projeto
+Supabase responde de verdade (nao um proxy no meio)? as sete tabelas existem?
+alguma esta legivel sem autenticacao? as tres funcoes do banco existem?
+
+Cada problema vem com o que fazer. Nenhuma chave e impressa - so os primeiros
+caracteres, o suficiente para conferir que e a certa.
+
+Com tudo verde:
 
 ```bash
 npm install
@@ -151,6 +166,8 @@ Recarregue o painel: dashboard, financeiro e escala ja aparecem preenchidos.
 | "Confirme seu e-mail" | confirmacao ligada | Clique no link do e-mail, ou passo 4 |
 | "E-mail ou senha incorretos" | credenciais erradas | Use "Esqueci minha senha" |
 | Cobranca "nao configurada" | sem chave do Asaas | Esperado; nao bloqueia o uso |
+
+Na duvida, rode `npm run doutor`: ele diz qual das linhas acima e o seu caso.
 
 Variaveis `NEXT_PUBLIC_*` sao lidas quando o servidor sobe. Depois de mexer no
 `.env.local`, **reinicie** - `Ctrl+C` e `npm run dev` de novo.

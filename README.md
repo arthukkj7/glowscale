@@ -220,6 +220,7 @@ npx supabase gen types typescript --project-id SEU_REF --schema public > types/d
 ## Desenvolvimento, testes e build
 
 ```bash
+npm run doutor     # diagnostica a instalacao (env, conexao, schema)
 npm run dev        # servidor de desenvolvimento
 npm run lint       # ESLint (flat config + regras do React Compiler)
 npm run typecheck  # tsc --noEmit
