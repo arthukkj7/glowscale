@@ -143,6 +143,45 @@ export type AtendimentoInput = z.infer<typeof atendimentoSchema>;
 export const atendimentoUpdateSchema = atendimentoSchema.extend({ id: idUuid });
 export type AtendimentoUpdateInput = z.infer<typeof atendimentoUpdateSchema>;
 
+// ------------------------------------------------------------------ agenda
+const camposDoAgendamento = {
+  // Opcional: encaixe sem cadastro acontece, e exigir cliente para marcar
+  // criaria cadastro fantasma so para o formulario fechar.
+  cliente_id: idUuid.optional().or(z.literal("").transform(() => undefined)),
+  profissional_id: idUuid,
+  procedimento_id: idUuid,
+  data: dataISO,
+  hora_inicio: horaHHMM,
+  hora_fim: horaHHMM,
+  status: z
+    .enum(["agendado", "confirmado", "concluido", "cancelado", "faltou"])
+    .default("agendado"),
+  observacoes: textoOpcional(1000),
+};
+
+const horarioCoerente = (dados: { hora_inicio: string; hora_fim: string }) =>
+  dados.hora_inicio < dados.hora_fim;
+
+export const agendamentoSchema = z.object(camposDoAgendamento).refine(horarioCoerente, {
+  message: "O horário final deve ser maior que o inicial.",
+  path: ["hora_fim"],
+});
+export type AgendamentoInput = z.infer<typeof agendamentoSchema>;
+export type AgendamentoFormValues = z.input<typeof agendamentoSchema>;
+
+export const agendamentoUpdateSchema = z
+  .object({ id: idUuid, ...camposDoAgendamento })
+  .refine(horarioCoerente, {
+    message: "O horário final deve ser maior que o inicial.",
+    path: ["hora_fim"],
+  });
+export type AgendamentoUpdateInput = z.infer<typeof agendamentoUpdateSchema>;
+
+export const agendamentoStatusSchema = z.object({
+  id: idUuid,
+  status: z.enum(["agendado", "confirmado", "concluido", "cancelado", "faltou"]),
+});
+
 // --------------------------------------------------------------------- escalas
 export const escalaSchema = z
   .object({

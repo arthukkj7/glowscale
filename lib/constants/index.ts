@@ -1,4 +1,5 @@
 import type {
+  AgendamentoStatus,
   AssinaturaStatus,
   AtendimentoStatus,
   ClinicaStatus,
@@ -44,6 +45,21 @@ export const ASSINATURA_STATUS_LABEL: Record<AssinaturaStatus, string> = {
   canceled: "Cancelada",
   expired: "Expirada",
 };
+
+export const AGENDAMENTO_STATUS_LABEL: Record<AgendamentoStatus, string> = {
+  agendado: "Agendado",
+  confirmado: "Confirmado",
+  concluido: "Concluído",
+  cancelado: "Cancelado",
+  faltou: "Não compareceu",
+};
+
+/** Status que ainda ocupam o horario da profissional. */
+export const AGENDAMENTO_STATUS_ATIVOS: readonly AgendamentoStatus[] = [
+  "agendado",
+  "confirmado",
+  "concluido",
+] as const;
 
 export const ATENDIMENTO_STATUS_LABEL: Record<AtendimentoStatus, string> = {
   realizado: "Realizado",

@@ -119,6 +119,35 @@ export type EscalaRow = Timestamps & {
 /** Quem cobra a mensalidade desta clinica. */
 export type ProvedorDePagamento = "asaas" | "stripe";
 
+export type AgendamentoStatus =
+  | "agendado"
+  | "confirmado"
+  | "concluido"
+  | "cancelado"
+  | "faltou";
+
+export type AgendamentoRow = Timestamps & {
+  id: string;
+  clinica_id: string;
+  cliente_id: string | null;
+  profissional_id: string;
+  procedimento_id: string;
+  data: string;
+  hora_inicio: string;
+  hora_fim: string;
+  status: AgendamentoStatus;
+  observacoes: string | null;
+  atendimento_id: string | null;
+}
+
+/** Agendamento ja com os nomes resolvidos, para a agenda do dia. */
+export type AgendamentoDaAgenda = AgendamentoRow & {
+  cliente_nome: string | null;
+  profissional_nome: string;
+  servico_nome: string;
+  servico_valor: number;
+}
+
 export type ClienteRow = Timestamps & {
   id: string;
   clinica_id: string;
@@ -258,6 +287,16 @@ export type Database = {
           "id" | "created_at" | "updated_at"
         >;
         Update: Partial<Omit<EscalaRow, "id" | "created_at" | "updated_at">>;
+        Relationships: [];
+      };
+      agendamentos: {
+        Row: AgendamentoRow;
+        Insert: Insertable<
+          AgendamentoRow,
+          "clinica_id" | "profissional_id" | "procedimento_id" | "data" | "hora_inicio" | "hora_fim",
+          "id" | "created_at" | "updated_at"
+        >;
+        Update: Partial<Omit<AgendamentoRow, "id" | "created_at" | "updated_at">>;
         Relationships: [];
       };
       clientes: {

@@ -1,6 +1,7 @@
 import {
   BarChart3Icon,
   CalendarDaysIcon,
+  ClockIcon,
   ClipboardListIcon,
   LayoutDashboardIcon,
   SettingsIcon,
@@ -19,7 +20,8 @@ export interface ItemDeNavegacao {
 export const ITENS_DE_NAVEGACAO: readonly ItemDeNavegacao[] = [
   { titulo: "Dashboard", href: "/dashboard", icone: LayoutDashboardIcon },
   { titulo: "Clientes", href: "/clientes", icone: UserRoundIcon },
-  { titulo: "Agenda", href: "/escala", icone: CalendarDaysIcon },
+  { titulo: "Agenda", href: "/agenda", icone: CalendarDaysIcon },
+  { titulo: "Escala", href: "/escala", icone: ClockIcon },
   { titulo: "Serviços", href: "/procedimentos", icone: SparklesIcon },
   { titulo: "Equipe", href: "/profissionais", icone: UsersIcon },
   { titulo: "Atendimentos", href: "/atendimentos", icone: ClipboardListIcon },
