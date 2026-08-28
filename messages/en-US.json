@@ -131,14 +131,13 @@
     "relatorioCompleto": "Full report",
     "semAtendimentos": "No sales recorded this month yet.",
     "emComissao": "{valor} in commission",
-    "comissoesARepassar": "Commission to pay out this month:",
-    "ficaParaVoce": "yours to keep:",
-    "verFechamento": "See breakdown",
     "agendar": "Book",
     "lancarAtendimento": "Record sale",
     "bemVinda": "Welcome to GlowScale",
     "bemVindaTexto": "Start by adding who works with you and what you offer. Then just book it and record the sale — the commission works itself out.",
     "cadastrarEquipe": "Add team",
-    "cadastrarServicos": "Add services"
+    "cadastrarServicos": "Add services",
+    "comissoesARepassarCurto": "To pay out this month",
+    "ficaParaVoceDetalhe": "{valor} stays with you"
   }
 }

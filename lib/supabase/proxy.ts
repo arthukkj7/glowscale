@@ -13,6 +13,11 @@ const ROTAS_PUBLICAS = [
   "/redefinir-senha",
   "/auth/callback",
   "/auth/confirmar",
+  // Documentos legais precisam ser lidos ANTES de criar conta - e e o que uma
+  // plataforma de anuncio busca antes de aprovar o site. Exigir login para
+  // le-los derrotaria o proposito dos dois.
+  "/privacidade",
+  "/termos",
 ] as const;
 
 /** Rotas de autenticacao das quais um usuario logado deve ser tirado. */

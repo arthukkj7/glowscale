@@ -11,10 +11,12 @@ import {
 
 import { Logo } from "@/components/layout/logo";
 import { PublicoAtendido } from "@/components/marketing/publico-atendido";
+import { PlanosVitrine } from "@/components/marketing/planos-vitrine";
+import { Perguntas } from "@/components/marketing/perguntas";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { APP_NAME, PLANO_PADRAO } from "@/lib/constants";
-import { formatCurrency } from "@/lib/calculations/money";
+import { APP_NAME } from "@/lib/constants";
+import { DIAS_DE_TESTE } from "@/lib/planos";
 
 export const metadata: Metadata = {
   title: `${APP_NAME} - Gestão inteligente para negócios de beleza`,
@@ -32,9 +34,9 @@ const recursos = [
   },
   {
     icone: CalendarDaysIcon,
-    titulo: "Agenda semanal",
+    titulo: "Agenda do dia",
     texto:
-      "Grade de segunda a domingo com múltiplos turnos por profissional, navegação entre semanas e visão em cards no celular.",
+      "Hora, cliente, serviço e profissional numa tela só. O sistema recusa dois compromissos no mesmo horário da mesma profissional — não dá para marcar em cima.",
   },
   {
     icone: ClipboardListIcon,
@@ -50,15 +52,15 @@ const recursos = [
   },
   {
     icone: PercentIcon,
-    titulo: "Números que fecham",
+    titulo: "A conta sempre fecha",
     texto:
-      "Valores em numeric no banco e cálculo em centavos na aplicacao. Nada de centavo perdido em arredondamento.",
+      "Nenhum centavo se perde no arredondamento. O que a profissional recebe mais o que fica para você dá exatamente o valor do atendimento — todo mês, sem conferência manual.",
   },
   {
     icone: ShieldCheckIcon,
     titulo: "Seus dados são só seus",
     texto:
-      "Isolamento garantido por Row Level Security no próprio PostgreSQL, não apenas pela interface. Nenhum outro negócio alcança seus números.",
+      "Nenhum outro negócio enxerga suas clientes, seus valores ou suas comissões. A separação é feita no banco de dados, não apenas na tela.",
   },
 ];
 
@@ -122,47 +124,52 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
-            <div className="space-y-4">
-              <h2 className="texto-display text-3xl font-semibold tracking-tight">
-                Um plano, tudo incluso
-              </h2>
-              <p className="text-muted-foreground">
-                Sem limite de profissionais, serviços ou lançamentos. Do profissional que
-                atende sozinho em casa ao studio com equipe.
-              </p>
-            </div>
-            <Card className="p-8">
-              <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-                Plano {PLANO_PADRAO.nome}
-              </p>
-              <p className="mt-2 flex items-baseline gap-1.5">
-                <span className="texto-display text-4xl font-semibold">
-                  {formatCurrency(PLANO_PADRAO.valor)}
-                </span>
-                <span className="text-sm text-muted-foreground">/ mes</span>
-              </p>
-              <ul className="mt-6 space-y-2.5 text-sm">
-                {PLANO_PADRAO.beneficios.map((beneficio) => (
-                  <li key={beneficio} className="flex gap-2.5 text-muted-foreground">
-                    <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />
-                    {beneficio}
-                  </li>
-                ))}
-              </ul>
-              <Button className="mt-8 w-full" size="lg" asChild>
-                <Link href="/cadastro">Criar minha conta</Link>
-              </Button>
-            </Card>
+        <section id="planos" className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
+          <div className="mb-10 max-w-2xl space-y-3">
+            <h2 className="texto-display text-3xl font-semibold tracking-tight">
+              Um preço para cada tamanho de negócio
+            </h2>
+            <p className="text-muted-foreground">
+              {DIAS_DE_TESTE} dias para testar sem compromisso. Você só é cobrada depois
+              disso, e cancela quando quiser.
+            </p>
+          </div>
+          <PlanosVitrine />
+        </section>
+
+        <section className="border-t border-border bg-card/60">
+          <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
+            <h2 className="texto-display mb-8 text-center text-3xl font-semibold tracking-tight">
+              Perguntas frequentes
+            </h2>
+            <Perguntas />
           </div>
         </section>
+
       </main>
 
       <footer className="border-t border-border">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <Logo compacta />
-          <p>&copy; {new Date().getFullYear()} GlowScale. Todos os direitos reservados.</p>
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-10 text-sm text-muted-foreground sm:px-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <Logo compacta />
+            <nav className="flex flex-wrap gap-x-6 gap-y-2" aria-label="Links do rodapé">
+              <Link href="/#planos" className="underline-offset-4 hover:text-foreground hover:underline">
+                Planos
+              </Link>
+              <Link href="/privacidade" className="underline-offset-4 hover:text-foreground hover:underline">
+                Privacidade
+              </Link>
+              <Link href="/termos" className="underline-offset-4 hover:text-foreground hover:underline">
+                Termos de uso
+              </Link>
+              <Link href="/login" className="underline-offset-4 hover:text-foreground hover:underline">
+                Entrar
+              </Link>
+            </nav>
+          </div>
+          <p className="border-t border-border pt-4">
+            &copy; {new Date().getFullYear()} GlowScale. Todos os direitos reservados.
+          </p>
         </div>
       </footer>
     </div>

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 
+import { ProvedorTema } from "@/components/layout/provedor-tema";
 import { Toaster } from "@/components/ui/sonner";
 import { APP_DESCRIPTION, APP_NAME } from "@/lib/constants";
 
@@ -63,8 +64,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </a>
         {/* Sem o provider, todo componente de cliente que chama
             useTranslations quebra a pagina inteira. */}
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
-        <Toaster />
+        <ProvedorTema>
+          <NextIntlClientProvider>{children}</NextIntlClientProvider>
+          <Toaster />
+        </ProvedorTema>
       </body>
     </html>
   );

@@ -79,7 +79,7 @@ export default async function DashboardPage() {
         />
       ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           rotulo={t("faturamentoDoMes")}
           valor={formatCurrency(dados.resumo.faturamento)}
@@ -113,6 +113,20 @@ export default async function DashboardPage() {
           }
           icone={UserRoundIcon}
           destaque={dados.clientesNovosNoMes > 0 ? "sucesso" : "neutro"}
+        />
+
+        {/* O repasse estava num cartao tracejado no rodape, com cara de nota
+            de rodape. E a pergunta que a dona do negocio faz todo mes -
+            "quanto eu devo pagar para a equipe" - e agora esta onde ela olha
+            primeiro. */}
+        <StatCard
+          rotulo={t("comissoesARepassarCurto")}
+          valor={formatCurrency(dados.resumo.comissoes)}
+          detalhe={t("ficaParaVoceDetalhe", {
+            valor: formatCurrency(dados.resumo.repasseClinica),
+          })}
+          icone={BanknoteIcon}
+          destaque="alerta"
         />
       </div>
 
@@ -271,26 +285,6 @@ export default async function DashboardPage() {
         </CardContent>
       </Card>
 
-      <Card className="border-dashed">
-        <CardContent className="flex flex-wrap items-center justify-between gap-4 pt-6">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <BanknoteIcon className="size-4 shrink-0" aria-hidden="true" />
-            <span>
-              {t("comissoesARepassar")}{" "}
-              <strong className="text-foreground tabular-nums">
-                {formatCurrency(dados.resumo.comissoes)}
-              </strong>
-              {" · "}{t("ficaParaVoce")}{" "}
-              <strong className="text-foreground tabular-nums">
-                {formatCurrency(dados.resumo.repasseClinica)}
-              </strong>
-            </span>
-          </div>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/financeiro">{t("verFechamento")}</Link>
-          </Button>
-        </CardContent>
-      </Card>
     </>
   );
 }

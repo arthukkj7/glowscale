@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Logo } from "@/components/layout/logo";
 import { SeletorIdioma } from "@/components/layout/seletor-idioma";
+import { SeletorTema } from "@/components/layout/seletor-tema";
 import { SetupNecessario } from "@/components/layout/setup-necessario";
 import { supabaseEstaConfigurado } from "@/lib/supabase/config";
 import { idiomaAtual } from "@/lib/i18n/acoes";
@@ -18,7 +19,10 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
         <Link href="/" className="inline-flex rounded-md" aria-label="Voltar para a página inicial">
           <Logo />
         </Link>
-        <SeletorIdioma idioma={idioma} />
+        <div className="flex items-center gap-1">
+          <SeletorTema />
+          <SeletorIdioma idioma={idioma} />
+        </div>
       </header>
       <main
         id="conteudo"

@@ -1,5 +1,6 @@
 import { MobileNav } from "./mobile-nav";
 import { SeletorIdioma } from "./seletor-idioma";
+import { SeletorTema } from "./seletor-tema";
 import { UserMenu } from "./user-menu";
 import { StatusClinicaBadge } from "@/components/shared/status-badge";
 import type { ClinicaRow, UsuarioRow } from "@/types/database";
@@ -41,6 +42,7 @@ export function Header({ clinica, usuario, email, idioma, diasDeTesteRestantes }
         </Link>
       ) : null}
 
+      <SeletorTema />
       <SeletorIdioma idioma={idioma} />
       <UserMenu nome={usuario.nome} email={email} />
     </header>

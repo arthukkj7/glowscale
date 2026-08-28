@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { PlanosView } from "@/components/assinatura/planos-view";
 import { Logo } from "@/components/layout/logo";
 import { SeletorIdioma } from "@/components/layout/seletor-idioma";
+import { SeletorTema } from "@/components/layout/seletor-tema";
 import { UserMenu } from "@/components/layout/user-menu";
 import { StatusClinicaBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,7 @@ export default async function AssinaturaPage() {
       <header className="flex h-16 items-center justify-between border-b border-border bg-background px-4 sm:px-6">
         <Logo />
         <div className="flex items-center gap-1">
+          <SeletorTema />
           <SeletorIdioma idioma={idioma} />
           <UserMenu nome={usuario.nome} email={email} />
         </div>

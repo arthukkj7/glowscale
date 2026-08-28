@@ -131,14 +131,13 @@
     "relatorioCompleto": "Relatório completo",
     "semAtendimentos": "Nenhum atendimento lançado neste mês ainda.",
     "emComissao": "{valor} em comissão",
-    "comissoesARepassar": "Comissões a repassar este mês:",
-    "ficaParaVoce": "fica para você:",
-    "verFechamento": "Ver fechamento",
     "agendar": "Agendar",
     "lancarAtendimento": "Lançar atendimento",
     "bemVinda": "Bem-vinda ao GlowScale",
     "bemVindaTexto": "Comece cadastrando quem atende e o que você oferece. Depois é só marcar na agenda e lançar os atendimentos — a comissão sai sozinha.",
     "cadastrarEquipe": "Cadastrar equipe",
-    "cadastrarServicos": "Cadastrar serviços"
+    "cadastrarServicos": "Cadastrar serviços",
+    "comissoesARepassarCurto": "A repassar este mês",
+    "ficaParaVoceDetalhe": "{valor} fica para você"
   }
 }
