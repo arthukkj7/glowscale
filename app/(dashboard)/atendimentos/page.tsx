@@ -10,6 +10,7 @@ import { formatCurrency } from "@/lib/calculations/money";
 import { listarAtendimentos } from "@/lib/data/atendimentos";
 import { resumoDoPeriodo } from "@/lib/data/financeiro";
 import { listarProcedimentosAtivos } from "@/lib/data/procedimentos";
+import { clientesParaSelecao } from "@/lib/data/clientes";
 import { listarProfissionaisAtivas } from "@/lib/data/profissionais";
 import { hojeNaClinica } from "@/lib/utils/date";
 import { normalizarFiltro, queryComFiltros } from "@/lib/utils/filtros";
@@ -34,7 +35,7 @@ export default async function AtendimentosPage({ searchParams }: PageProps) {
   const filtro = normalizarFiltro(parametros, hoje);
   const paginaSolicitada = Number(parametros.pagina ?? "1");
 
-  const [lista, resumo, profissionais, procedimentos] = await Promise.all([
+  const [lista, resumo, profissionais, procedimentos, clientes] = await Promise.all([
     listarAtendimentos({
       pagina: Number.isFinite(paginaSolicitada) ? paginaSolicitada : 1,
       dataInicial: filtro.dataInicial,
@@ -50,6 +51,7 @@ export default async function AtendimentosPage({ searchParams }: PageProps) {
     }),
     listarProfissionaisAtivas(),
     listarProcedimentosAtivos(),
+    clientesParaSelecao(),
   ]);
 
   return (
@@ -82,6 +84,7 @@ export default async function AtendimentosPage({ searchParams }: PageProps) {
         atendimentos={lista.registros}
         profissionais={profissionais}
         procedimentos={procedimentos}
+        clientes={clientes}
         dataPadrao={hoje}
         temFiltroAtivo={filtro.temFiltroAtivo}
       />

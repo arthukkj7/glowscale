@@ -27,13 +27,19 @@ import { excluirAtendimento } from "@/lib/actions/atendimentos";
 import { formatCurrency, formatPercent } from "@/lib/calculations/money";
 import type { AtendimentoComRelacoes } from "@/lib/data/atendimentos";
 import { formatDateBR } from "@/lib/utils/date";
-import type { AtendimentoRow, ProcedimentoRow, ProfissionalRow } from "@/types/database";
+import type {
+  AtendimentoRow,
+  ClienteRow,
+  ProcedimentoRow,
+  ProfissionalRow,
+} from "@/types/database";
 import { AtendimentoDialog } from "./atendimento-dialog";
 
 interface AtendimentosViewProps {
   atendimentos: AtendimentoComRelacoes[];
   profissionais: ProfissionalRow[];
   procedimentos: ProcedimentoRow[];
+  clientes: Pick<ClienteRow, "id" | "nome">[];
   dataPadrao: string;
   temFiltroAtivo: boolean;
 }
@@ -42,6 +48,7 @@ export function AtendimentosView({
   atendimentos,
   profissionais,
   procedimentos,
+  clientes,
   dataPadrao,
   temFiltroAtivo,
 }: AtendimentosViewProps) {
@@ -240,6 +247,7 @@ export function AtendimentosView({
         onAbertoChange={setDialogoAberto}
         profissionais={profissionais}
         procedimentos={procedimentos}
+        clientes={clientes}
         atendimento={emEdicao}
         dataPadrao={dataPadrao}
       />

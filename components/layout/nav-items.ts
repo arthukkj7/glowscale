@@ -5,6 +5,7 @@ import {
   LayoutDashboardIcon,
   SettingsIcon,
   SparklesIcon,
+  UserRoundIcon,
   UsersIcon,
   type LucideIcon,
 } from "lucide-react";
@@ -17,9 +18,10 @@ export interface ItemDeNavegacao {
 
 export const ITENS_DE_NAVEGACAO: readonly ItemDeNavegacao[] = [
   { titulo: "Dashboard", href: "/dashboard", icone: LayoutDashboardIcon },
-  { titulo: "Profissionais", href: "/profissionais", icone: UsersIcon },
-  { titulo: "Escala", href: "/escala", icone: CalendarDaysIcon },
-  { titulo: "Procedimentos", href: "/procedimentos", icone: SparklesIcon },
+  { titulo: "Clientes", href: "/clientes", icone: UserRoundIcon },
+  { titulo: "Agenda", href: "/escala", icone: CalendarDaysIcon },
+  { titulo: "Serviços", href: "/procedimentos", icone: SparklesIcon },
+  { titulo: "Equipe", href: "/profissionais", icone: UsersIcon },
   { titulo: "Atendimentos", href: "/atendimentos", icone: ClipboardListIcon },
   { titulo: "Financeiro", href: "/financeiro", icone: BarChart3Icon },
   { titulo: "Configurações", href: "/configuracoes", icone: SettingsIcon },

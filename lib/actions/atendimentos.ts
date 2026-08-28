@@ -8,7 +8,7 @@ import { atendimentoSchema, atendimentoUpdateSchema, idUuid } from "@/lib/valida
 import type { AtendimentoRow } from "@/types/database";
 import { ErroDeNegocio, sucesso, tratarErro, type ActionResult } from "./result";
 
-const ROTAS_AFETADAS = ["/atendimentos", "/dashboard", "/financeiro"];
+const ROTAS_AFETADAS = ["/atendimentos", "/dashboard", "/financeiro", "/clientes"];
 
 function revalidar() {
   for (const rota of ROTAS_AFETADAS) revalidatePath(rota);
@@ -74,6 +74,10 @@ export async function criarAtendimento(dados: unknown): Promise<ActionResult<Ate
         clinica_id: clinica.id,
         profissional_id: entrada.profissional_id,
         procedimento_id: entrada.procedimento_id,
+        // A FK composta (cliente_id, clinica_id) garante no banco que um
+        // cliente de outro negocio nunca entra aqui, mesmo que o id venha
+        // adulterado do formulario.
+        cliente_id: entrada.cliente_id ?? null,
         data_atendimento: entrada.data_atendimento,
         quantidade: entrada.quantidade,
         valor_unitario: entrada.valor_unitario,
@@ -128,6 +132,10 @@ export async function atualizarAtendimento(
       .update({
         profissional_id: entrada.profissional_id,
         procedimento_id: entrada.procedimento_id,
+        // A FK composta (cliente_id, clinica_id) garante no banco que um
+        // cliente de outro negocio nunca entra aqui, mesmo que o id venha
+        // adulterado do formulario.
+        cliente_id: entrada.cliente_id ?? null,
         data_atendimento: entrada.data_atendimento,
         quantidade: entrada.quantidade,
         valor_unitario: entrada.valor_unitario,

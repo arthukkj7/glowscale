@@ -89,6 +89,7 @@ export type ProcedimentoRow = Timestamps & {
 export type AtendimentoRow = Timestamps & {
   id: string;
   clinica_id: string;
+  cliente_id: string | null;
   profissional_id: string;
   procedimento_id: string;
   data_atendimento: string;
@@ -117,6 +118,33 @@ export type EscalaRow = Timestamps & {
 
 /** Quem cobra a mensalidade desta clinica. */
 export type ProvedorDePagamento = "asaas" | "stripe";
+
+export type ClienteRow = Timestamps & {
+  id: string;
+  clinica_id: string;
+  nome: string;
+  telefone: string | null;
+  email: string | null;
+  data_nascimento: string | null;
+  observacoes: string | null;
+  ativo: boolean;
+}
+
+/** Linha devolvida por clientes_com_resumo(): cadastro + agregados. */
+export type ClienteComResumo = {
+  id: string;
+  nome: string;
+  telefone: string | null;
+  email: string | null;
+  data_nascimento: string | null;
+  observacoes: string | null;
+  ativo: boolean;
+  criado_em: string;
+  total_gasto: number;
+  total_atendimentos: number;
+  ultimo_atendimento: string | null;
+  profissional_preferida: string | null;
+}
 
 export type AssinaturaRow = Timestamps & {
   id: string;
@@ -232,6 +260,12 @@ export type Database = {
         Update: Partial<Omit<EscalaRow, "id" | "created_at" | "updated_at">>;
         Relationships: [];
       };
+      clientes: {
+        Row: ClienteRow;
+        Insert: Insertable<ClienteRow, "clinica_id" | "nome", "id" | "created_at" | "updated_at">;
+        Update: Partial<Omit<ClienteRow, "id" | "created_at" | "updated_at">>;
+        Relationships: [];
+      };
       assinaturas: {
         Row: AssinaturaRow;
         Insert: Insertable<AssinaturaRow, "clinica_id", "id" | "created_at" | "updated_at">;
@@ -260,6 +294,16 @@ export type Database = {
       get_user_role: {
         Args: Record<string, never>;
         Returns: UsuarioRole | null;
+      };
+      clientes_com_resumo: {
+        Args: {
+          p_busca?: string | null;
+          p_apenas_ativos?: boolean;
+          p_limite?: number;
+          p_deslocamento?: number;
+          p_cliente_id?: string | null;
+        };
+        Returns: ClienteComResumo[];
       };
       relatorio_financeiro: {
         Args: {

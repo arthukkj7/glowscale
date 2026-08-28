@@ -74,6 +74,32 @@ export const profissionalSchema = z.object({
 });
 export type ProfissionalInput = z.infer<typeof profissionalSchema>;
 
+export const clienteSchema = z.object({
+  nome: textoObrigatorio("Nome"),
+  telefone: telefoneOpcional,
+  email: emailOpcional,
+  // Data no formato "yyyy-MM-dd", tratada como texto de ponta a ponta: virar
+  // Date aqui traria o fuso junto e faria um aniversario de dia 1 virar dia 31.
+  data_nascimento: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida.")
+    .refine((valor) => {
+      const data = new Date(`${valor}T12:00:00Z`);
+      if (Number.isNaN(data.getTime())) return false;
+      return data <= new Date() && valor >= "1900-01-02";
+    }, "Data de nascimento fora do intervalo aceito.")
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
+  observacoes: textoOpcional(2000),
+  ativo: booleanoDeFormulario.default(true),
+});
+export type ClienteInput = z.infer<typeof clienteSchema>;
+export type ClienteFormValues = z.input<typeof clienteSchema>;
+
+export const clienteUpdateSchema = clienteSchema.extend({ id: idUuid });
+export type ClienteUpdateInput = z.infer<typeof clienteUpdateSchema>;
+
 export const profissionalUpdateSchema = profissionalSchema.extend({ id: idUuid });
 export type ProfissionalUpdateInput = z.infer<typeof profissionalUpdateSchema>;
 
@@ -98,6 +124,10 @@ export type ProcedimentoUpdateInput = z.infer<typeof procedimentoUpdateSchema>;
 export const atendimentoSchema = z.object({
   profissional_id: idUuid,
   procedimento_id: idUuid,
+  // Opcional de proposito: atendimento de balcao existe, e exigir cadastro
+  // para lancar a comissao criaria cliente fantasma so para o formulario
+  // fechar. O seletor manda "" quando ninguem foi escolhido.
+  cliente_id: idUuid.optional().or(z.literal("").transform(() => undefined)),
   data_atendimento: dataISO,
   quantidade: z.coerce
     .number({ message: "Informe a quantidade." })

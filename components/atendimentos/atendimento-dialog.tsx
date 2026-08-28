@@ -35,13 +35,22 @@ import {
   type AtendimentoFormValues,
   type AtendimentoInput,
 } from "@/lib/validations";
-import type { AtendimentoRow, ProcedimentoRow, ProfissionalRow } from "@/types/database";
+import type {
+  AtendimentoRow,
+  ClienteRow,
+  ProcedimentoRow,
+  ProfissionalRow,
+} from "@/types/database";
+
+/** Valor do item "sem cliente": o Select do Radix recusa string vazia. */
+const SEM_CLIENTE = "__sem_cliente__";
 
 interface AtendimentoDialogProps {
   aberto: boolean;
   onAbertoChange: (aberto: boolean) => void;
   profissionais: ProfissionalRow[];
   procedimentos: ProcedimentoRow[];
+  clientes: Pick<ClienteRow, "id" | "nome">[];
   atendimento?: AtendimentoRow | null;
   dataPadrao: string;
 }
@@ -55,6 +64,7 @@ function valoresIniciais(
     return {
       profissional_id: profissionais[0]?.id ?? "",
       procedimento_id: "",
+      cliente_id: "",
       data_atendimento: dataPadrao,
       quantidade: 1,
       valor_unitario: "",
@@ -65,6 +75,7 @@ function valoresIniciais(
   return {
     profissional_id: atendimento.profissional_id,
     procedimento_id: atendimento.procedimento_id,
+    cliente_id: atendimento.cliente_id ?? "",
     data_atendimento: atendimento.data_atendimento,
     quantidade: atendimento.quantidade,
     valor_unitario: atendimento.valor_unitario,
@@ -91,12 +102,14 @@ function FormularioAtendimento({
   atendimento,
   profissionais,
   procedimentos,
+  clientes,
   dataPadrao,
   onConcluir,
 }: {
   atendimento?: AtendimentoRow | null;
   profissionais: ProfissionalRow[];
   procedimentos: ProcedimentoRow[];
+  clientes: Pick<ClienteRow, "id" | "nome">[];
   dataPadrao: string;
   onConcluir: () => void;
 }) {
@@ -221,6 +234,49 @@ function FormularioAtendimento({
           </Select>
         </FormField>
       </div>
+
+      <FormField
+        id="atend-cliente"
+        rotulo="Cliente"
+        erro={errors.cliente_id?.message}
+        descricao="Opcional. Vincular alimenta o histórico e o total gasto da pessoa."
+      >
+        <Controller
+          control={control}
+          name="cliente_id"
+          render={({ field }) => (
+            <Select
+              // O Select do Radix nao aceita "" como valor de item, entao a
+              // opcao "sem cliente" usa um sentinela traduzido nas duas pontas.
+              value={field.value ? String(field.value) : SEM_CLIENTE}
+              onValueChange={(valor) => field.onChange(valor === SEM_CLIENTE ? "" : valor)}
+              disabled={pendente || clientes.length === 0}
+            >
+              <SelectTrigger
+                {...camposAria(
+                  "atend-cliente",
+                  errors.cliente_id?.message,
+                  "Opcional. Vincular alimenta o histórico e o total gasto da pessoa.",
+                )}
+              >
+                <SelectValue
+                  placeholder={
+                    clientes.length === 0 ? "Nenhum cliente cadastrado" : "Sem cliente"
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={SEM_CLIENTE}>Sem cliente</SelectItem>
+                {clientes.map((cliente) => (
+                  <SelectItem key={cliente.id} value={cliente.id}>
+                    {cliente.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+      </FormField>
 
       <div className="grid gap-5 sm:grid-cols-3">
         <FormField
@@ -356,6 +412,7 @@ export function AtendimentoDialog({
   onAbertoChange,
   profissionais,
   procedimentos,
+  clientes,
   atendimento,
   dataPadrao,
 }: AtendimentoDialogProps) {
@@ -375,6 +432,7 @@ export function AtendimentoDialog({
           atendimento={atendimento}
           profissionais={profissionais}
           procedimentos={procedimentos}
+          clientes={clientes}
           dataPadrao={dataPadrao}
           onConcluir={() => onAbertoChange(false)}
         />
