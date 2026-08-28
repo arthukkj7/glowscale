@@ -12,6 +12,7 @@ import {
 } from "@/lib/validations";
 import { createClient } from "@/lib/supabase/server";
 import { ErroDeNegocio, falha, sucesso, tratarErro, type ActionResult } from "./result";
+import { traduzirErroDeCadastro } from "./mensagens-auth";
 import { z } from "zod";
 import { telefoneOpcional } from "@/lib/validations/common";
 
@@ -83,14 +84,12 @@ export async function cadastrar(
     });
 
     if (error) {
-      if (/already registered|already exists/i.test(error.message)) {
-        return falha("Já existe uma conta com este e-mail. Tente entrar ou recuperar a senha.");
-      }
-      if (/password/i.test(error.message)) {
-        return falha("Senha recusada pelo servidor de autenticação. Escolha outra senha.");
-      }
-      console.error("[auth] falha no cadastro", { motivo: error.message });
-      return falha("Não foi possível criar sua conta. Tente novamente em instantes.");
+      console.error("[auth] falha no cadastro", {
+        motivo: error.message,
+        codigo: error.code,
+        status: error.status,
+      });
+      return falha(traduzirErroDeCadastro(error.message));
     }
 
     // Sem sessao imediata => o projeto exige confirmacao de e-mail.
