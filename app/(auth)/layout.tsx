@@ -6,7 +6,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="flex min-h-dvh flex-col bg-muted/40">
       <header className="px-4 py-6 sm:px-8">
-        <Link href="/" className="inline-flex rounded-md" aria-label="Voltar para a pagina inicial">
+        <Link href="/" className="inline-flex rounded-md" aria-label="Voltar para a página inicial">
           <Logo />
         </Link>
       </header>

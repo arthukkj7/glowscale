@@ -16,48 +16,48 @@ import { APP_DESCRIPTION, APP_NAME, PLANO_PADRAO } from "@/lib/constants";
 import { formatCurrency } from "@/lib/calculations/money";
 
 export const metadata: Metadata = {
-  title: `${APP_NAME} - Escalas, atendimentos e comissoes sob controle`,
+  title: `${APP_NAME} - Escalas, atendimentos e comissões sob controle`,
   description:
-    "Software de gestao para clinicas de estetica: escala semanal, lancamento de atendimentos, calculo automatico de comissao e relatorio financeiro por profissional.",
+    "Software de gestão para clínicas de estética: escala semanal, lançamento de atendimentos, cálculo automático de comissão e relatório financeiro por profissional.",
   alternates: { canonical: "/" },
 };
 
 const recursos = [
   {
     icone: UsersIcon,
-    titulo: "Profissionais e comissoes",
+    titulo: "Profissionais e comissões",
     texto:
-      "Cadastro com especialidade e percentual proprio. Cada atendimento guarda o percentual vigente, entao mudar a comissao nunca reescreve o passado.",
+      "Cadastro com especialidade e percentual próprio. Cada atendimento guarda o percentual vigente, então mudar a comissão nunca reescreve o passado.",
   },
   {
     icone: CalendarDaysIcon,
     titulo: "Escala semanal",
     texto:
-      "Grade de segunda a domingo com multiplos turnos por profissional, navegacao entre semanas e visao em cards no celular.",
+      "Grade de segunda a domingo com múltiplos turnos por profissional, navegacao entre semanas e visao em cards no celular.",
   },
   {
     icone: ClipboardListIcon,
     titulo: "Atendimentos em segundos",
     texto:
-      "Escolha a profissional e o procedimento: valor e comissao vem preenchidos, com previa do repasse antes de salvar.",
+      "Escolha a profissional e o procedimento: valor e comissão vem preenchidos, com prévia do repasse antes de salvar.",
   },
   {
     icone: BarChart3Icon,
-    titulo: "Relatorio financeiro",
+    titulo: "Relatório financeiro",
     texto:
-      "Faturamento, comissoes e repasse da clinica consolidados por periodo, com quebra por profissional.",
+      "Faturamento, comissões e repasse da clínica consolidados por período, com quebra por profissional.",
   },
   {
     icone: PercentIcon,
-    titulo: "Numeros que fecham",
+    titulo: "Números que fecham",
     texto:
-      "Valores em numeric no banco e calculo em centavos na aplicacao. Nada de centavo perdido em arredondamento.",
+      "Valores em numeric no banco e cálculo em centavos na aplicacao. Nada de centavo perdido em arredondamento.",
   },
   {
     icone: ShieldCheckIcon,
-    titulo: "Dados isolados por clinica",
+    titulo: "Dados isolados por clínica",
     texto:
-      "Isolamento multi-tenant garantido por Row Level Security no proprio PostgreSQL, nao apenas pela interface.",
+      "Isolamento multi-tenant garantido por Row Level Security no próprio PostgreSQL, não apenas pela interface.",
   },
 ];
 
@@ -82,21 +82,21 @@ export default function LandingPage() {
         <section className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
           <div className="max-w-3xl space-y-6">
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary">
-              Para clinicas de estetica
+              Para clínicas de estética
             </p>
             <h1 className="texto-display text-4xl font-semibold leading-[1.08] tracking-tight sm:text-6xl">
-              Escalas, atendimentos e comissoes sob controle.
+              Escalas, atendimentos e comissões sob controle.
             </h1>
             <p className="max-w-2xl text-lg text-muted-foreground">
               {APP_DESCRIPTION} Saiba exatamente quanto cada profissional produziu, quanto
-              recebe de comissao e quanto fica para a clinica.
+              recebe de comissão e quanto fica para a clínica.
             </p>
             <div className="flex flex-col gap-3 pt-2 sm:flex-row">
               <Button size="lg" asChild>
-                <Link href="/cadastro">Comecar agora</Link>
+                <Link href="/cadastro">Começar agora</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link href="/login">Ja tenho conta</Link>
+                <Link href="/login">Já tenho conta</Link>
               </Button>
             </div>
           </div>
@@ -126,8 +126,8 @@ export default function LandingPage() {
                 Um plano, tudo incluso
               </h2>
               <p className="text-muted-foreground">
-                Sem limite de profissionais, procedimentos ou lancamentos. Cobranca recorrente
-                por PIX, cartao ou boleto atraves do Asaas.
+                Sem limite de profissionais, procedimentos ou lançamentos. Cobrança recorrente
+                por PIX, cartão ou boleto atraves do Asaas.
               </p>
             </div>
             <Card className="p-8">

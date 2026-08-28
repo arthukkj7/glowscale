@@ -101,7 +101,7 @@ export async function requisitarAsaas<T>({
       path,
       erro: erro instanceof Error ? erro.message : "desconhecido",
     });
-    throw new AsaasApiError(0, ["Nao foi possivel falar com o Asaas."]);
+    throw new AsaasApiError(0, ["Não foi possível falar com o Asaas."]);
   } finally {
     clearTimeout(timeout);
   }

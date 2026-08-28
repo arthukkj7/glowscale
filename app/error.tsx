@@ -17,7 +17,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[app] erro nao tratado", { digest: error.digest });
+    console.error("[app] erro não tratado", { digest: error.digest });
   }, [error]);
 
   return (

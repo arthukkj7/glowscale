@@ -8,7 +8,7 @@ import { getEstadoSessao } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Configurar clinica",
+  title: "Configurar clínica",
   robots: { index: false, follow: false },
 };
 
@@ -36,10 +36,10 @@ export default async function OnboardingPage() {
         <Card className="w-full max-w-md p-8">
           <div className="mb-8 space-y-1.5">
             <h1 className="texto-display text-2xl font-semibold tracking-tight">
-              Vamos configurar sua clinica
+              Vamos configurar sua clínica
             </h1>
             <p className="text-sm text-muted-foreground">
-              Estes dados podem ser alterados depois em Configuracoes.
+              Estes dados podem ser alterados depois em Configurações.
             </p>
           </div>
           <OnboardingForm

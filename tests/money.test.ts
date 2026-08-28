@@ -23,7 +23,7 @@ describe("conversao para centavos", () => {
     expect(fromCents(0)).toBe(0);
   });
 
-  it("recusa valores nao finitos", () => {
+  it("recusa valores não finitos", () => {
     expect(() => toCents(Number.NaN)).toThrow(RangeError);
     expect(() => toCents(Number.POSITIVE_INFINITY)).toThrow(RangeError);
   });
@@ -48,7 +48,7 @@ describe("parseCurrencyInput", () => {
     expect(parseCurrencyInput("1234.56")).toBe(1234.56);
   });
 
-  it("aceita numero direto", () => {
+  it("aceita número direto", () => {
     expect(parseCurrencyInput(150.5)).toBe(150.5);
   });
 

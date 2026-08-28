@@ -6,7 +6,7 @@ const HOJE = "2026-03-14";
 const UUID = "22222222-2222-4222-8222-000000000001";
 
 describe("normalizarFiltro", () => {
-  it("usa o mes corrente como padrao", () => {
+  it("usa o mês corrente como padrão", () => {
     const filtro = normalizarFiltro({}, HOJE);
     expect(filtro.dataInicial).toBe("2026-03-01");
     expect(filtro.dataFinal).toBe("2026-03-31");
@@ -15,7 +15,7 @@ describe("normalizarFiltro", () => {
     expect(filtro.temFiltroAtivo).toBe(false);
   });
 
-  it("ignora datas invalidas em vez de quebrar a pagina", () => {
+  it("ignora datas invalidas em vez de quebrar a página", () => {
     const filtro = normalizarFiltro({ dataInicial: "ontem", dataFinal: "x" }, HOJE);
     expect(filtro.dataInicial).toBe("2026-03-01");
     expect(filtro.dataFinal).toBe("2026-03-31");

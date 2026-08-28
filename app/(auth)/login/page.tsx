@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Entrar",
-  description: "Acesse o painel da sua clinica no GlowScale.",
+  description: "Acesse o painel da sua clínica no GlowScale.",
   robots: { index: false, follow: false },
 };
 
@@ -21,7 +21,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       <div className="mb-8 space-y-1.5">
         <h1 className="texto-display text-2xl font-semibold tracking-tight">Entrar</h1>
         <p className="text-sm text-muted-foreground">
-          Acesse o painel da sua clinica.
+          Acesse o painel da sua clínica.
         </p>
       </div>
       <LoginForm proximo={proximo} />

@@ -9,7 +9,7 @@ export const BUSINESS_TIMEZONE = "America/Sao_Paulo";
 
 export const APP_NAME = "GlowScale";
 export const APP_DESCRIPTION =
-  "Gestao de escalas, atendimentos e comissoes para clinicas de estetica.";
+  "Gestão de escalas, atendimentos e comissões para clínicas de estética.";
 
 /** Status de clinica que liberam o uso do dashboard. */
 export const CLINICA_STATUS_COM_ACESSO: readonly ClinicaStatus[] = [
@@ -18,7 +18,7 @@ export const CLINICA_STATUS_COM_ACESSO: readonly ClinicaStatus[] = [
 ] as const;
 
 export const CLINICA_STATUS_LABEL: Record<ClinicaStatus, string> = {
-  trial: "Periodo de teste",
+  trial: "Período de teste",
   active: "Ativa",
   past_due: "Pagamento pendente",
   canceled: "Cancelada",
@@ -27,7 +27,7 @@ export const CLINICA_STATUS_LABEL: Record<ClinicaStatus, string> = {
 
 export const ASSINATURA_STATUS_LABEL: Record<AssinaturaStatus, string> = {
   pending: "Aguardando pagamento",
-  trial: "Periodo de teste",
+  trial: "Período de teste",
   active: "Ativa",
   past_due: "Pagamento em atraso",
   canceled: "Cancelada",
@@ -52,11 +52,11 @@ export const DIAS_SEMANA_CURTOS = [
 
 export const DIAS_SEMANA_LONGOS = [
   "Segunda-feira",
-  "Terca-feira",
+  "Terça-feira",
   "Quarta-feira",
   "Quinta-feira",
   "Sexta-feira",
-  "Sabado",
+  "Sábado",
   "Domingo",
 ] as const;
 
@@ -66,13 +66,13 @@ export const PLANO_PADRAO = {
   slug: "essencial",
   valor: Number(process.env.NEXT_PUBLIC_PLANO_VALOR ?? "97.00"),
   ciclo: "MONTHLY" as const,
-  descricao: "Gestao completa de escalas, atendimentos e comissoes.",
+  descricao: "Gestão completa de escalas, atendimentos e comissões.",
   beneficios: [
     "Profissionais e procedimentos ilimitados",
-    "Escala semanal com multiplos turnos",
-    "Calculo automatico de comissao com snapshot",
-    "Relatorio financeiro por periodo e profissional",
-    "Isolamento total dos dados da sua clinica",
+    "Escala semanal com múltiplos turnos",
+    "Cálculo automático de comissão com snapshot",
+    "Relatório financeiro por período e profissional",
+    "Isolamento total dos dados da sua clínica",
   ],
 } as const;
 

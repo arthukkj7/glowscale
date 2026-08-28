@@ -12,7 +12,7 @@ const UUID_A = "22222222-2222-4222-8222-000000000001";
 const UUID_B = "33333333-3333-4333-8333-000000000001";
 
 describe("profissionalSchema", () => {
-  it("aceita comissao dentro do intervalo", () => {
+  it("aceita comissão dentro do intervalo", () => {
     const resultado = profissionalSchema.safeParse({
       nome: "Ana Beatriz",
       email: "",
@@ -28,7 +28,7 @@ describe("profissionalSchema", () => {
     }
   });
 
-  it("recusa comissao acima de 100", () => {
+  it("recusa comissão acima de 100", () => {
     const resultado = profissionalSchema.safeParse({
       nome: "Ana",
       percentual_comissao: "120",
@@ -42,7 +42,7 @@ describe("profissionalSchema", () => {
     );
   });
 
-  it("recusa e-mail invalido quando preenchido", () => {
+  it("recusa e-mail inválido quando preenchido", () => {
     const resultado = profissionalSchema.safeParse({
       nome: "Ana",
       email: "nao-e-email",
@@ -63,7 +63,7 @@ describe("procedimentoSchema", () => {
     if (resultado.success) expect(resultado.data.valor).toBe(1200.5);
   });
 
-  it("recusa duracao fora do intervalo", () => {
+  it("recusa duração fora do intervalo", () => {
     expect(
       procedimentoSchema.safeParse({ nome: "X procedimento", valor: "10", duracao_minutos: 0 })
         .success,
@@ -72,7 +72,7 @@ describe("procedimentoSchema", () => {
 });
 
 describe("atendimentoSchema", () => {
-  it("aceita um lancamento valido", () => {
+  it("aceita um lançamento válido", () => {
     const resultado = atendimentoSchema.safeParse({
       profissional_id: UUID_A,
       procedimento_id: UUID_B,
@@ -89,7 +89,7 @@ describe("atendimentoSchema", () => {
     }
   });
 
-  it("nao aceita percentual de comissao vindo do formulario", () => {
+  it("não aceita percentual de comissão vindo do formulario", () => {
     const resultado = atendimentoSchema.safeParse({
       profissional_id: UUID_A,
       procedimento_id: UUID_B,
@@ -115,7 +115,7 @@ describe("atendimentoSchema", () => {
     expect(resultado.success).toBe(false);
   });
 
-  it("recusa id que nao e uuid", () => {
+  it("recusa id que não e uuid", () => {
     const resultado = atendimentoSchema.safeParse({
       profissional_id: "1 OR 1=1",
       procedimento_id: UUID_B,
@@ -128,7 +128,7 @@ describe("atendimentoSchema", () => {
 });
 
 describe("escalaSchema", () => {
-  it("aceita turno com inicio antes do fim", () => {
+  it("aceita turno com início antes do fim", () => {
     const resultado = escalaSchema.safeParse({
       profissional_id: UUID_A,
       data: "2026-03-14",
@@ -138,7 +138,7 @@ describe("escalaSchema", () => {
     expect(resultado.success).toBe(true);
   });
 
-  it("recusa turno com fim antes do inicio", () => {
+  it("recusa turno com fim antes do início", () => {
     const resultado = escalaSchema.safeParse({
       profissional_id: UUID_A,
       data: "2026-03-14",
@@ -172,7 +172,7 @@ describe("cadastroSchema", () => {
     );
   });
 
-  it("recusa senha sem numero", () => {
+  it("recusa senha sem número", () => {
     expect(
       cadastroSchema.safeParse({ ...base, senha: "senhasenha", confirmarSenha: "senhasenha" })
         .success,

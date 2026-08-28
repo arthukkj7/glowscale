@@ -23,7 +23,7 @@ import type { EventoWebhookAsaas } from "./types";
 export function tokenValido(tokenRecebido: string | null): boolean {
   const esperado = getWebhookToken();
   if (!esperado) {
-    console.error("[asaas.webhook] ASAAS_WEBHOOK_TOKEN nao configurado: evento recusado");
+    console.error("[asaas.webhook] ASAAS_WEBHOOK_TOKEN não configurado: evento recusado");
     return false;
   }
   if (!tokenRecebido) return false;
@@ -137,11 +137,11 @@ export async function processarEvento(evento: EventoWebhookAsaas): Promise<Resul
 
   const clinicaId = await localizarClinica(admin, evento);
   if (!clinicaId) {
-    console.warn("[asaas.webhook] evento sem clinica correspondente", {
+    console.warn("[asaas.webhook] evento sem clínica correspondente", {
       evento: evento.event,
       eventId: evento.id,
     });
-    return { situacao: "ignorado", motivo: "clinica nao encontrada" };
+    return { situacao: "ignorado", motivo: "clínica não encontrada" };
   }
 
   const subscriptionId = evento.subscription?.id ?? evento.payment?.subscription ?? null;

@@ -55,7 +55,7 @@ export async function atualizarProcedimento(
       .maybeSingle();
 
     if (error) throw error;
-    if (!data) throw new ErroDeNegocio("Procedimento nao encontrado.");
+    if (!data) throw new ErroDeNegocio("Procedimento não encontrado.");
 
     revalidar();
     return sucesso(data, "Procedimento atualizado.");
@@ -81,7 +81,7 @@ export async function alternarStatusProcedimento(
       .maybeSingle();
 
     if (error) throw error;
-    if (!data) throw new ErroDeNegocio("Procedimento nao encontrado.");
+    if (!data) throw new ErroDeNegocio("Procedimento não encontrado.");
 
     revalidar();
     return sucesso(data, ativo ? "Procedimento ativado." : "Procedimento desativado.");
@@ -110,7 +110,7 @@ export async function excluirProcedimento(dados: unknown): Promise<ActionResult<
 
     if ((count ?? 0) > 0) {
       throw new ErroDeNegocio(
-        "Este procedimento possui atendimentos registrados. Desative o cadastro para preservar o historico.",
+        "Este procedimento possui atendimentos registrados. Desative o cadastro para preservar o histórico.",
       );
     }
 

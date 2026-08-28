@@ -28,7 +28,7 @@ async function garantirProfissionalDaClinica(
     .maybeSingle();
 
   if (error) throw error;
-  if (!data) throw new ErroDeNegocio("Profissional nao encontrada nesta clinica.");
+  if (!data) throw new ErroDeNegocio("Profissional não encontrada nesta clínica.");
 }
 
 export async function criarEscala(dados: unknown): Promise<ActionResult<EscalaRow>> {
@@ -84,7 +84,7 @@ export async function atualizarEscala(dados: unknown): Promise<ActionResult<Esca
       .maybeSingle();
 
     if (error) throw error;
-    if (!data) throw new ErroDeNegocio("Turno nao encontrado.");
+    if (!data) throw new ErroDeNegocio("Turno não encontrado.");
 
     revalidar();
     return sucesso(data, "Turno atualizado.");

@@ -15,7 +15,7 @@ import { concluirOnboarding } from "@/lib/actions/auth";
 import { telefoneOpcional, textoObrigatorio } from "@/lib/validations/common";
 
 const schema = z.object({
-  clinicaNome: textoObrigatorio("Nome da clinica"),
+  clinicaNome: textoObrigatorio("Nome da clínica"),
   usuarioNome: textoObrigatorio("Seu nome"),
   telefone: telefoneOpcional,
 });
@@ -54,7 +54,7 @@ export function OnboardingForm({ nomeSugerido, clinicaSugerida }: OnboardingForm
         setErroGeral(resultado.erro);
         return;
       }
-      toast.success("Clinica configurada.");
+      toast.success("Clínica configurada.");
       router.replace(resultado.data.destino);
       router.refresh();
     });
@@ -64,7 +64,7 @@ export function OnboardingForm({ nomeSugerido, clinicaSugerida }: OnboardingForm
     <form onSubmit={handleSubmit(aoEnviar)} className="space-y-5" noValidate>
       <FormField
         id="clinicaNome"
-        rotulo="Nome da clinica"
+        rotulo="Nome da clínica"
         erro={errors.clinicaNome?.message}
         obrigatorio
       >

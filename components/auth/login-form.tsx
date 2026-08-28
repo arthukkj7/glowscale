@@ -82,7 +82,7 @@ export function LoginForm({ proximo }: { proximo?: string }) {
           Esqueci minha senha
         </Link>
         <p>
-          Ainda nao tem conta?{" "}
+          Ainda não tem conta?{" "}
           <Link href="/cadastro" className="font-medium text-primary underline-offset-4 hover:underline">
             Criar conta
           </Link>

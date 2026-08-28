@@ -24,13 +24,13 @@ export class CommissionInputError extends Error {
 
 function assertInput({ valorUnitario, quantidade, comissaoPercentual }: CommissionInput): void {
   if (!Number.isFinite(valorUnitario) || valorUnitario < 0) {
-    throw new CommissionInputError("Valor unitario deve ser um numero maior ou igual a zero.");
+    throw new CommissionInputError("Valor unitario deve ser um número maior ou igual a zero.");
   }
   if (!Number.isInteger(quantidade) || quantidade < 1) {
     throw new CommissionInputError("Quantidade deve ser um inteiro maior que zero.");
   }
   if (!Number.isFinite(comissaoPercentual) || comissaoPercentual < 0 || comissaoPercentual > 100) {
-    throw new CommissionInputError("Percentual de comissao deve estar entre 0 e 100.");
+    throw new CommissionInputError("Percentual de comissão deve estar entre 0 e 100.");
   }
 }
 

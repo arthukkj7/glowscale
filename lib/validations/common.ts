@@ -6,10 +6,10 @@ import { parseCurrencyInput } from "@/lib/calculations/money";
 /** Texto obrigatorio, com trim e limites explicitos. */
 export function textoObrigatorio(campo: string, min = 2, max = 120) {
   return z
-    .string({ message: `${campo} e obrigatorio.` })
+    .string({ message: `${campo} e obrigatório.` })
     .trim()
     .min(min, `${campo} deve ter ao menos ${min} caracteres.`)
-    .max(max, `${campo} deve ter no maximo ${max} caracteres.`);
+    .max(max, `${campo} deve ter no máximo ${max} caracteres.`);
 }
 
 /** Texto opcional: string vazia vira null. */
@@ -17,7 +17,7 @@ export function textoOpcional(max = 120) {
   return z
     .string()
     .trim()
-    .max(max, `Use no maximo ${max} caracteres.`)
+    .max(max, `Use no máximo ${max} caracteres.`)
     .transform((valor) => (valor === "" ? null : valor))
     .nullable()
     .optional()
@@ -33,17 +33,17 @@ export const emailOpcional = z
   .optional()
   .refine(
     (valor) => valor === null || valor === undefined || z.email().safeParse(valor).success,
-    "Informe um e-mail valido.",
+    "Informe um e-mail válido.",
   )
   .transform((valor) => valor ?? null);
 
 export const emailObrigatorio = z
-  .string({ message: "E-mail e obrigatorio." })
+  .string({ message: "E-mail e obrigatório." })
   .trim()
   .toLowerCase()
-  .min(1, "E-mail e obrigatorio.")
+  .min(1, "E-mail e obrigatório.")
   .max(200, "E-mail muito longo.")
-  .pipe(z.email("Informe um e-mail valido."));
+  .pipe(z.email("Informe um e-mail válido."));
 
 export const telefoneOpcional = z
   .string()
@@ -54,7 +54,7 @@ export const telefoneOpcional = z
   .optional()
   .refine(
     (valor) => valor === null || valor === undefined || /^[\d\s()+.-]{8,20}$/.test(valor),
-    "Informe um telefone valido.",
+    "Informe um telefone válido.",
   )
   .transform((valor) => valor ?? null);
 
@@ -70,11 +70,11 @@ export const ufOpcional = z
       valor === null ||
       valor === undefined ||
       (UF_BRASIL as readonly string[]).includes(valor),
-    "Selecione um estado valido.",
+    "Selecione um estado válido.",
   )
   .transform((valor) => valor ?? null);
 
-export const idUuid = z.uuid("Identificador invalido.");
+export const idUuid = z.uuid("Identificador inválido.");
 
 /**
  * Valor monetario vindo de formulario. Aceita numero ou texto em pt-BR e
@@ -85,12 +85,12 @@ export const valorMonetario = z
   .transform((valor, ctx) => {
     const parsed = parseCurrencyInput(valor);
     if (parsed === null) {
-      ctx.addIssue({ code: "custom", message: "Informe um valor valido." });
+      ctx.addIssue({ code: "custom", message: "Informe um valor válido." });
       return z.NEVER;
     }
     return parsed;
   })
-  .refine((valor) => valor >= 0, "O valor nao pode ser negativo.")
+  .refine((valor) => valor >= 0, "O valor não pode ser negativo.")
   .refine((valor) => valor <= 9_999_999.99, "Valor acima do limite permitido.");
 
 /** Percentual de comissao: 0 a 100, ate 2 casas. */
@@ -99,21 +99,21 @@ export const percentualComissao = z
   .transform((valor, ctx) => {
     const parsed = parseCurrencyInput(valor);
     if (parsed === null) {
-      ctx.addIssue({ code: "custom", message: "Informe um percentual valido." });
+      ctx.addIssue({ code: "custom", message: "Informe um percentual válido." });
       return z.NEVER;
     }
     return parsed;
   })
-  .refine((valor) => valor >= 0 && valor <= 100, "A comissao deve estar entre 0 e 100.");
+  .refine((valor) => valor >= 0 && valor <= 100, "A comissão deve estar entre 0 e 100.");
 
 export const dataISO = z
-  .string({ message: "Data e obrigatoria." })
+  .string({ message: "Data e obrigatória." })
   .trim()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "Use uma data valida.")
-  .refine((valor) => !Number.isNaN(new Date(`${valor}T00:00:00`).getTime()), "Data invalida.");
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Use uma data válida.")
+  .refine((valor) => !Number.isNaN(new Date(`${valor}T00:00:00`).getTime()), "Data inválida.");
 
 export const horaHHMM = z
-  .string({ message: "Horario e obrigatorio." })
+  .string({ message: "Horário e obrigatório." })
   .trim()
   .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Use o formato HH:MM.");
 

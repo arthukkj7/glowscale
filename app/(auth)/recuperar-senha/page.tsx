@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Recuperar senha",
-  description: "Receba por e-mail as instrucoes para redefinir a senha da sua conta GlowScale.",
+  description: "Receba por e-mail as instruções para redefinir a senha da sua conta GlowScale.",
   robots: { index: false, follow: false },
 };
 

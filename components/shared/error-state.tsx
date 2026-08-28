@@ -15,7 +15,7 @@ interface ErrorStateProps {
  * apenas no log do servidor.
  */
 export function ErrorState({
-  titulo = "Nao conseguimos carregar estas informacoes",
+  titulo = "Não conseguimos carregar estas informações",
   descricao = "Tente novamente em instantes. Se o problema continuar, entre em contato com o suporte.",
   acao,
   className,

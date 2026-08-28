@@ -22,20 +22,20 @@ export class ErroDeNegocio extends Error {
 }
 
 const MENSAGEM_GENERICA =
-  "Nao foi possivel concluir a operacao. Tente novamente em instantes.";
+  "Não foi possível concluir a operação. Tente novamente em instantes.";
 
 /** Traduz erros conhecidos do PostgREST para mensagens uteis ao usuario. */
 function mensagemDeErroDoBanco(codigo: string | undefined): string | null {
   switch (codigo) {
     case "23505":
-      return "Ja existe um registro com esses dados.";
+      return "Já existe um registro com esses dados.";
     case "23503":
-      return "Este registro esta vinculado a outros lancamentos e nao pode ser removido.";
+      return "Este registro esta vinculado a outros lançamentos e não pode ser removido.";
     case "23514":
-      return "Os dados informados nao atendem as regras do sistema.";
+      return "Os dados informados não atendem as regras do sistema.";
     case "42501":
     case "PGRST301":
-      return "Voce nao tem permissao para esta operacao.";
+      return "Você não tem permissão para esta operação.";
     default:
       return null;
   }

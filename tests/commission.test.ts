@@ -7,26 +7,26 @@ import {
   percentualEfetivo,
 } from "@/lib/calculations/commission";
 
-describe("calculateCommission - regra critica de comissao", () => {
+describe("calculateCommission - regra critica de comissão", () => {
   it("aplica 40% sobre um procedimento de R$ 200", () => {
     expect(calculateCommission({ valorUnitario: 200, quantidade: 1, comissaoPercentual: 40 })).toEqual(
       { valorTotal: 200, valorComissao: 80, valorClinica: 120 },
     );
   });
 
-  it("com comissao 0% o valor inteiro fica com a clinica", () => {
+  it("com comissão 0% o valor inteiro fica com a clínica", () => {
     expect(calculateCommission({ valorUnitario: 200, quantidade: 1, comissaoPercentual: 0 })).toEqual(
       { valorTotal: 200, valorComissao: 0, valorClinica: 200 },
     );
   });
 
-  it("com comissao 100% o valor inteiro vai para a profissional", () => {
+  it("com comissão 100% o valor inteiro vai para a profissional", () => {
     expect(
       calculateCommission({ valorUnitario: 200, quantidade: 1, comissaoPercentual: 100 }),
     ).toEqual({ valorTotal: 200, valorComissao: 200, valorClinica: 0 });
   });
 
-  it("multiplica pela quantidade antes de aplicar a comissao", () => {
+  it("multiplica pela quantidade antes de aplicar a comissão", () => {
     expect(calculateCommission({ valorUnitario: 200, quantidade: 2, comissaoPercentual: 40 })).toEqual(
       { valorTotal: 400, valorComissao: 160, valorClinica: 240 },
     );
@@ -44,7 +44,7 @@ describe("calculateCommission - regra critica de comissao", () => {
     expect(resultado.valorComissao + resultado.valorClinica).toBeCloseTo(resultado.valorTotal, 2);
   });
 
-  it("nao acumula erro de ponto flutuante em valores com centavos", () => {
+  it("não acumula erro de ponto flutuante em valores com centavos", () => {
     const resultado = calculateCommission({
       valorUnitario: 0.1,
       quantidade: 3,
@@ -55,7 +55,7 @@ describe("calculateCommission - regra critica de comissao", () => {
     expect(resultado.valorClinica).toBe(0.15);
   });
 
-  it("arredonda a comissao para 2 casas, como o banco", () => {
+  it("arredonda a comissão para 2 casas, como o banco", () => {
     // 150.55 * 1 * 12.5% = 18.81875 -> 18.82
     const resultado = calculateCommission({
       valorUnitario: 150.55,

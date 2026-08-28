@@ -47,7 +47,7 @@ export default async function ProcedimentosPage({ searchParams }: PageProps) {
     <>
       <PageHeader
         titulo="Procedimentos"
-        descricao="Servicos oferecidos pela clinica, com valor e duracao padrao."
+        descricao="Serviços oferecidos pela clínica, com valor e duração padrão."
       />
       <Suspense fallback={<TabelaSkeleton />}>
         <ListaDeProcedimentos

@@ -37,7 +37,7 @@ export function Pagination({
       className="flex flex-col items-center justify-between gap-3 sm:flex-row"
     >
       <p className="text-xs text-muted-foreground">
-        Pagina {paginaAtual} de {totalPaginas} - {total} {total === 1 ? "registro" : "registros"}
+        Página {paginaAtual} de {totalPaginas} - {total} {total === 1 ? "registro" : "registros"}
       </p>
       <div className="flex items-center gap-2">
         {temAnterior ? (
@@ -53,12 +53,12 @@ export function Pagination({
         )}
         {temProxima ? (
           <Link href={hrefDaPagina(paginaAtual + 1)} className={estiloBotao} rel="next">
-            Proxima
+            Próxima
             <ChevronRightIcon className="size-4" />
           </Link>
         ) : (
           <span className={cn(estiloBotao, "pointer-events-none opacity-50")} aria-disabled="true">
-            Proxima
+            Próxima
             <ChevronRightIcon className="size-4" />
           </span>
         )}

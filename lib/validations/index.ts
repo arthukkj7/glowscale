@@ -31,15 +31,15 @@ export const cadastroSchema = z
     senha: z
       .string()
       .min(8, "A senha deve ter ao menos 8 caracteres.")
-      .max(72, "A senha deve ter no maximo 72 caracteres.")
+      .max(72, "A senha deve ter no máximo 72 caracteres.")
       .regex(/[a-zA-Z]/, "A senha deve conter ao menos uma letra.")
-      .regex(/\d/, "A senha deve conter ao menos um numero."),
+      .regex(/\d/, "A senha deve conter ao menos um número."),
     confirmarSenha: z.string(),
-    clinicaNome: textoObrigatorio("Nome da clinica"),
+    clinicaNome: textoObrigatorio("Nome da clínica"),
     telefone: telefoneOpcional,
   })
   .refine((dados) => dados.senha === dados.confirmarSenha, {
-    message: "As senhas nao conferem.",
+    message: "As senhas não conferem.",
     path: ["confirmarSenha"],
   });
 export type CadastroInput = z.infer<typeof cadastroSchema>;
@@ -52,13 +52,13 @@ export const redefinirSenhaSchema = z
     senha: z
       .string()
       .min(8, "A senha deve ter ao menos 8 caracteres.")
-      .max(72, "A senha deve ter no maximo 72 caracteres.")
+      .max(72, "A senha deve ter no máximo 72 caracteres.")
       .regex(/[a-zA-Z]/, "A senha deve conter ao menos uma letra.")
-      .regex(/\d/, "A senha deve conter ao menos um numero."),
+      .regex(/\d/, "A senha deve conter ao menos um número."),
     confirmarSenha: z.string(),
   })
   .refine((dados) => dados.senha === dados.confirmarSenha, {
-    message: "As senhas nao conferem.",
+    message: "As senhas não conferem.",
     path: ["confirmarSenha"],
   });
 export type RedefinirSenhaInput = z.infer<typeof redefinirSenhaSchema>;
@@ -83,10 +83,10 @@ export const procedimentoSchema = z.object({
   descricao: textoOpcional(500),
   valor: valorMonetario,
   duracao_minutos: z.coerce
-    .number({ message: "Informe a duracao." })
-    .int("A duracao deve ser um numero inteiro.")
-    .min(1, "A duracao deve ser de ao menos 1 minuto.")
-    .max(1440, "A duracao deve ser de no maximo 1440 minutos."),
+    .number({ message: "Informe a duração." })
+    .int("A duração deve ser um número inteiro.")
+    .min(1, "A duração deve ser de ao menos 1 minuto.")
+    .max(1440, "A duração deve ser de no máximo 1440 minutos."),
   ativo: booleanoDeFormulario.default(true),
 });
 export type ProcedimentoInput = z.infer<typeof procedimentoSchema>;
@@ -101,7 +101,7 @@ export const atendimentoSchema = z.object({
   data_atendimento: dataISO,
   quantidade: z.coerce
     .number({ message: "Informe a quantidade." })
-    .int("A quantidade deve ser um numero inteiro.")
+    .int("A quantidade deve ser um número inteiro.")
     .min(1, "A quantidade deve ser maior que zero.")
     .max(1000, "Quantidade acima do limite permitido."),
   valor_unitario: valorMonetario,
@@ -123,7 +123,7 @@ export const escalaSchema = z
     observacoes: textoOpcional(500),
   })
   .refine((dados) => dados.hora_inicio < dados.hora_fim, {
-    message: "O horario final deve ser maior que o inicial.",
+    message: "O horário final deve ser maior que o inicial.",
     path: ["hora_fim"],
   });
 export type EscalaInput = z.infer<typeof escalaSchema>;
@@ -138,7 +138,7 @@ export const escalaUpdateSchema = z
     observacoes: textoOpcional(500),
   })
   .refine((dados) => dados.hora_inicio < dados.hora_fim, {
-    message: "O horario final deve ser maior que o inicial.",
+    message: "O horário final deve ser maior que o inicial.",
     path: ["hora_fim"],
   });
 export type EscalaUpdateInput = z.infer<typeof escalaUpdateSchema>;
@@ -169,7 +169,7 @@ export const checkoutSchema = z.object({
     .string({ message: "Informe o CPF ou CNPJ." })
     .trim()
     .transform((valor) => valor.replace(/\D/g, ""))
-    .refine((valor) => valor.length === 11 || valor.length === 14, "Informe um CPF ou CNPJ valido."),
+    .refine((valor) => valor.length === 11 || valor.length === 14, "Informe um CPF ou CNPJ válido."),
   formaPagamento: z.enum(["PIX", "CREDIT_CARD", "BOLETO"]).default("PIX"),
   telefone: telefoneOpcional,
 });

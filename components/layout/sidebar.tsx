@@ -17,7 +17,7 @@ export function Sidebar() {
       </div>
       <div className="border-t border-sidebar-border px-5 py-4">
         <p className="text-xs text-muted-foreground">
-          GlowScale - gestao para clinicas de estetica
+          GlowScale - gestão para clínicas de estética
         </p>
       </div>
     </aside>

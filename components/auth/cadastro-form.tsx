@@ -70,8 +70,8 @@ export function CadastroForm() {
         <div className="space-y-1.5">
           <h2 className="text-lg font-semibold">Confirme seu e-mail</h2>
           <p className="text-sm text-muted-foreground">
-            Enviamos um link de confirmacao para o e-mail informado. Depois de confirmar,
-            voce volta para concluir a configuracao da clinica.
+            Enviamos um link de confirmação para o e-mail informado. Depois de confirmar,
+            você volta para concluir a configuracao da clínica.
           </p>
         </div>
         <Button variant="outline" className="w-full" asChild>
@@ -95,7 +95,7 @@ export function CadastroForm() {
 
       <FormField
         id="clinicaNome"
-        rotulo="Nome da clinica"
+        rotulo="Nome da clínica"
         erro={errors.clinicaNome?.message}
         obrigatorio
       >
@@ -103,7 +103,7 @@ export function CadastroForm() {
           {...camposAria("clinicaNome", errors.clinicaNome?.message)}
           {...register("clinicaNome")}
           autoComplete="organization"
-          placeholder="Studio Bella Estetica"
+          placeholder="Studio Bella Estética"
           disabled={pendente}
         />
       </FormField>
@@ -135,11 +135,11 @@ export function CadastroForm() {
           id="senha"
           rotulo="Senha"
           erro={errors.senha?.message}
-          descricao="Minimo de 8 caracteres, com letras e numeros."
+          descricao="Mínimo de 8 caracteres, com letras e números."
           obrigatorio
         >
           <Input
-            {...camposAria("senha", errors.senha?.message, "Minimo de 8 caracteres.")}
+            {...camposAria("senha", errors.senha?.message, "Mínimo de 8 caracteres.")}
             {...register("senha")}
             type="password"
             autoComplete="new-password"
@@ -175,7 +175,7 @@ export function CadastroForm() {
       </Button>
 
       <p className="text-center text-sm text-muted-foreground">
-        Ja tem conta?{" "}
+        Já tem conta?{" "}
         <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
           Entrar
         </Link>

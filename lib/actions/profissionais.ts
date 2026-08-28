@@ -62,7 +62,7 @@ export async function atualizarProfissional(
       .maybeSingle();
 
     if (error) throw error;
-    if (!data) throw new ErroDeNegocio("Profissional nao encontrada.");
+    if (!data) throw new ErroDeNegocio("Profissional não encontrada.");
 
     revalidar();
     return sucesso(data, "Dados atualizados.");
@@ -88,7 +88,7 @@ export async function alternarStatusProfissional(
       .maybeSingle();
 
     if (error) throw error;
-    if (!data) throw new ErroDeNegocio("Profissional nao encontrada.");
+    if (!data) throw new ErroDeNegocio("Profissional não encontrada.");
 
     revalidar();
     return sucesso(data, ativo ? "Profissional ativada." : "Profissional desativada.");
@@ -118,7 +118,7 @@ export async function excluirProfissional(dados: unknown): Promise<ActionResult<
 
     if ((count ?? 0) > 0) {
       throw new ErroDeNegocio(
-        "Esta profissional possui atendimentos registrados. Desative o cadastro para preservar o historico.",
+        "Esta profissional possui atendimentos registrados. Desative o cadastro para preservar o histórico.",
       );
     }
 

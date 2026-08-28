@@ -48,7 +48,7 @@ export default async function DashboardPage() {
         <EmptyState
           icone={UsersIcon}
           titulo="Bem-vinda ao GlowScale"
-          descricao="Comece cadastrando sua equipe e os procedimentos da clinica. Em seguida, monte a escala da semana e registre os atendimentos."
+          descricao="Comece cadastrando sua equipe e os procedimentos da clínica. Em seguida, monte a escala da semana e registre os atendimentos."
           acao={
             <div className="flex flex-wrap justify-center gap-2">
               <Button asChild>
@@ -64,18 +64,18 @@ export default async function DashboardPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          rotulo="Faturamento do periodo"
+          rotulo="Faturamento do período"
           valor={formatCurrency(dados.resumo.faturamento)}
           icone={BanknoteIcon}
           destaque="primario"
         />
         <StatCard
-          rotulo="Comissoes"
+          rotulo="Comissões"
           valor={formatCurrency(dados.resumo.comissoes)}
           icone={PercentIcon}
         />
         <StatCard
-          rotulo="Repasse da clinica"
+          rotulo="Repasse da clínica"
           valor={formatCurrency(dados.resumo.repasseClinica)}
           icone={TrendingUpIcon}
           destaque="sucesso"
@@ -93,13 +93,13 @@ export default async function DashboardPage() {
           <CardHeader className="flex-row items-center justify-between">
             <CardTitle>Profissionais com maior faturamento</CardTitle>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/financeiro">Ver relatorio</Link>
+              <Link href="/financeiro">Ver relatório</Link>
             </Button>
           </CardHeader>
           <CardContent>
             {dados.ranking.length === 0 ? (
               <p className="py-6 text-center text-sm text-muted-foreground">
-                Nenhum atendimento registrado neste periodo.
+                Nenhum atendimento registrado neste período.
               </p>
             ) : (
               <ol className="space-y-3">
@@ -118,7 +118,7 @@ export default async function DashboardPage() {
                       <div className="min-w-0">
                         <p className="truncate text-sm font-medium">{linha.profissionalNome}</p>
                         <p className="text-xs text-muted-foreground">
-                          {linha.quantidade} atendimentos - comissao{" "}
+                          {linha.quantidade} atendimentos - comissão{" "}
                           {formatPercent(linha.comissaoPercentualMedia)}
                         </p>
                       </div>
@@ -135,7 +135,7 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader className="flex-row items-center justify-between">
-            <CardTitle>Proximos turnos</CardTitle>
+            <CardTitle>Próximos turnos</CardTitle>
             <Button variant="ghost" size="sm" asChild>
               <Link href="/escala">Ver escala</Link>
             </Button>

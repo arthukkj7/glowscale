@@ -103,7 +103,7 @@ export function ProfissionaisView({ profissionais }: ProfissionaisViewProps) {
     },
     {
       chave: "comissao",
-      cabecalho: "Comissao",
+      cabecalho: "Comissão",
       alinhamento: "direita",
       celula: (registro) => (
         <span className="font-medium">{formatPercent(registro.percentual_comissao)}</span>
@@ -116,7 +116,7 @@ export function ProfissionaisView({ profissionais }: ProfissionaisViewProps) {
     },
     {
       chave: "acoes",
-      cabecalho: "Acoes",
+      cabecalho: "Ações",
       alinhamento: "direita",
       className: "w-16",
       celula: (registro) => (
@@ -125,7 +125,7 @@ export function ProfissionaisView({ profissionais }: ProfissionaisViewProps) {
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label={`Acoes para ${registro.nome}`}
+              aria-label={`Ações para ${registro.nome}`}
               disabled={pendente}
             >
               <MoreHorizontalIcon className="size-4" />
@@ -162,8 +162,8 @@ export function ProfissionaisView({ profissionais }: ProfissionaisViewProps) {
       {profissionais.length === 0 ? (
         <EmptyState
           icone={UsersIcon}
-          titulo="Voce ainda nao possui profissionais cadastradas"
-          descricao="Adicione sua primeira profissional para comecar a montar escalas e lancar atendimentos."
+          titulo="Você ainda não possui profissionais cadastradas"
+          descricao="Adicione sua primeira profissional para começar a montar escalas e lancar atendimentos."
           acao={
             <Button onClick={abrirCriacao}>
               <PlusIcon className="size-4" aria-hidden="true" />
@@ -191,7 +191,7 @@ export function ProfissionaisView({ profissionais }: ProfissionaisViewProps) {
         aberto={paraExcluir !== null}
         onAbertoChange={(aberto) => !aberto && setParaExcluir(null)}
         titulo="Excluir profissional"
-        descricao={`Esta acao remove ${paraExcluir?.nome ?? "a profissional"} definitivamente. Se houver atendimentos registrados, prefira desativar o cadastro.`}
+        descricao={`Esta ação remove ${paraExcluir?.nome ?? "a profissional"} definitivamente. Se houver atendimentos registrados, prefira desativar o cadastro.`}
         textoConfirmar="Excluir"
         destrutivo
         onConfirmar={confirmarExclusao}

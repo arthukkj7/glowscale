@@ -47,11 +47,11 @@ export function RedefinirSenhaForm() {
         id="senha"
         rotulo="Nova senha"
         erro={errors.senha?.message}
-        descricao="Minimo de 8 caracteres, com letras e numeros."
+        descricao="Mínimo de 8 caracteres, com letras e números."
         obrigatorio
       >
         <Input
-          {...camposAria("senha", errors.senha?.message, "Minimo de 8 caracteres.")}
+          {...camposAria("senha", errors.senha?.message, "Mínimo de 8 caracteres.")}
           {...register("senha")}
           type="password"
           autoComplete="new-password"

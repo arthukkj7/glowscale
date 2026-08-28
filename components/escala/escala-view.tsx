@@ -94,7 +94,7 @@ export function EscalaView({ semana, dias, turnos, profissionais, hoje }: Escala
           <Button variant="outline" size="sm" asChild>
             <Link href="/escala">Hoje</Link>
           </Button>
-          <Button variant="outline" size="icon-sm" asChild aria-label="Proxima semana">
+          <Button variant="outline" size="icon-sm" asChild aria-label="Próxima semana">
             <Link href={`/escala?semana=${proximaSemana}`}>
               <ChevronRightIcon className="size-4" />
             </Link>

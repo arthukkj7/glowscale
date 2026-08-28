@@ -60,7 +60,7 @@ export const getEstadoSessao = cache(async (): Promise<EstadoSessao> => {
     .maybeSingle();
 
   if (usuarioError) {
-    console.error("[sessao] falha ao carregar perfil", usuarioError.message);
+    console.error("[sessão] falha ao carregar perfil", usuarioError.message);
     return semPerfil;
   }
   if (!usuario) return semPerfil;
@@ -71,7 +71,7 @@ export const getEstadoSessao = cache(async (): Promise<EstadoSessao> => {
   ]);
 
   if (clinicaError || !clinica) {
-    if (clinicaError) console.error("[sessao] falha ao carregar clinica", clinicaError.message);
+    if (clinicaError) console.error("[sessão] falha ao carregar clínica", clinicaError.message);
     return semPerfil;
   }
 

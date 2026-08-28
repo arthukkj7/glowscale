@@ -114,7 +114,7 @@ export function AtendimentosView({
     },
     {
       chave: "comissao",
-      cabecalho: "Comissao",
+      cabecalho: "Comissão",
       alinhamento: "direita",
       apenasDesktop: true,
       celula: (registro) => (
@@ -128,7 +128,7 @@ export function AtendimentosView({
     },
     {
       chave: "clinica",
-      cabecalho: "Clinica",
+      cabecalho: "Clínica",
       alinhamento: "direita",
       apenasDesktop: true,
       celula: (registro) => formatCurrency(registro.valor_clinica),
@@ -140,13 +140,13 @@ export function AtendimentosView({
     },
     {
       chave: "acoes",
-      cabecalho: "Acoes",
+      cabecalho: "Ações",
       alinhamento: "direita",
       className: "w-16",
       celula: (registro) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-sm" aria-label="Acoes do atendimento">
+            <Button variant="ghost" size="icon-sm" aria-label="Ações do atendimento">
               <MoreHorizontalIcon className="size-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -175,7 +175,7 @@ export function AtendimentosView({
       <EmptyState
         icone={ClipboardListIcon}
         titulo="Cadastre profissionais e procedimentos antes de lancar"
-        descricao="Um atendimento sempre relaciona uma profissional a um procedimento. Complete os dois cadastros para comecar."
+        descricao="Um atendimento sempre relaciona uma profissional a um procedimento. Complete os dois cadastros para começar."
         acao={
           <div className="flex flex-wrap justify-center gap-2">
             <Button asChild variant={profissionais.length === 0 ? "default" : "outline"}>
@@ -205,12 +205,12 @@ export function AtendimentosView({
           titulo={
             temFiltroAtivo
               ? "Nenhum atendimento neste filtro"
-              : "Voce ainda nao registrou atendimentos"
+              : "Você ainda não registrou atendimentos"
           }
           descricao={
             temFiltroAtivo
-              ? "Ajuste o periodo ou a profissional para ver outros lancamentos."
-              : "Registre o primeiro atendimento para acompanhar faturamento e comissoes."
+              ? "Ajuste o período ou a profissional para ver outros lançamentos."
+              : "Registre o primeiro atendimento para acompanhar faturamento e comissões."
           }
           acao={
             temFiltroAtivo ? (
@@ -250,7 +250,7 @@ export function AtendimentosView({
         titulo="Excluir atendimento"
         descricao={
           paraExcluir
-            ? `Excluir o atendimento de ${paraExcluir.profissional_nome} em ${formatDateBR(paraExcluir.data_atendimento)}? Os valores saem do relatorio financeiro.`
+            ? `Excluir o atendimento de ${paraExcluir.profissional_nome} em ${formatDateBR(paraExcluir.data_atendimento)}? Os valores saem do relatório financeiro.`
             : ""
         }
         textoConfirmar="Excluir"

@@ -64,7 +64,7 @@ export function ClinicaForm({ clinica, somenteLeitura }: ClinicaFormProps) {
   return (
     <form onSubmit={handleSubmit(aoEnviar)} className="space-y-5" noValidate>
       <div className="grid gap-5 sm:grid-cols-2">
-        <FormField id="clinica-nome" rotulo="Razao social" erro={errors.nome?.message} obrigatorio>
+        <FormField id="clinica-nome" rotulo="Razão social" erro={errors.nome?.message} obrigatorio>
           <Input
             {...camposAria("clinica-nome", errors.nome?.message)}
             {...register("nome")}
@@ -149,13 +149,13 @@ export function ClinicaForm({ clinica, somenteLeitura }: ClinicaFormProps) {
 
       {somenteLeitura ? (
         <p className="text-sm text-muted-foreground">
-          Apenas perfis owner ou admin podem alterar os dados da clinica.
+          Apenas perfis owner ou admin podem alterar os dados da clínica.
         </p>
       ) : (
         <div className="flex justify-end">
           <Button type="submit" disabled={desabilitado || !isDirty}>
             {pendente ? <Loader2Icon className="size-4 animate-spin" /> : null}
-            Salvar alteracoes
+            Salvar alterações
           </Button>
         </div>
       )}

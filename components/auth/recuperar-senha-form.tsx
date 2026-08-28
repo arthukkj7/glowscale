@@ -34,7 +34,7 @@ export function RecuperarSenhaForm() {
         setErroGeral(resultado.erro);
         return;
       }
-      setMensagem(resultado.mensagem ?? "Instrucoes enviadas.");
+      setMensagem(resultado.mensagem ?? "Instruções enviadas.");
     });
   }
 
@@ -72,7 +72,7 @@ export function RecuperarSenhaForm() {
 
       <Button type="submit" className="w-full" size="lg" disabled={pendente}>
         {pendente ? <Loader2Icon className="size-4 animate-spin" /> : null}
-        Enviar instrucoes
+        Enviar instruções
       </Button>
 
       <p className="text-center text-sm text-muted-foreground">

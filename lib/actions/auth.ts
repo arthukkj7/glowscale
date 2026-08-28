@@ -40,7 +40,7 @@ function traduzirErroDeLogin(mensagem: string): string {
   if (/rate limit|too many/i.test(mensagem)) {
     return "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
   }
-  return "Nao foi possivel entrar. Verifique os dados e tente novamente.";
+  return "Não foi possível entrar. Verifique os dados e tente novamente.";
 }
 
 export async function entrar(dados: unknown): Promise<ActionResult<{ destino: string }>> {
@@ -84,13 +84,13 @@ export async function cadastrar(
 
     if (error) {
       if (/already registered|already exists/i.test(error.message)) {
-        return falha("Ja existe uma conta com este e-mail. Tente entrar ou recuperar a senha.");
+        return falha("Já existe uma conta com este e-mail. Tente entrar ou recuperar a senha.");
       }
       if (/password/i.test(error.message)) {
-        return falha("Senha recusada pelo servidor de autenticacao. Escolha outra senha.");
+        return falha("Senha recusada pelo servidor de autenticação. Escolha outra senha.");
       }
       console.error("[auth] falha no cadastro", { motivo: error.message });
-      return falha("Nao foi possivel criar sua conta. Tente novamente em instantes.");
+      return falha("Não foi possível criar sua conta. Tente novamente em instantes.");
     }
 
     // Sem sessao imediata => o projeto exige confirmacao de e-mail.
@@ -108,11 +108,11 @@ export async function cadastrar(
     });
 
     if (rpcError) {
-      console.error("[auth] falha ao criar clinica no cadastro", rpcError.message);
+      console.error("[auth] falha ao criar clínica no cadastro", rpcError.message);
       // A conta existe; o onboarding conclui o que faltou.
       return sucesso(
         { destino: "/onboarding", precisaConfirmarEmail: false },
-        "Conta criada. Vamos concluir a configuracao da clinica.",
+        "Conta criada. Vamos concluir a configuracao da clínica.",
       );
     }
 
@@ -124,7 +124,7 @@ export async function cadastrar(
 }
 
 const onboardingSchema = z.object({
-  clinicaNome: textoObrigatorio("Nome da clinica"),
+  clinicaNome: textoObrigatorio("Nome da clínica"),
   usuarioNome: textoObrigatorio("Seu nome"),
   telefone: telefoneOpcional,
 });
@@ -140,7 +140,7 @@ export async function concluirOnboarding(
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) throw new ErroDeNegocio("Sessao expirada. Entre novamente.");
+    if (!user) throw new ErroDeNegocio("Sessão expirada. Entre novamente.");
 
     const { error } = await supabase.rpc("criar_clinica_com_usuario", {
       p_clinica_nome: entrada.clinicaNome,
@@ -182,12 +182,12 @@ export async function solicitarRecuperacaoDeSenha(dados: unknown): Promise<Actio
 
     // Nunca revelamos se o e-mail existe: a resposta e sempre a mesma.
     if (error) {
-      console.warn("[auth] recuperacao de senha nao enviada", { motivo: error.message });
+      console.warn("[auth] recuperação de senha não enviada", { motivo: error.message });
     }
 
     return sucesso(
       null,
-      "Se existir uma conta com este e-mail, enviamos as instrucoes de recuperacao.",
+      "Se existir uma conta com este e-mail, enviamos as instruções de recuperação.",
     );
   } catch (erro) {
     return tratarErro("auth.solicitarRecuperacaoDeSenha", erro);
@@ -204,14 +204,14 @@ export async function redefinirSenha(dados: unknown): Promise<ActionResult<{ des
     } = await supabase.auth.getUser();
     if (!user) {
       throw new ErroDeNegocio(
-        "Link de recuperacao invalido ou expirado. Solicite um novo e-mail.",
+        "Link de recuperação inválido ou expirado. Solicite um novo e-mail.",
       );
     }
 
     const { error } = await supabase.auth.updateUser({ password: entrada.senha });
     if (error) {
       console.error("[auth] falha ao redefinir senha", error.message);
-      throw new ErroDeNegocio("Nao foi possivel alterar a senha. Solicite um novo link.");
+      throw new ErroDeNegocio("Não foi possível alterar a senha. Solicite um novo link.");
     }
 
     revalidatePath("/", "layout");

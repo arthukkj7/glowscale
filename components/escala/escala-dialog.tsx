@@ -144,7 +144,7 @@ function FormularioEscala({
       <div className="grid gap-5 sm:grid-cols-2">
         <FormField
           id="escala-inicio"
-          rotulo="Inicio"
+          rotulo="Início"
           erro={errors.hora_inicio?.message}
           obrigatorio
         >
@@ -164,12 +164,12 @@ function FormularioEscala({
         </FormField>
       </div>
 
-      <FormField id="escala-obs" rotulo="Observacoes" erro={errors.observacoes?.message}>
+      <FormField id="escala-obs" rotulo="Observações" erro={errors.observacoes?.message}>
         <Textarea
           {...camposAria("escala-obs", errors.observacoes?.message)}
           {...register("observacoes")}
           rows={2}
-          placeholder="Plantao, horario reduzido, sala especifica..."
+          placeholder="Plantao, horário reduzido, sala especifica..."
           disabled={pendente}
         />
       </FormField>

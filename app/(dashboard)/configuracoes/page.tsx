@@ -15,7 +15,7 @@ import { formatCurrency } from "@/lib/calculations/money";
 import { PLANO_PADRAO } from "@/lib/constants";
 import { formatDateBR } from "@/lib/utils/date";
 
-export const metadata: Metadata = { title: "Configuracoes" };
+export const metadata: Metadata = { title: "Configurações" };
 
 export default async function ConfiguracoesPage() {
   const { clinica, usuario, assinatura, email } = await requireActiveSubscription();
@@ -24,16 +24,16 @@ export default async function ConfiguracoesPage() {
   return (
     <>
       <PageHeader
-        titulo="Configuracoes"
-        descricao="Dados cadastrais da clinica e situacao da assinatura."
+        titulo="Configurações"
+        descricao="Dados cadastrais da clínica e situação da assinatura."
       />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <Card>
           <CardHeader>
-            <CardTitle>Dados da clinica</CardTitle>
+            <CardTitle>Dados da clínica</CardTitle>
             <CardDescription>
-              Estas informacoes aparecem no painel e sao usadas na cobranca.
+              Estas informações aparecem no painel e são usadas na cobrança.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -45,7 +45,7 @@ export default async function ConfiguracoesPage() {
           <Card>
             <CardHeader>
               <CardTitle>Assinatura</CardTitle>
-              <CardDescription>Plano contratado e situacao atual.</CardDescription>
+              <CardDescription>Plano contratado e situação atual.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <dl className="space-y-3 text-sm">
@@ -60,7 +60,7 @@ export default async function ConfiguracoesPage() {
                   </dd>
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                  <dt className="text-muted-foreground">Situacao da conta</dt>
+                  <dt className="text-muted-foreground">Situação da conta</dt>
                   <dd>
                     <StatusClinicaBadge status={clinica.status} />
                   </dd>
@@ -71,13 +71,13 @@ export default async function ConfiguracoesPage() {
                     {assinatura ? (
                       <StatusAssinaturaBadge status={assinatura.status} />
                     ) : (
-                      <span className="text-muted-foreground">Nao iniciada</span>
+                      <span className="text-muted-foreground">Não iniciada</span>
                     )}
                   </dd>
                 </div>
                 {assinatura?.data_inicio ? (
                   <div className="flex items-center justify-between gap-3">
-                    <dt className="text-muted-foreground">Inicio</dt>
+                    <dt className="text-muted-foreground">Início</dt>
                     <dd className="tabular-nums">{formatDateBR(assinatura.data_inicio)}</dd>
                   </div>
                 ) : null}
@@ -110,7 +110,7 @@ export default async function ConfiguracoesPage() {
                   <dd className="font-medium capitalize">{usuario.role}</dd>
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                  <dt className="text-muted-foreground">Fuso horario</dt>
+                  <dt className="text-muted-foreground">Fuso horário</dt>
                   <dd>{clinica.timezone}</dd>
                 </div>
               </dl>

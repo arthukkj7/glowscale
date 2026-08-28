@@ -21,7 +21,7 @@ export async function atualizarClinica(dados: unknown): Promise<ActionResult<Cli
     const { clinica, usuario } = await requireActiveSubscription();
 
     if (!podeAdministrar(usuario)) {
-      throw new ErroDeNegocio("Voce nao tem permissao para alterar os dados da clinica.");
+      throw new ErroDeNegocio("Você não tem permissão para alterar os dados da clínica.");
     }
 
     const supabase = await createClient();
@@ -34,11 +34,11 @@ export async function atualizarClinica(dados: unknown): Promise<ActionResult<Cli
       .maybeSingle();
 
     if (error) throw error;
-    if (!data) throw new ErroDeNegocio("Clinica nao encontrada.");
+    if (!data) throw new ErroDeNegocio("Clínica não encontrada.");
 
     revalidatePath("/configuracoes");
     revalidatePath("/", "layout");
-    return sucesso(data, "Dados da clinica atualizados.");
+    return sucesso(data, "Dados da clínica atualizados.");
   } catch (erro) {
     return tratarErro("clinica.atualizar", erro);
   }

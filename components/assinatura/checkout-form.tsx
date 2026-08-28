@@ -76,7 +76,7 @@ export function CheckoutForm({
         toast.error(resultado.erro);
         return;
       }
-      toast.success(resultado.mensagem ?? "Situacao atualizada.");
+      toast.success(resultado.mensagem ?? "Situação atualizada.");
       router.refresh();
     });
   }
@@ -84,13 +84,13 @@ export function CheckoutForm({
   if (!integracaoDisponivel) {
     return (
       <div className="rounded-lg border border-warning/40 bg-warning/10 p-4 text-sm">
-        <p className="font-medium">Cobranca ainda nao configurada nesta instalacao.</p>
+        <p className="font-medium">Cobrança ainda não configurada nesta instalação.</p>
         <p className="mt-1 text-muted-foreground">
           Configure <code className="font-mono text-xs">ASAAS_API_KEY</code>,{" "}
           <code className="font-mono text-xs">ASAAS_WEBHOOK_TOKEN</code> e{" "}
           <code className="font-mono text-xs">SUPABASE_SERVICE_ROLE_KEY</code> no servidor
           para habilitar o checkout. O restante do sistema continua funcionando durante o
-          periodo de teste.
+          período de teste.
         </p>
       </div>
     );
@@ -100,9 +100,9 @@ export function CheckoutForm({
     <div className="space-y-5">
       {urlPagamento ? (
         <div className="space-y-3 rounded-lg border border-success/40 bg-success/10 p-4">
-          <p className="text-sm font-medium">Sua cobranca esta pronta.</p>
+          <p className="text-sm font-medium">Sua cobrança esta pronta.</p>
           <p className="text-sm text-muted-foreground">
-            Conclua o pagamento na pagina segura do Asaas. Assim que o pagamento for
+            Conclua o pagamento na página segura do Asaas. Assim que o pagamento for
             confirmado, o acesso e liberado automaticamente.
           </p>
           <div className="flex flex-wrap gap-2">
@@ -118,7 +118,7 @@ export function CheckoutForm({
               ) : (
                 <RefreshCwIcon className="size-4" aria-hidden="true" />
               )}
-              Ja paguei, atualizar
+              Já paguei, atualizar
             </Button>
           </div>
         </div>
@@ -130,11 +130,11 @@ export function CheckoutForm({
             id="checkout-documento"
             rotulo="CPF ou CNPJ"
             erro={errors.documento?.message}
-            descricao="Necessario para emitir a cobranca."
+            descricao="Necessário para emitir a cobrança."
             obrigatorio
           >
             <Input
-              {...camposAria("checkout-documento", errors.documento?.message, "Necessario para emitir a cobranca.")}
+              {...camposAria("checkout-documento", errors.documento?.message, "Necessário para emitir a cobrança.")}
               {...register("documento")}
               inputMode="numeric"
               placeholder="000.000.000-00"
@@ -167,7 +167,7 @@ export function CheckoutForm({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="PIX">PIX</SelectItem>
-                    <SelectItem value="CREDIT_CARD">Cartao de credito</SelectItem>
+                    <SelectItem value="CREDIT_CARD">Cartão de crédito</SelectItem>
                     <SelectItem value="BOLETO">Boleto</SelectItem>
                   </SelectContent>
                 </Select>
@@ -196,7 +196,7 @@ export function CheckoutForm({
           ) : (
             <RefreshCwIcon className="size-4" aria-hidden="true" />
           )}
-          Atualizar situacao da assinatura
+          Atualizar situação da assinatura
         </Button>
       )}
     </div>

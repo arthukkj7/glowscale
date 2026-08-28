@@ -25,12 +25,12 @@ export interface ResultadoDoCheckout {
 function garantirIntegracaoDisponivel(): void {
   if (!asaasEstaConfigurado()) {
     throw new ErroDeNegocio(
-      "A cobranca ainda nao esta configurada nesta instalacao. Configure ASAAS_API_KEY no servidor.",
+      "A cobrança ainda não esta configurada nesta instalação. Configure ASAAS_API_KEY no servidor.",
     );
   }
   if (!serviceRoleDisponivel()) {
     throw new ErroDeNegocio(
-      "A cobranca ainda nao esta configurada nesta instalacao. Configure SUPABASE_SERVICE_ROLE_KEY no servidor.",
+      "A cobrança ainda não esta configurada nesta instalação. Configure SUPABASE_SERVICE_ROLE_KEY no servidor.",
     );
   }
 }
@@ -149,7 +149,7 @@ export async function sincronizarAssinatura(): Promise<ActionResult<{ status: As
 
     if (error) throw error;
     if (!assinatura?.asaas_subscription_id) {
-      throw new ErroDeNegocio("Nenhuma assinatura foi criada para esta clinica ainda.");
+      throw new ErroDeNegocio("Nenhuma assinatura foi criada para esta clínica ainda.");
     }
 
     const remota = await buscarAssinatura(assinatura.asaas_subscription_id);
@@ -181,7 +181,7 @@ export async function sincronizarAssinatura(): Promise<ActionResult<{ status: As
     revalidatePath("/assinatura");
     revalidatePath("/", "layout");
 
-    return sucesso({ status }, "Situacao da assinatura atualizada.");
+    return sucesso({ status }, "Situação da assinatura atualizada.");
   } catch (erro) {
     return tratarErro("assinatura.sincronizar", erro);
   }

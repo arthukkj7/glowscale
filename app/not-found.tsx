@@ -5,7 +5,7 @@ import { Logo } from "@/components/layout/logo";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Pagina nao encontrada",
+  title: "Página não encontrada",
   robots: { index: false, follow: false },
 };
 
@@ -15,10 +15,10 @@ export default function NotFound() {
       <Logo />
       <div className="space-y-2">
         <h1 className="texto-display text-3xl font-semibold tracking-tight">
-          Pagina nao encontrada
+          Página não encontrada
         </h1>
         <p className="max-w-md text-muted-foreground">
-          O endereco acessado nao existe ou foi movido.
+          O endereço acessado não existe ou foi movido.
         </p>
       </div>
       <div className="flex gap-2">
@@ -26,7 +26,7 @@ export default function NotFound() {
           <Link href="/dashboard">Ir para o painel</Link>
         </Button>
         <Button variant="outline" asChild>
-          <Link href="/">Pagina inicial</Link>
+          <Link href="/">Página inicial</Link>
         </Button>
       </div>
     </div>

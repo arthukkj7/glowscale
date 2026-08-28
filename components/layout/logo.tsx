@@ -1,22 +1,32 @@
 import { cn } from "@/lib/utils";
+import { GlowScaleMark } from "./glowscale-mark";
 
 interface LogoProps {
   className?: string;
+  /** Esconde o wordmark e deixa so o monograma (mobile, rodape). */
   compacta?: boolean;
+  /** Lado do monograma em pixels. */
+  tamanho?: number;
 }
 
-/** Marca do GlowScale: monograma + wordmark, sem dependencia de imagem. */
-export function Logo({ className, compacta = false }: LogoProps) {
+/**
+ * Assinatura da marca: monograma + wordmark.
+ *
+ * O wordmark usa a serifa de display do tema, com "Glow" em peso normal e
+ * "Scale" em semibold - a mudanca de peso separa as duas palavras sem
+ * precisar de espaco extra nem de uma segunda cor.
+ */
+export function Logo({ className, compacta = false, tamanho = 32 }: LogoProps) {
   return (
     <span className={cn("flex items-center gap-2.5", className)}>
-      <span
-        aria-hidden="true"
-        className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-semibold text-primary-foreground"
-      >
-        G
-      </span>
+      <GlowScaleMark tamanho={tamanho} className="text-primary" />
       {!compacta ? (
-        <span className="texto-display text-lg font-semibold tracking-tight">GlowScale</span>
+        <span
+          aria-hidden="true"
+          className="texto-display text-[1.0625rem] leading-none tracking-tight"
+        >
+          Glow<span className="font-semibold">Scale</span>
+        </span>
       ) : null}
       <span className="sr-only">GlowScale</span>
     </span>

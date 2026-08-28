@@ -46,7 +46,7 @@ export function UserMenu({ nome, email }: UserMenuProps) {
     <DropdownMenu>
       <DropdownMenuTrigger
         className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 text-sm transition-colors hover:bg-accent"
-        aria-label="Menu do usuario"
+        aria-label="Menu do usuário"
       >
         <span
           aria-hidden="true"
@@ -66,7 +66,7 @@ export function UserMenu({ nome, email }: UserMenuProps) {
         <DropdownMenuItem asChild>
           <Link href="/configuracoes">
             <SettingsIcon aria-hidden="true" />
-            Configuracoes
+            Configurações
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

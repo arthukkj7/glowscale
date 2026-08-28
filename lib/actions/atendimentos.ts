@@ -34,7 +34,7 @@ async function percentualVigenteDaProfissional(
     .maybeSingle();
 
   if (error) throw error;
-  if (!data) throw new ErroDeNegocio("Profissional nao encontrada nesta clinica.");
+  if (!data) throw new ErroDeNegocio("Profissional não encontrada nesta clínica.");
 
   return data.percentual_comissao;
 }
@@ -52,7 +52,7 @@ async function garantirProcedimentoDaClinica(
     .maybeSingle();
 
   if (error) throw error;
-  if (!data) throw new ErroDeNegocio("Procedimento nao encontrado nesta clinica.");
+  if (!data) throw new ErroDeNegocio("Procedimento não encontrado nesta clínica.");
 }
 
 export async function criarAtendimento(dados: unknown): Promise<ActionResult<AtendimentoRow>> {
@@ -114,7 +114,7 @@ export async function atualizarAtendimento(
       .maybeSingle();
 
     if (erroBusca) throw erroBusca;
-    if (!atual) throw new ErroDeNegocio("Atendimento nao encontrado.");
+    if (!atual) throw new ErroDeNegocio("Atendimento não encontrado.");
 
     await garantirProcedimentoDaClinica(supabase, clinica.id, entrada.procedimento_id);
 
@@ -141,7 +141,7 @@ export async function atualizarAtendimento(
       .maybeSingle();
 
     if (error) throw error;
-    if (!data) throw new ErroDeNegocio("Atendimento nao encontrado.");
+    if (!data) throw new ErroDeNegocio("Atendimento não encontrado.");
 
     revalidar();
     return sucesso(data, "Atendimento atualizado.");

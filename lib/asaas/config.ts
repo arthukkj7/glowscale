@@ -23,7 +23,7 @@ export interface ConfiguracaoAsaas {
 export class AsaasNaoConfiguradoError extends Error {
   constructor() {
     super(
-      "Integracao Asaas nao configurada. Defina ASAAS_API_KEY e ASAAS_ENVIRONMENT no ambiente.",
+      "Integração Asaas não configurada. Defina ASAAS_API_KEY e ASAAS_ENVIRONMENT no ambiente.",
     );
     this.name = "AsaasNaoConfiguradoError";
   }

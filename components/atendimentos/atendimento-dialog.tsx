@@ -170,7 +170,7 @@ function FormularioAtendimento({
           erro={errors.profissional_id?.message}
           descricao={
             profissionalSelecionada
-              ? `Comissao atual: ${formatPercent(profissionalSelecionada.percentual_comissao)}`
+              ? `Comissão atual: ${formatPercent(profissionalSelecionada.percentual_comissao)}`
               : undefined
           }
           obrigatorio
@@ -293,12 +293,12 @@ function FormularioAtendimento({
         />
       </FormField>
 
-      <FormField id="atend-obs" rotulo="Observacoes" erro={errors.observacoes?.message}>
+      <FormField id="atend-obs" rotulo="Observações" erro={errors.observacoes?.message}>
         <Textarea
           {...camposAria("atend-obs", errors.observacoes?.message)}
           {...register("observacoes")}
           rows={2}
-          placeholder="Anotacoes sobre a sessao."
+          placeholder="Anotacoes sobre a sessão."
           disabled={pendente}
         />
       </FormField>
@@ -306,7 +306,7 @@ function FormularioAtendimento({
       {/* Previa do calculo, com a mesma formula aplicada no banco. */}
       <div className="rounded-lg border border-border bg-muted/40 p-4">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Previa do lancamento
+          Prévia do lançamento
         </p>
         <dl className="mt-3 grid gap-3 sm:grid-cols-3">
           <div>
@@ -324,7 +324,7 @@ function FormularioAtendimento({
             </dd>
           </div>
           <div>
-            <dt className="text-xs text-muted-foreground">Valor da clinica</dt>
+            <dt className="text-xs text-muted-foreground">Valor da clínica</dt>
             <dd className="text-lg font-semibold tabular-nums">
               {previa ? formatCurrency(previa.valorClinica) : "-"}
             </dd>
@@ -344,7 +344,7 @@ function FormularioAtendimento({
         </Button>
         <Button type="submit" disabled={pendente}>
           {pendente ? <Loader2Icon className="size-4 animate-spin" /> : null}
-          {editando ? "Salvar alteracoes" : "Registrar atendimento"}
+          {editando ? "Salvar alterações" : "Registrar atendimento"}
         </Button>
       </DialogFooter>
     </form>
@@ -365,8 +365,8 @@ export function AtendimentoDialog({
         <DialogHeader>
           <DialogTitle>{atendimento ? "Editar atendimento" : "Novo atendimento"}</DialogTitle>
           <DialogDescription>
-            A comissao e congelada no momento do lancamento: alterar o cadastro da
-            profissional depois nao altera este registro.
+            A comissão e congelada no momento do lançamento: alterar o cadastro da
+            profissional depois não altera este registro.
           </DialogDescription>
         </DialogHeader>
 

@@ -86,7 +86,7 @@ export function ProcedimentosView({ procedimentos }: ProcedimentosViewProps) {
     },
     {
       chave: "duracao",
-      cabecalho: "Duracao",
+      cabecalho: "Duração",
       apenasDesktop: true,
       celula: (registro) => `${registro.duracao_minutos} min`,
     },
@@ -105,7 +105,7 @@ export function ProcedimentosView({ procedimentos }: ProcedimentosViewProps) {
     },
     {
       chave: "acoes",
-      cabecalho: "Acoes",
+      cabecalho: "Ações",
       alinhamento: "direita",
       className: "w-16",
       celula: (registro) => (
@@ -114,7 +114,7 @@ export function ProcedimentosView({ procedimentos }: ProcedimentosViewProps) {
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label={`Acoes para ${registro.nome}`}
+              aria-label={`Ações para ${registro.nome}`}
               disabled={pendente}
             >
               <MoreHorizontalIcon className="size-4" />
@@ -156,8 +156,8 @@ export function ProcedimentosView({ procedimentos }: ProcedimentosViewProps) {
       {procedimentos.length === 0 ? (
         <EmptyState
           icone={SparklesIcon}
-          titulo="Voce ainda nao possui procedimentos cadastrados"
-          descricao="Cadastre os servicos da clinica com valor e duracao para agilizar os lancamentos."
+          titulo="Você ainda não possui procedimentos cadastrados"
+          descricao="Cadastre os serviços da clínica com valor e duração para agilizar os lançamentos."
           acao={
             <Button onClick={abrirCriacao}>
               <PlusIcon className="size-4" aria-hidden="true" />
@@ -185,7 +185,7 @@ export function ProcedimentosView({ procedimentos }: ProcedimentosViewProps) {
         aberto={paraExcluir !== null}
         onAbertoChange={(aberto) => !aberto && setParaExcluir(null)}
         titulo="Excluir procedimento"
-        descricao={`Esta acao remove ${paraExcluir?.nome ?? "o procedimento"} definitivamente. Se houver atendimentos registrados, prefira desativar o cadastro.`}
+        descricao={`Esta ação remove ${paraExcluir?.nome ?? "o procedimento"} definitivamente. Se houver atendimentos registrados, prefira desativar o cadastro.`}
         textoConfirmar="Excluir"
         destrutivo
         onConfirmar={confirmarExclusao}

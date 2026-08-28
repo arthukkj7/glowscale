@@ -73,20 +73,20 @@ export default async function FinanceiroPage({ searchParams }: PageProps) {
     },
     {
       chave: "percentual",
-      cabecalho: "Comissao %",
+      cabecalho: "Comissão %",
       alinhamento: "direita",
       apenasDesktop: true,
       celula: (linha) => formatPercent(linha.comissaoPercentualMedia),
     },
     {
       chave: "comissao",
-      cabecalho: "Comissao",
+      cabecalho: "Comissão",
       alinhamento: "direita",
       celula: (linha) => formatCurrency(linha.comissao),
     },
     {
       chave: "clinica",
-      cabecalho: "Valor clinica",
+      cabecalho: "Valor clínica",
       alinhamento: "direita",
       celula: (linha) => (
         <span className="font-medium">{formatCurrency(linha.valorClinica)}</span>
@@ -116,23 +116,23 @@ export default async function FinanceiroPage({ searchParams }: PageProps) {
           valor={formatCurrency(resumo.faturamento)}
           destaque="primario"
         />
-        <StatCard rotulo="Total de comissoes" valor={formatCurrency(resumo.comissoes)} />
+        <StatCard rotulo="Total de comissões" valor={formatCurrency(resumo.comissoes)} />
         <StatCard
-          rotulo="Total da clinica"
+          rotulo="Total da clínica"
           valor={formatCurrency(resumo.repasseClinica)}
           destaque="sucesso"
         />
         <StatCard
           rotulo="Atendimentos"
           valor={String(resumo.quantidadeAtendimentos)}
-          detalhe="No periodo filtrado"
+          detalhe="No período filtrado"
         />
       </div>
 
       {linhas.length === 0 ? (
         <EmptyState
           icone={BarChart3Icon}
-          titulo="Nenhum atendimento neste periodo"
+          titulo="Nenhum atendimento neste período"
           descricao="Ajuste o filtro de datas ou registre atendimentos para ver o consolidado por profissional."
         />
       ) : (

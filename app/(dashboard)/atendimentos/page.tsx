@@ -56,7 +56,7 @@ export default async function AtendimentosPage({ searchParams }: PageProps) {
     <>
       <PageHeader
         titulo="Atendimentos"
-        descricao="Lancamentos realizados, com calculo automatico de comissao e repasse."
+        descricao="Lançamentos realizados, com cálculo automático de comissão e repasse."
       />
 
       <FiltrosPeriodo
@@ -74,8 +74,8 @@ export default async function AtendimentosPage({ searchParams }: PageProps) {
           valor={String(resumo.quantidadeAtendimentos)}
         />
         <StatCard rotulo="Faturamento" valor={formatCurrency(resumo.faturamento)} />
-        <StatCard rotulo="Comissoes" valor={formatCurrency(resumo.comissoes)} />
-        <StatCard rotulo="Repasse da clinica" valor={formatCurrency(resumo.repasseClinica)} />
+        <StatCard rotulo="Comissões" valor={formatCurrency(resumo.comissoes)} />
+        <StatCard rotulo="Repasse da clínica" valor={formatCurrency(resumo.repasseClinica)} />
       </div>
 
       <AtendimentosView

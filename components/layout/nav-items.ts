@@ -22,5 +22,5 @@ export const ITENS_DE_NAVEGACAO: readonly ItemDeNavegacao[] = [
   { titulo: "Procedimentos", href: "/procedimentos", icone: SparklesIcon },
   { titulo: "Atendimentos", href: "/atendimentos", icone: ClipboardListIcon },
   { titulo: "Financeiro", href: "/financeiro", icone: BarChart3Icon },
-  { titulo: "Configuracoes", href: "/configuracoes", icone: SettingsIcon },
+  { titulo: "Configurações", href: "/configuracoes", icone: SettingsIcon },
 ] as const;

@@ -98,11 +98,11 @@ function FormularioProcedimento({
         />
       </FormField>
 
-      <FormField id="proc-descricao" rotulo="Descricao" erro={errors.descricao?.message}>
+      <FormField id="proc-descricao" rotulo="Descrição" erro={errors.descricao?.message}>
         <Textarea
           {...camposAria("proc-descricao", errors.descricao?.message)}
           {...register("descricao")}
-          placeholder="O que esta incluso na sessao."
+          placeholder="O que esta incluso na sessão."
           rows={3}
           disabled={pendente}
         />
@@ -127,7 +127,7 @@ function FormularioProcedimento({
 
         <FormField
           id="proc-duracao"
-          rotulo="Duracao (minutos)"
+          rotulo="Duração (minutos)"
           erro={errors.duracao_minutos?.message}
           obrigatorio
         >
@@ -147,7 +147,7 @@ function FormularioProcedimento({
         <div className="space-y-0.5">
           <p className="text-sm font-medium">Procedimento ativo</p>
           <p className="text-xs text-muted-foreground">
-            Procedimentos inativos nao aparecem nos lancamentos.
+            Procedimentos inativos não aparecem nos lançamentos.
           </p>
         </div>
         <Switch
@@ -170,7 +170,7 @@ function FormularioProcedimento({
         </Button>
         <Button type="submit" disabled={pendente}>
           {pendente ? <Loader2Icon className="size-4 animate-spin" /> : null}
-          {editando ? "Salvar alteracoes" : "Cadastrar"}
+          {editando ? "Salvar alterações" : "Cadastrar"}
         </Button>
       </DialogFooter>
     </form>
@@ -190,7 +190,7 @@ export function ProcedimentoDialog({
             {procedimento ? "Editar procedimento" : "Novo procedimento"}
           </DialogTitle>
           <DialogDescription>
-            O valor cadastrado e sugerido automaticamente no lancamento de atendimentos.
+            O valor cadastrado e sugerido automaticamente no lançamento de atendimentos.
           </DialogDescription>
         </DialogHeader>
 

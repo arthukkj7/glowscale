@@ -16,7 +16,7 @@ export function roundHalfAwayFromZero(value: number): number {
 /** Converte um valor em reais para centavos inteiros. */
 export function toCents(value: number): number {
   if (!Number.isFinite(value)) {
-    throw new RangeError("Valor monetario invalido.");
+    throw new RangeError("Valor monetario inválido.");
   }
   // O epsilon compensa representacoes como 8.115 -> 8.114999999999999.
   return roundHalfAwayFromZero(value * CENTS_PER_UNIT + Number.EPSILON * Math.sign(value));

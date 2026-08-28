@@ -46,8 +46,8 @@ export default async function AssinaturaPage() {
             </h1>
             <p className="text-muted-foreground">
               {acessoLiberado
-                ? "Sua clinica esta com acesso liberado. Abaixo estao os detalhes do plano."
-                : "Conclua a assinatura para liberar o painel da sua clinica."}
+                ? "Sua clínica esta com acesso liberado. Abaixo estão os detalhes do plano."
+                : "Conclua a assinatura para liberar o painel da sua clínica."}
             </p>
           </div>
 
@@ -79,11 +79,11 @@ export default async function AssinaturaPage() {
 
                 <dl className="space-y-2 border-t border-border pt-4 text-sm">
                   <div className="flex items-center justify-between gap-3">
-                    <dt className="text-muted-foreground">Clinica</dt>
+                    <dt className="text-muted-foreground">Clínica</dt>
                     <dd className="truncate font-medium">{clinica.nome}</dd>
                   </div>
                   <div className="flex items-center justify-between gap-3">
-                    <dt className="text-muted-foreground">Situacao da conta</dt>
+                    <dt className="text-muted-foreground">Situação da conta</dt>
                     <dd>
                       <StatusClinicaBadge status={clinica.status} />
                     </dd>
@@ -94,7 +94,7 @@ export default async function AssinaturaPage() {
                       {assinatura ? (
                         <StatusAssinaturaBadge status={assinatura.status} />
                       ) : (
-                        <span className="text-muted-foreground">Nao iniciada</span>
+                        <span className="text-muted-foreground">Não iniciada</span>
                       )}
                     </dd>
                   </div>
@@ -106,7 +106,7 @@ export default async function AssinaturaPage() {
               <CardHeader>
                 <CardTitle>Pagamento</CardTitle>
                 <CardDescription>
-                  Cobranca recorrente processada pelo Asaas. Os dados do cartao nunca passam
+                  Cobrança recorrente processada pelo Asaas. Os dados do cartão nunca passam
                   pelo GlowScale.
                 </CardDescription>
               </CardHeader>

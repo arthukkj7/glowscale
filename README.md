@@ -17,6 +17,8 @@ comissao com snapshot historico e relatorio financeiro por periodo e por profiss
 - [Variaveis de ambiente](#variaveis-de-ambiente)
 - [Migrations e seed](#migrations-e-seed)
 - [Desenvolvimento, testes e build](#desenvolvimento-testes-e-build)
+- [Verificando o banco de verdade](#verificando-o-banco-de-verdade)
+- [Marca](#marca)
 - [Deploy](#deploy)
 - [Arquitetura](#arquitetura)
 - [Seguranca](#seguranca)
@@ -229,6 +231,34 @@ Zod, utilitarios de data com fuso e a traducao dos eventos de webhook do Asaas.
 
 ---
 
+## Verificando o banco de verdade
+
+As migrations, o RLS e a matematica financeira nao precisam ser aceitos por
+confianca. `scripts/verificar-banco.sh` sobe um PostgreSQL local, recria o
+minimo do ambiente Supabase (schema `auth`, `auth.uid()`, papeis
+`anon`/`authenticated`/`service_role` e as default privileges amplas que o
+Supabase concede), aplica as migrations e exercita o que a documentacao afirma:
+
+```bash
+./scripts/verificar-banco.sh
+```
+
+Ele confere, entre outros pontos, que uma clinica autenticada **nao** consegue:
+ler linhas de outra clinica, inserir registros nela, ativar a propria
+assinatura, mudar o proprio `status`, migrar de tenant, se promover a `owner`,
+ler a tabela de eventos do webhook ou gravar valores nas colunas financeiras
+geradas. Tambem confirma que a FK composta barra vinculo cruzado mesmo para
+superusuario - onde o RLS nem chega a ser consultado.
+
+Requer `postgresql-16` e `psql` no PATH.
+
+## Marca
+
+O monograma **GS**, a paleta e as regras de uso estao em
+[`docs/marca.md`](docs/marca.md). Os mesmos dois `path` do desenho vivem em
+tres arquivos (`components/layout/glowscale-mark.tsx`, `app/icon.svg` e as
+imagens sociais) - ao mexer na marca, mexa nos tres.
+
 ## Deploy
 
 O projeto roda em qualquer plataforma que suporte Next.js 16 (Vercel, Render, Fly,
@@ -255,6 +285,9 @@ glowscale/
 │   ├── assinatura/              checkout (acessivel sem assinatura ativa)
 │   ├── auth/callback/           troca do code por sessao
 │   ├── onboarding/              criacao de clinica apos confirmacao de e-mail
+│   ├── icon.svg                 favicon (com variante para tema escuro)
+│   ├── apple-icon.png           icone iOS
+│   ├── opengraph-image.png      imagem social (+ .alt.txt)
 │   ├── layout.tsx, page.tsx, error.tsx, not-found.tsx, robots.ts, sitemap.ts
 │
 ├── components/
@@ -278,6 +311,7 @@ glowscale/
 │   ├── utils/                   date.ts, filtros.ts
 │   └── constants/
 │
+├── scripts/verificar-banco.sh   verificacao de RLS e financeiro em PG real
 ├── supabase/migrations/, supabase/seed.sql
 ├── tests/
 ├── types/database.ts

@@ -35,7 +35,7 @@ export function getSupabasePublicConfig(): SupabasePublicConfig {
   const config = getSupabasePublicConfigOrNull();
   if (!config) {
     throw new SupabaseConfigError(
-      "Supabase nao configurado. Defina NEXT_PUBLIC_SUPABASE_URL e " +
+      "Supabase não configurado. Defina NEXT_PUBLIC_SUPABASE_URL e " +
         "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY em .env.local (veja .env.local.example).",
     );
   }

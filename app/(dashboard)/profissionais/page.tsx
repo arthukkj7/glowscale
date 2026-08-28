@@ -47,7 +47,7 @@ export default async function ProfissionaisPage({ searchParams }: PageProps) {
     <>
       <PageHeader
         titulo="Profissionais"
-        descricao="Cadastro da equipe, especialidades e percentual de comissao."
+        descricao="Cadastro da equipe, especialidades e percentual de comissão."
       />
       <Suspense fallback={<TabelaSkeleton />}>
         <ListaDeProfissionais

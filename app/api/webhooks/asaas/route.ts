@@ -19,20 +19,20 @@ export const dynamic = "force-dynamic";
  */
 export async function POST(request: NextRequest) {
   if (!tokenValido(request.headers.get("asaas-access-token"))) {
-    console.warn("[asaas.webhook] token invalido ou ausente");
-    return NextResponse.json({ erro: "nao autorizado" }, { status: 401 });
+    console.warn("[asaas.webhook] token inválido ou ausente");
+    return NextResponse.json({ erro: "não autorizado" }, { status: 401 });
   }
 
   if (!serviceRoleDisponivel()) {
     console.error("[asaas.webhook] SUPABASE_SERVICE_ROLE_KEY ausente");
-    return NextResponse.json({ erro: "integracao indisponivel" }, { status: 503 });
+    return NextResponse.json({ erro: "integração indisponível" }, { status: 503 });
   }
 
   let evento: EventoWebhookAsaas;
   try {
     evento = (await request.json()) as EventoWebhookAsaas;
   } catch {
-    return NextResponse.json({ erro: "payload invalido" }, { status: 400 });
+    return NextResponse.json({ erro: "payload inválido" }, { status: 400 });
   }
 
   if (!evento?.id || !evento?.event) {

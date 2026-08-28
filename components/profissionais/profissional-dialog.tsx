@@ -141,14 +141,14 @@ function FormularioProfissional({
           <Input
             {...camposAria("prof-especialidade", errors.especialidade?.message)}
             {...register("especialidade")}
-            placeholder="Estetica facial"
+            placeholder="Estética facial"
             disabled={pendente}
           />
         </FormField>
 
         <FormField
           id="prof-comissao"
-          rotulo="Comissao (%)"
+          rotulo="Comissão (%)"
           erro={errors.percentual_comissao?.message}
           descricao="Entre 0 e 100."
           obrigatorio
@@ -167,7 +167,7 @@ function FormularioProfissional({
         <div className="space-y-0.5">
           <p className="text-sm font-medium">Profissional ativa</p>
           <p className="text-xs text-muted-foreground">
-            Profissionais inativas nao aparecem nos lancamentos.
+            Profissionais inativas não aparecem nos lançamentos.
           </p>
         </div>
         <Switch
@@ -190,7 +190,7 @@ function FormularioProfissional({
         </Button>
         <Button type="submit" disabled={pendente}>
           {pendente ? <Loader2Icon className="size-4 animate-spin" /> : null}
-          {editando ? "Salvar alteracoes" : "Cadastrar"}
+          {editando ? "Salvar alterações" : "Cadastrar"}
         </Button>
       </DialogFooter>
     </form>
@@ -210,7 +210,7 @@ export function ProfissionalDialog({
             {profissional ? "Editar profissional" : "Nova profissional"}
           </DialogTitle>
           <DialogDescription>
-            A comissao informada aqui e aplicada aos proximos atendimentos. Lancamentos
+            A comissão informada aqui e aplicada aos próximos atendimentos. Lançamentos
             anteriores mantem o percentual que valia na data.
           </DialogDescription>
         </DialogHeader>
