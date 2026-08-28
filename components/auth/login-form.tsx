@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon, Loader2Icon, LockIcon, MailIcon } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useId, useState, useTransition } from "react";
@@ -13,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { loginSchema, type LoginInput } from "@/lib/validations";
 
 export function LoginForm({ proximo }: { proximo?: string }) {
+  const t = useTranslations("auth");
   const router = useRouter();
   const [pendente, startTransition] = useTransition();
   const [erroGeral, setErroGeral] = useState<string | null>(null);
@@ -38,7 +40,7 @@ export function LoginForm({ proximo }: { proximo?: string }) {
         setErroGeral(resultado.erro);
         return;
       }
-      toast.success("Bem-vinda de volta!");
+      toast.success(t("bemVinda"));
       router.replace(proximo && proximo.startsWith("/") ? proximo : resultado.data.destino);
       router.refresh();
     });
@@ -61,7 +63,7 @@ export function LoginForm({ proximo }: { proximo?: string }) {
             placeholder, mas um campo sem label nao e anunciado por leitor de
             tela e some assim que a pessoa comeca a digitar. */}
         <label htmlFor={idEmail} className="sr-only">
-          E-mail
+          {t("email")}
         </label>
         <div className="relative">
           <MailIcon
@@ -73,7 +75,7 @@ export function LoginForm({ proximo }: { proximo?: string }) {
             {...register("email")}
             type="email"
             autoComplete="email"
-            placeholder="voce@suaclinica.com.br"
+            placeholder={t("emailPlaceholder")}
             disabled={pendente}
             aria-invalid={errors.email ? true : undefined}
             aria-describedby={errors.email ? `${idEmail}-erro` : undefined}
@@ -89,7 +91,7 @@ export function LoginForm({ proximo }: { proximo?: string }) {
 
       <div className="space-y-1.5">
         <label htmlFor={idSenha} className="sr-only">
-          Senha
+          {t("senha")}
         </label>
         <div className="relative">
           <LockIcon
@@ -101,7 +103,7 @@ export function LoginForm({ proximo }: { proximo?: string }) {
             {...register("senha")}
             type={senhaVisivel ? "text" : "password"}
             autoComplete="current-password"
-            placeholder="Sua senha"
+            placeholder={t("senhaPlaceholder")}
             disabled={pendente}
             aria-invalid={errors.senha ? true : undefined}
             aria-describedby={errors.senha ? `${idSenha}-erro` : undefined}
@@ -110,7 +112,7 @@ export function LoginForm({ proximo }: { proximo?: string }) {
           <button
             type="button"
             onClick={() => setSenhaVisivel((v) => !v)}
-            aria-label={senhaVisivel ? "Ocultar senha" : "Mostrar senha"}
+            aria-label={senhaVisivel ? t("ocultarSenha") : t("mostrarSenha")}
             aria-pressed={senhaVisivel}
             className="absolute right-2 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
@@ -133,7 +135,7 @@ export function LoginForm({ proximo }: { proximo?: string }) {
           href="/recuperar-senha"
           className="text-xs font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
         >
-          Esqueci minha senha
+          {t("esqueciSenha")}
         </Link>
       </div>
 
@@ -158,7 +160,7 @@ export function LoginForm({ proximo }: { proximo?: string }) {
         )}
       >
         {pendente ? <Loader2Icon className="size-4 animate-spin" aria-hidden="true" /> : null}
-        Entrar
+        {t("entrar")}
       </button>
     </form>
   );

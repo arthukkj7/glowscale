@@ -1,9 +1,10 @@
 import "server-only";
 
 import { redirect } from "next/navigation";
+
+import { hojeNaClinica } from "@/lib/utils/date";
 import { cache } from "react";
 
-import { CLINICA_STATUS_COM_ACESSO } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
 import type { AssinaturaRow, ClinicaRow, UsuarioRow } from "@/types/database";
 
@@ -100,8 +101,34 @@ export async function requireSessao(): Promise<SessaoClinica> {
   return estado.sessao;
 }
 
+/**
+ * O negocio pode usar o sistema agora?
+ *
+ * Espelha clinica_tem_acesso() no banco. Antes desta regra, 'trial' liberava
+ * para sempre: nada nunca tirava ninguem de la, e o produto era gratuito
+ * indefinidamente.
+ *
+ * A verificacao de verdade acontece no servidor a cada navegacao
+ * (requireActiveSubscription), nao no navegador.
+ */
 export function assinaturaLiberaAcesso(clinica: ClinicaRow): boolean {
-  return CLINICA_STATUS_COM_ACESSO.includes(clinica.status);
+  if (clinica.status === "active") return true;
+  if (clinica.status !== "trial") return false;
+
+  // Trial sem data e de um cadastro anterior a esta regra: a migration
+  // preencheu todos, mas se algum escapar, o certo e liberar - tirar acesso
+  // por causa de um dado ausente puniria quem nao fez nada errado.
+  if (!clinica.trial_termina_em) return true;
+  return clinica.trial_termina_em >= hojeNaClinica(clinica.timezone);
+}
+
+/** Dias que faltam para o teste acabar. null quando nao esta em teste. */
+export function diasRestantesDeTeste(clinica: ClinicaRow): number | null {
+  if (clinica.status !== "trial" || !clinica.trial_termina_em) return null;
+  const hoje = hojeNaClinica(clinica.timezone);
+  const fim = new Date(`${clinica.trial_termina_em}T12:00:00Z`).getTime();
+  const agora = new Date(`${hoje}T12:00:00Z`).getTime();
+  return Math.max(0, Math.round((fim - agora) / 86_400_000));
 }
 
 /**

@@ -23,12 +23,6 @@ export const APP_DESCRIPTION =
  */
 export const TERMO_NEGOCIO = "negócio";
 
-/** Status de clinica que liberam o uso do dashboard. */
-export const CLINICA_STATUS_COM_ACESSO: readonly ClinicaStatus[] = [
-  "trial",
-  "active",
-] as const;
-
 export const CLINICA_STATUS_LABEL: Record<ClinicaStatus, string> = {
   trial: "Período de teste",
   active: "Ativa",

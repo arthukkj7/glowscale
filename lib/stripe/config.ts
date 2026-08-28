@@ -1,5 +1,7 @@
 import "server-only";
 
+import { PLANOS, PLANOS_PAGOS, type PlanoPago } from "@/lib/planos";
+
 /**
  * Configuracao da integracao Stripe.
  *
@@ -12,7 +14,6 @@ import "server-only";
 
 export interface ConfiguracaoStripe {
   secretKey: string;
-  priceId: string;
 }
 
 export class StripeNaoConfiguradoError extends Error {
@@ -24,23 +25,37 @@ export class StripeNaoConfiguradoError extends Error {
 
 const ler = (nome: string): string | null => process.env[nome]?.trim() || null;
 
-/** true quando da para cobrar: precisa da chave e do preco. */
+/**
+ * true quando da para cobrar: precisa da chave e de ao menos um preco.
+ *
+ * "Ao menos um" e nao "os tres" de proposito: uma instalacao que so queira
+ * vender o Studio deve funcionar, mostrando so o que tem preco configurado, em
+ * vez de recusar tudo por falta de um plano que ninguem vai oferecer.
+ */
 export function stripeEstaConfigurado(): boolean {
-  return Boolean(ler("STRIPE_SECRET_KEY") && ler("STRIPE_PRICE_ID"));
+  if (!ler("STRIPE_SECRET_KEY")) return false;
+  return PLANOS_PAGOS.some((p) => ler(PLANOS[p].variavelDoPreco) !== null);
 }
 
 export function getConfiguracaoStripe(): ConfiguracaoStripe {
   const secretKey = ler("STRIPE_SECRET_KEY");
   if (!secretKey) throw new StripeNaoConfiguradoError("defina STRIPE_SECRET_KEY");
+  return { secretKey };
+}
 
-  const priceId = ler("STRIPE_PRICE_ID");
-  if (!priceId) {
-    throw new StripeNaoConfiguradoError(
-      "defina STRIPE_PRICE_ID com o preço recorrente mensal do plano",
-    );
-  }
+/** price_... do plano, ou null quando aquele plano nao esta a venda aqui. */
+export function precoDoPlano(plano: PlanoPago): string | null {
+  return ler(PLANOS[plano].variavelDoPreco);
+}
 
-  return { secretKey, priceId };
+/** Planos efetivamente a venda nesta instalacao. */
+export function planosDisponiveis(): PlanoPago[] {
+  return PLANOS_PAGOS.filter((p) => precoDoPlano(p) !== null);
+}
+
+/** Descobre o plano a partir do price_... que voltou do Stripe. */
+export function planoDoPreco(priceId: string): PlanoPago | null {
+  return PLANOS_PAGOS.find((p) => precoDoPlano(p) === priceId) ?? null;
 }
 
 /** Segredo da assinatura do webhook (whsec_...). */

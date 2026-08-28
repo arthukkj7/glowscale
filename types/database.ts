@@ -10,6 +10,8 @@
  * aparecem em Row, mas nunca em Insert/Update.
  */
 
+import type { Plano } from "@/lib/planos";
+
 export type Json =
   | string
   | number
@@ -53,6 +55,8 @@ export type ClinicaRow = Timestamps & {
   estado: string | null;
   timezone: string;
   status: ClinicaStatus;
+  plano: Plano;
+  trial_termina_em: string | null;
 }
 
 export type UsuarioRow = Timestamps & {

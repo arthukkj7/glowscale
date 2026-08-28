@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { useTranslations } from "next-intl";
+
 import { ITENS_DE_NAVEGACAO } from "./nav-items";
 import { cn } from "@/lib/utils";
 
@@ -12,11 +14,12 @@ interface SidebarNavProps {
 
 /** Lista de navegacao com destaque da rota ativa. */
 export function SidebarNav({ aoNavegar }: SidebarNavProps) {
+  const t = useTranslations("nav");
   const pathname = usePathname();
 
   return (
     <nav aria-label="Navegacao principal" className="flex flex-col gap-1">
-      {ITENS_DE_NAVEGACAO.map(({ titulo, href, icone: Icone }) => {
+      {ITENS_DE_NAVEGACAO.map(({ chave, href, icone: Icone }) => {
         const ativo = pathname === href || pathname.startsWith(`${href}/`);
         return (
           <Link
@@ -32,7 +35,7 @@ export function SidebarNav({ aoNavegar }: SidebarNavProps) {
             )}
           >
             <Icone className="size-4.5 shrink-0" aria-hidden="true" />
-            {titulo}
+            {t(chave)}
           </Link>
         );
       })}

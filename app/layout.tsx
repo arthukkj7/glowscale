@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 
 import { Toaster } from "@/components/ui/sonner";
 import { APP_DESCRIPTION, APP_NAME } from "@/lib/constants";
@@ -44,9 +46,14 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // O idioma vem do cookie, resolvido em lib/i18n/request.ts. Precisa chegar
+  // ao <html lang> tambem: e ele que diz ao leitor de tela em que idioma
+  // pronunciar a pagina, e ao navegador o que oferecer para traduzir.
+  const locale = await getLocale();
+
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body className="min-h-dvh antialiased">
         <a
           href="#conteudo"
@@ -54,7 +61,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Pular para o conteúdo
         </a>
-        {children}
+        {/* Sem o provider, todo componente de cliente que chama
+            useTranslations quebra a pagina inteira. */}
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
         <Toaster />
       </body>
     </html>

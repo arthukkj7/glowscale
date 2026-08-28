@@ -144,19 +144,26 @@ export function mesAnterior(referencia: DateOnly): { inicio: DateOnly; fim: Date
 }
 
 /**
- * Saudacao conforme a hora no fuso do negocio.
- * Usa o fuso da clinica, nao o do servidor: a Vercel roda em UTC, e sem isso
- * "boa noite" apareceria as 21h de Brasilia... e as 18h tambem.
+ * Chave da saudacao conforme a hora no fuso do negocio.
+ *
+ * Devolve a chave do catalogo, nao o texto: a saudacao precisa acompanhar o
+ * idioma escolhido, e a hora precisa acompanhar o fuso do NEGOCIO. Sao duas
+ * coisas diferentes - alguem com a interface em ingles num salao de Sao Paulo
+ * deve ler "Good evening" as 19h de Brasilia, nao as 19h de Londres.
+ *
+ * Sem o fuso explicito, a Vercel (que roda em UTC) diria "boa noite" as 18h.
  */
-export function saudacaoDoDia(timezone: string = BUSINESS_TIMEZONE): string {
+export function chaveDaSaudacao(
+  timezone: string = BUSINESS_TIMEZONE,
+): "bomDia" | "boaTarde" | "boaNoite" {
   const hora = Number(
-    new Intl.DateTimeFormat("pt-BR", {
+    new Intl.DateTimeFormat("en-US", {
       timeZone: timezone,
       hour: "numeric",
       hour12: false,
     }).format(new Date()),
   );
-  if (hora < 12) return "Bom dia";
-  if (hora < 18) return "Boa tarde";
-  return "Boa noite";
+  if (hora < 12) return "bomDia";
+  if (hora < 18) return "boaTarde";
+  return "boaNoite";
 }

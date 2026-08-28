@@ -5,6 +5,7 @@ import { LoginForm } from "@/components/auth/login-form";
 import { LoginSocial } from "@/components/auth/login-social";
 import { GlowScaleMark } from "@/components/layout/glowscale-mark";
 import { provedoresHabilitados } from "@/lib/auth/oauth";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Entrar",
@@ -19,6 +20,7 @@ interface LoginPageProps {
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const { proximo } = await searchParams;
   const provedores = provedoresHabilitados();
+  const t = await getTranslations("auth");
 
   return (
     <div
@@ -37,10 +39,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       </span>
 
       <h1 className="texto-display text-center text-2xl font-semibold tracking-tight">
-        Entrar no GlowScale
+        {t("entrarTitulo")}
       </h1>
       <p className="mb-6 mt-2 text-center text-sm text-muted-foreground">
-        Acesse a agenda, os atendimentos e as comissões do seu negócio.
+        {t("entrarSubtitulo")}
       </p>
 
       <LoginForm proximo={proximo} />
@@ -52,12 +54,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       ) : null}
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
-        Ainda não tem conta?{" "}
+        {t("semConta")}{" "}
         <Link
           href="/cadastro"
           className="font-medium text-primary underline-offset-4 hover:underline"
         >
-          Criar conta
+          {t("criarConta")}
         </Link>
       </p>
     </div>

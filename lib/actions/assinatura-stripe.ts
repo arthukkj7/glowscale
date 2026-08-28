@@ -1,15 +1,15 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
-import { requireSessao } from "@/lib/auth/session";
-import { PLANO_PADRAO } from "@/lib/constants";
+import { diasRestantesDeTeste, requireSessao } from "@/lib/auth/session";
 import {
   buscarAssinaturaStripe,
   criarSessaoDeCheckout,
   criarSessaoDoPortal,
 } from "@/lib/stripe/checkout";
-import { stripeEstaConfigurado } from "@/lib/stripe/config";
+import { planosDisponiveis, stripeEstaConfigurado } from "@/lib/stripe/config";
 import { interpretarStatus } from "@/lib/stripe/webhooks";
 import { createAdminClient, serviceRoleDisponivel } from "@/lib/supabase/admin";
 import { getAppUrl } from "@/lib/utils/app-url";
@@ -46,10 +46,22 @@ function garantirIntegracaoDisponivel(): void {
  * hospedada do Stripe. Menos campos no nosso formulario significa menos dado
  * sensivel passando por aqui.
  */
-export async function iniciarCheckoutStripe(): Promise<ActionResult<{ url: string }>> {
+export async function iniciarCheckoutStripe(
+  dados: unknown,
+): Promise<ActionResult<{ url: string }>> {
   try {
+    const { plano } = z
+      .object({ plano: z.enum(["solo", "studio", "scale"]) })
+      .parse(dados);
+
     const { clinica, email } = await requireSessao();
     garantirIntegracaoDisponivel();
+
+    // O plano vem do formulario, mas so vale se estiver a venda aqui: sem esta
+    // checagem, um valor forjado pediria um checkout de plano inexistente.
+    if (!planosDisponiveis().includes(plano)) {
+      throw new ErroDeNegocio("Este plano não está disponível nesta instalação.");
+    }
 
     const admin = createAdminClient();
     const appUrl = await getAppUrl();
@@ -64,6 +76,10 @@ export async function iniciarCheckoutStripe(): Promise<ActionResult<{ url: strin
     const sessao = await criarSessaoDeCheckout({
       clinicaId: clinica.id,
       clinicaNome: clinica.nome,
+      plano,
+      // Quem assina no 2o dia de teste fica com 5 dias gratis no Stripe, nao
+      // com 7: o total continua sendo 7 dias desde o cadastro.
+      diasDeTesteRestantes: diasRestantesDeTeste(clinica) ?? 0,
       email: clinica.email ?? email,
       customerId: assinaturaAtual?.stripe_customer_id ?? null,
       urlSucesso: `${appUrl}/assinatura?checkout=sucesso`,
@@ -81,7 +97,7 @@ export async function iniciarCheckoutStripe(): Promise<ActionResult<{ url: strin
         clinica_id: clinica.id,
         provedor: "stripe",
         status: assinaturaAtual?.status ?? "pending",
-        plano: PLANO_PADRAO.slug,
+        plano,
         ciclo: "MONTHLY",
         forma_pagamento: "STRIPE",
         ...(assinaturaAtual?.stripe_customer_id

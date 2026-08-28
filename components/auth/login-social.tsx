@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2Icon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { createClient } from "@/lib/supabase/client";
@@ -29,6 +30,7 @@ interface LoginSocialProps {
  * e-mail.
  */
 export function LoginSocial({ provedores, proximo }: LoginSocialProps) {
+  const t = useTranslations("auth");
   const [entrando, setEntrando] = useState<ProvedorOAuth | null>(null);
   const [erro, setErro] = useState<string | null>(null);
 
@@ -65,7 +67,7 @@ export function LoginSocial({ provedores, proximo }: LoginSocialProps) {
     <div className="w-full space-y-3">
       <div className="flex items-center gap-3" aria-hidden="true">
         <span className="h-px flex-1 border-t border-dashed border-border" />
-        <span className="text-xs text-muted-foreground">ou entre com</span>
+        <span className="text-xs text-muted-foreground">{t("ouEntreCom")}</span>
         <span className="h-px flex-1 border-t border-dashed border-border" />
       </div>
 
@@ -79,7 +81,7 @@ export function LoginSocial({ provedores, proximo }: LoginSocialProps) {
               type="button"
               onClick={() => aoEntrar(provedor)}
               disabled={entrando !== null}
-              aria-label={`Entrar com ${ROTULO_OAUTH[provedor]}`}
+              aria-label={t("entrarCom", { provedor: ROTULO_OAUTH[provedor] })}
               className={cn(
                 "flex h-12 flex-1 items-center justify-center rounded-xl border border-border bg-card",
                 "transition-colors hover:bg-accent",

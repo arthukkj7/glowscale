@@ -3,7 +3,8 @@ import "server-only";
 import type Stripe from "stripe";
 
 import { getStripe } from "./client";
-import { getConfiguracaoStripe } from "./config";
+import { precoDoPlano } from "./config";
+import { DIAS_DE_TESTE, type PlanoPago } from "@/lib/planos";
 
 /**
  * Checkout e portal do cliente.
@@ -16,6 +17,12 @@ import { getConfiguracaoStripe } from "./config";
 export interface DadosDaSessao {
   clinicaId: string;
   clinicaNome: string;
+  plano: PlanoPago;
+  /**
+   * Dias de teste que ainda restam. O Stripe so comeca a cobrar depois deles,
+   * entao quem assina no 2o dia de teste continua com 7 no total - e nao 7 + 7.
+   */
+  diasDeTesteRestantes: number;
   email: string;
   /** Reaproveitado quando a clinica ja tem cadastro no Stripe. */
   customerId?: string | null;
@@ -37,7 +44,12 @@ export async function criarSessaoDeCheckout(
   dados: DadosDaSessao,
 ): Promise<Stripe.Checkout.Session> {
   const stripe = getStripe();
-  const { priceId } = getConfiguracaoStripe();
+  const priceId = precoDoPlano(dados.plano);
+  if (!priceId) {
+    throw new Error(`Plano ${dados.plano} não está à venda nesta instalação.`);
+  }
+
+  const diasDeTeste = Math.max(0, Math.min(dados.diasDeTesteRestantes, DIAS_DE_TESTE));
 
   return stripe.checkout.sessions.create(
     {
@@ -50,9 +62,17 @@ export async function criarSessaoDeCheckout(
 
       client_reference_id: dados.clinicaId,
       subscription_data: {
-        metadata: { clinica_id: dados.clinicaId, clinica_nome: dados.clinicaNome },
+        // Cartao coletado agora, primeira cobranca so no fim do teste - e
+        // automatica. Zero dias restantes significa cobrar ja, que e o certo
+        // para quem so volta depois do teste vencido.
+        ...(diasDeTeste > 0 ? { trial_period_days: diasDeTeste } : {}),
+        metadata: {
+          clinica_id: dados.clinicaId,
+          clinica_nome: dados.clinicaNome,
+          plano: dados.plano,
+        },
       },
-      metadata: { clinica_id: dados.clinicaId },
+      metadata: { clinica_id: dados.clinicaId, plano: dados.plano },
 
       success_url: dados.urlSucesso,
       cancel_url: dados.urlCancelamento,
@@ -90,7 +110,7 @@ export async function buscarAssinaturaStripe(
   return getStripe().subscriptions.retrieve(subscriptionId);
 }
 
-export interface PrecoDoPlano {
+export interface PrecoNoStripe {
   /** Valor em reais, ja convertido dos centavos que o Stripe usa. */
   valor: number;
   moeda: string;
@@ -104,8 +124,9 @@ export interface PrecoDoPlano {
  * definindo preco, um dia a vitrine anuncia um valor e o cartao e cobrado
  * outro. O Stripe e a fonte porque e ele quem cobra.
  */
-export async function buscarPrecoDoPlano(): Promise<PrecoDoPlano | null> {
-  const { priceId } = getConfiguracaoStripe();
+export async function buscarPrecoNoStripe(plano: PlanoPago): Promise<PrecoNoStripe | null> {
+  const priceId = precoDoPlano(plano);
+  if (!priceId) return null;
   const preco = await getStripe().prices.retrieve(priceId);
 
   if (preco.unit_amount === null) return null;

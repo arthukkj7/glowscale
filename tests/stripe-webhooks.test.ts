@@ -79,6 +79,7 @@ describe("extrairDados", () => {
       customerId: "cus_1",
       subscriptionId: "sub_1",
       status: null,
+      plano: null,
     });
   });
 
@@ -179,5 +180,39 @@ describe("extrairDados - faturas", () => {
     const d = extrairDados(evento("invoice.payment_failed", { customer: "cus_9" }));
     expect(d?.customerId).toBe("cus_9");
     expect(d?.status).toBe("past_due");
+  });
+});
+
+describe("extrairDados - plano contratado", () => {
+  /**
+   * O plano do evento e o que decide os limites do negocio. Errar aqui faz
+   * alguem pagar pelo Scale e continuar travado no limite do Solo.
+   */
+  it("lê o plano do metadata da sessão de checkout", () => {
+    const d = extrairDados(
+      evento("checkout.session.completed", {
+        client_reference_id: "clinica-1",
+        customer: "cus_1",
+        subscription: "sub_1",
+        metadata: { clinica_id: "clinica-1", plano: "studio" },
+      }),
+    );
+    expect(d?.plano).toBe("studio");
+  });
+
+  it("ignora um plano inventado no metadata", () => {
+    const d = extrairDados(
+      evento("checkout.session.completed", {
+        client_reference_id: "c1",
+        metadata: { plano: "enterprise_gratis" },
+      }),
+    );
+    expect(d?.plano).toBeNull();
+  });
+
+  it("não deduz plano de eventos de fatura", () => {
+    // A fatura nao diz qual plano e; deduzir ali sobrescreveria o certo.
+    const d = extrairDados(evento("invoice.paid", { customer: "cus_2" }));
+    expect(d?.plano).toBeNull();
   });
 });

@@ -1,16 +1,23 @@
 import Link from "next/link";
 
 import { Logo } from "@/components/layout/logo";
+import { SeletorIdioma } from "@/components/layout/seletor-idioma";
 import { SetupNecessario } from "@/components/layout/setup-necessario";
 import { supabaseEstaConfigurado } from "@/lib/supabase/config";
+import { idiomaAtual } from "@/lib/i18n/acoes";
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
+export default async function AuthLayout({ children }: { children: React.ReactNode }) {
+  const idioma = await idiomaAtual();
+
   return (
     <div className="flex min-h-dvh flex-col bg-muted/40">
-      <header className="px-4 py-6 sm:px-8">
+      {/* Idioma no canto superior direito, tambem antes do login: quem nao
+          entende a tela nao consegue criar conta para depois trocar. */}
+      <header className="flex items-center justify-between px-4 py-6 sm:px-8">
         <Link href="/" className="inline-flex rounded-md" aria-label="Voltar para a página inicial">
           <Logo />
         </Link>
+        <SeletorIdioma idioma={idioma} />
       </header>
       <main
         id="conteudo"
