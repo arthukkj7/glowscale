@@ -24,6 +24,21 @@ export class ErroDeNegocio extends Error {
 const MENSAGEM_GENERICA =
   "Não foi possível concluir a operação. Tente novamente em instantes.";
 
+/**
+ * Falta de configuracao nao e erro transitorio: mandar o usuario "tentar de
+ * novo em instantes" e mentira, porque tentar de novo nunca vai funcionar.
+ * Estes erros ganham mensagem propria, dizendo o que precisa ser feito.
+ */
+const NOMES_DE_ERRO_DE_CONFIGURACAO = new Set([
+  "SupabaseConfigError",
+  "AsaasNaoConfiguradoError",
+]);
+
+const MENSAGEM_SEM_CONFIGURACAO =
+  "O sistema ainda não está conectado ao banco de dados. " +
+  "Quem administra esta instalação precisa configurar as variáveis de " +
+  "ambiente do Supabase (veja .env.local.example).";
+
 /** Traduz erros conhecidos do PostgREST para mensagens uteis ao usuario. */
 function mensagemDeErroDoBanco(codigo: string | undefined): string | null {
   switch (codigo) {
@@ -36,6 +51,15 @@ function mensagemDeErroDoBanco(codigo: string | undefined): string | null {
     case "42501":
     case "PGRST301":
       return "Você não tem permissão para esta operação.";
+    // Schema ausente: o projeto Supabase existe, mas as migrations nunca
+    // rodaram. Retentar nao resolve; a mensagem precisa dizer o que fazer.
+    case "42883": // função inexistente
+    case "42P01": // tabela inexistente
+    case "PGRST202":
+      return (
+        "O banco conectado ainda não tem o schema do GlowScale. " +
+        "Rode os arquivos de supabase/migrations/ no SQL Editor do Supabase."
+      );
     default:
       return null;
   }
@@ -66,6 +90,11 @@ export function tratarErro(contexto: string, erro: unknown): ActionResult<never>
 
   if (erro instanceof ErroDeNegocio) {
     return falha(erro.message);
+  }
+
+  if (erro instanceof Error && NOMES_DE_ERRO_DE_CONFIGURACAO.has(erro.name)) {
+    console.error(`[${contexto}] instalacao incompleta`, erro.message);
+    return falha(MENSAGEM_SEM_CONFIGURACAO);
   }
 
   if (ehErroSupabase(erro)) {

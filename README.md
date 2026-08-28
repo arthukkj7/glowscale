@@ -85,6 +85,9 @@ Duas decisoes importantes:
 
 ## Instalacao
 
+> Primeira vez? [`docs/comecar.md`](docs/comecar.md) leva do clone ate a
+> primeira clinica funcionando, e lista os tropecos comuns.
+
 Requisitos: Node.js 20+ e uma conta Supabase.
 
 ```bash
