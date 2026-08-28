@@ -13,6 +13,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { ErroDeNegocio, falha, sucesso, tratarErro, type ActionResult } from "./result";
 import { traduzirErroDeCadastro } from "./mensagens-auth";
+import { linkDoPainel } from "@/lib/supabase/config";
 import { z } from "zod";
 import { telefoneOpcional } from "@/lib/validations/common";
 
@@ -89,7 +90,13 @@ export async function cadastrar(
         codigo: error.code,
         status: error.status,
       });
-      return falha(traduzirErroDeCadastro(error.message));
+      const recusa = traduzirErroDeCadastro(error.message);
+      const url = recusa.pagina ? linkDoPainel(recusa.pagina) : null;
+      return falha(
+        recusa.mensagem,
+        undefined,
+        url && recusa.rotulo ? { texto: recusa.rotulo, url } : undefined,
+      );
     }
 
     // Sem sessao imediata => o projeto exige confirmacao de e-mail.

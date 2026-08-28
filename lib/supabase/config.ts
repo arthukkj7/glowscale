@@ -43,3 +43,27 @@ export function getSupabasePublicConfig(): SupabasePublicConfig {
 }
 
 export const supabaseEstaConfigurado = getSupabasePublicConfigOrNull() !== null;
+
+/**
+ * Extrai a referencia do projeto a partir da URL publica.
+ * "https://abcdefgh.supabase.co" -> "abcdefgh"
+ *
+ * Serve para montar links diretos para o painel do dono da instalacao. A URL
+ * ja e publica (vai no bundle do browser), entao nao ha nada a proteger aqui.
+ */
+export function getProjectRefOrNull(): string | null {
+  const config = getSupabasePublicConfigOrNull();
+  if (!config) return null;
+  const casou = /^https:\/\/([a-z0-9-]+)\.supabase\.(co|in)\/?$/i.exec(config.url.trim());
+  return casou?.[1] ?? null;
+}
+
+/**
+ * Link direto para uma pagina do painel do Supabase deste projeto.
+ * Retorna null em instalacoes self-hosted, onde o painel nao fica nesse dominio.
+ */
+export function linkDoPainel(caminho: string): string | null {
+  const ref = getProjectRefOrNull();
+  if (!ref) return null;
+  return `https://supabase.com/dashboard/project/${ref}/${caminho.replace(/^\//, "")}`;
+}

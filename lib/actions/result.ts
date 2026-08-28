@@ -1,16 +1,31 @@
 import { ZodError, type ZodType } from "zod";
 
 /** Contrato unico de retorno das Server Actions. */
+/** Link que resolve o erro, quando existe um lugar exato para clicar. */
+export interface AcaoDoErro {
+  texto: string;
+  url: string;
+}
+
 export type ActionResult<T = undefined> =
   | { ok: true; data: T; mensagem?: string }
-  | { ok: false; erro: string; camposComErro?: Record<string, string[]> };
+  | {
+      ok: false;
+      erro: string;
+      camposComErro?: Record<string, string[]>;
+      acao?: AcaoDoErro;
+    };
 
 export function sucesso<T>(data: T, mensagem?: string): ActionResult<T> {
   return { ok: true, data, mensagem };
 }
 
-export function falha(erro: string, camposComErro?: Record<string, string[]>): ActionResult<never> {
-  return { ok: false, erro, camposComErro };
+export function falha(
+  erro: string,
+  camposComErro?: Record<string, string[]>,
+  acao?: AcaoDoErro,
+): ActionResult<never> {
+  return { ok: false, erro, camposComErro, acao };
 }
 
 /** Erro de negocio esperado, seguro para ser exibido ao usuario. */

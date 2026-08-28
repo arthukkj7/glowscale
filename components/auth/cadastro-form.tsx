@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2Icon, MailCheckIcon } from "lucide-react";
+import { ExternalLinkIcon, Loader2Icon, MailCheckIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -12,6 +12,7 @@ import { FormField, camposAria } from "@/components/shared/form-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cadastrar } from "@/lib/actions/auth";
+import type { AcaoDoErro } from "@/lib/actions/result";
 import {
   cadastroSchema,
   type CadastroFormValues,
@@ -22,6 +23,7 @@ export function CadastroForm() {
   const router = useRouter();
   const [pendente, startTransition] = useTransition();
   const [erroGeral, setErroGeral] = useState<string | null>(null);
+  const [acaoDoErro, setAcaoDoErro] = useState<AcaoDoErro | null>(null);
   const [confirmacaoPendente, setConfirmacaoPendente] = useState(false);
 
   const {
@@ -42,10 +44,12 @@ export function CadastroForm() {
 
   function aoEnviar(valores: CadastroInput) {
     setErroGeral(null);
+    setAcaoDoErro(null);
     startTransition(async () => {
       const resultado = await cadastrar(valores);
       if (!resultado.ok) {
         setErroGeral(resultado.erro);
+        setAcaoDoErro(resultado.acao ?? null);
         return;
       }
       if (resultado.data.precisaConfirmarEmail) {
@@ -164,9 +168,23 @@ export function CadastroForm() {
       </div>
 
       {erroGeral ? (
-        <p role="alert" className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {erroGeral}
-        </p>
+        <div
+          role="alert"
+          className="space-y-2 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive"
+        >
+          <p>{erroGeral}</p>
+          {acaoDoErro ? (
+            <a
+              href={acaoDoErro.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-medium underline underline-offset-4"
+            >
+              {acaoDoErro.texto}
+              <ExternalLinkIcon aria-hidden="true" className="size-3.5" />
+            </a>
+          ) : null}
+        </div>
       ) : null}
 
       <Button type="submit" className="w-full" size="lg" disabled={pendente}>
