@@ -12,6 +12,7 @@ import {
   UsersIcon,
 } from "lucide-react";
 
+import { BotaoWhatsApp } from "@/components/shared/botao-whatsapp";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
@@ -24,6 +25,7 @@ import { requireActiveSubscription } from "@/lib/auth/session";
 import { formatCurrency, formatPercent } from "@/lib/calculations/money";
 import { AGENDAMENTO_STATUS_LABEL } from "@/lib/constants";
 import { carregarPainel, DIAS_PARA_REATIVAR } from "@/lib/data/painel";
+import { conviteParaRetorno } from "@/lib/whatsapp/mensagens";
 import { chaveDaSaudacao, formatDateLong } from "@/lib/utils/date";
 
 export const metadata: Metadata = { title: "Painel" };
@@ -225,6 +227,17 @@ export default async function DashboardPage() {
                       <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
                         {c.dias_sem_vir}d
                       </span>
+                      {/* A lista deixa de ser informação e vira ação: o
+                          convite abre pronto, a um clique. */}
+                      <BotaoWhatsApp
+                        telefone={c.telefone}
+                        rotulo="Chamar"
+                        className="shrink-0"
+                        mensagem={conviteParaRetorno({
+                          clienteNome: c.nome,
+                          negocioNome: clinica.nome_fantasia ?? clinica.nome,
+                        })}
+                      />
                     </li>
                   ))}
                 </ul>

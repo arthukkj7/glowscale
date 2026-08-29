@@ -130,12 +130,17 @@ export type AgendamentoStatus =
   | "cancelado"
   | "faltou";
 
+/** Compromisso com cliente, ou tempo indisponivel da profissional. */
+export type TipoDeAgendamento = "atendimento" | "bloqueio";
+
 export type AgendamentoRow = Timestamps & {
   id: string;
   clinica_id: string;
   cliente_id: string | null;
   profissional_id: string;
-  procedimento_id: string;
+  /** null em bloqueios: tempo indisponivel nao tem servico. */
+  procedimento_id: string | null;
+  tipo: TipoDeAgendamento;
   data: string;
   hora_inicio: string;
   hora_fim: string;
@@ -147,7 +152,9 @@ export type AgendamentoRow = Timestamps & {
 /** Agendamento ja com os nomes resolvidos, para a agenda do dia. */
 export type AgendamentoDaAgenda = AgendamentoRow & {
   cliente_nome: string | null;
+  cliente_telefone: string | null;
   profissional_nome: string;
+  /** "Bloqueado" nos bloqueios. */
   servico_nome: string;
   servico_valor: number;
 }
@@ -307,7 +314,7 @@ export type Database = {
         Row: AgendamentoRow;
         Insert: Insertable<
           AgendamentoRow,
-          "clinica_id" | "profissional_id" | "procedimento_id" | "data" | "hora_inicio" | "hora_fim",
+          "clinica_id" | "profissional_id" | "data" | "hora_inicio" | "hora_fim",
           "id" | "created_at" | "updated_at"
         >;
         Update: Partial<Omit<AgendamentoRow, "id" | "created_at" | "updated_at">>;
@@ -347,6 +354,17 @@ export type Database = {
       get_user_role: {
         Args: Record<string, never>;
         Returns: UsuarioRole | null;
+      };
+      bloquear_horario: {
+        Args: {
+          p_profissional_id: string;
+          p_data_inicial: string;
+          p_data_final: string;
+          p_hora_inicio: string;
+          p_hora_fim: string;
+          p_motivo?: string | null;
+        };
+        Returns: { dias_bloqueados: number; dias_em_conflito: string[] }[];
       };
       clientes_inativos: {
         Args: { p_dias?: number; p_limite?: number };

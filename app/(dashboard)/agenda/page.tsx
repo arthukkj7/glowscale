@@ -39,7 +39,11 @@ export default async function AgendaPage({ searchParams }: PageProps) {
     return `/agenda?${query.toString()}`;
   };
 
-  const ativos = agendamentos.filter((a) => a.status !== "cancelado");
+  // Bloqueio nao e compromisso: contar o almoco como "1 compromisso" faria a
+  // agenda parecer cheia num dia vazio.
+  const ativos = agendamentos.filter(
+    (a) => a.status !== "cancelado" && a.tipo !== "bloqueio",
+  );
 
   return (
     <>
@@ -77,6 +81,7 @@ export default async function AgendaPage({ searchParams }: PageProps) {
 
       <AgendaView
         agendamentos={agendamentos}
+        negocioNome={clinica.nome_fantasia ?? clinica.nome}
         profissionais={profissionais}
         procedimentos={procedimentos}
         clientes={clientes}

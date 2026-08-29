@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeftIcon, CakeIcon, PhoneIcon, MailIcon } from "lucide-react";
 
+import { BotaoWhatsApp } from "@/components/shared/botao-whatsapp";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusAtivoBadge } from "@/components/shared/status-badge";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/calculations/money";
 import { buscarCliente, historicoDoCliente, resumoDoCliente } from "@/lib/data/clientes";
+import { agradecimentoPosAtendimento, conviteParaRetorno } from "@/lib/whatsapp/mensagens";
+import { requireActiveSubscription } from "@/lib/auth/session";
 import { formatDateBR } from "@/lib/utils/date";
 
 export const metadata: Metadata = { title: "Cliente" };
@@ -30,8 +33,13 @@ export default async function ClientePage({ params }: PageProps) {
 
   // buscarCliente ja filtra por clinica_id: um id de outro negocio vira 404,
   // nao "acesso negado" - que confirmaria que o registro existe.
-  const cliente = await buscarCliente(id);
+  const [cliente, { clinica }] = await Promise.all([
+    buscarCliente(id),
+    requireActiveSubscription(),
+  ]);
   if (!cliente) notFound();
+
+  const negocioNome = clinica.nome_fantasia ?? clinica.nome;
 
   const [resumo, historico] = await Promise.all([
     resumoDoCliente(id),
@@ -59,6 +67,17 @@ export default async function ClientePage({ params }: PageProps) {
             : dias === 0
               ? "Atendida hoje."
               : `Último atendimento há ${dias} ${dias === 1 ? "dia" : "dias"}.`
+        }
+        acoes={
+          <BotaoWhatsApp
+            telefone={cliente.telefone}
+            rotulo={dias !== null && dias === 0 ? "Agradecer pelo WhatsApp" : "Chamar no WhatsApp"}
+            mensagem={
+              dias !== null && dias === 0
+                ? agradecimentoPosAtendimento({ clienteNome: cliente.nome, negocioNome })
+                : conviteParaRetorno({ clienteNome: cliente.nome, negocioNome })
+            }
+          />
         }
       />
 

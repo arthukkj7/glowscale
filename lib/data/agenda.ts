@@ -20,7 +20,7 @@ export async function agendamentosNoPeriodo(
   let query = supabase
     .from("agendamentos")
     .select(
-      "*, clientes(nome), profissionais(nome), procedimentos(nome, valor)",
+      "*, clientes(nome, telefone), profissionais(nome), procedimentos(nome, valor)",
     )
     .eq("clinica_id", clinicaId)
     .gte("data", dataInicial)
@@ -39,19 +39,26 @@ export async function agendamentosNoPeriodo(
     !v ? null : Array.isArray(v) ? (v[0] ?? null) : v;
 
   type ComRelacoes = Record<string, unknown> & {
-    clientes: { nome: string } | { nome: string }[] | null;
+    tipo?: string;
+    clientes: ClienteResumido | ClienteResumido[] | null;
     profissionais: { nome: string } | { nome: string }[] | null;
     procedimentos: { nome: string; valor: number } | { nome: string; valor: number }[] | null;
   };
+  type ClienteResumido = { nome: string; telefone: string | null };
 
   return ((data ?? []) as unknown as ComRelacoes[]).map((linha) => {
     const { clientes, profissionais, procedimentos, ...resto } = linha;
     const servico = um(procedimentos);
+    const cliente = um(clientes);
+    const ehBloqueio = linha.tipo === "bloqueio";
     return {
       ...(resto as unknown as AgendamentoDaAgenda),
-      cliente_nome: um(clientes)?.nome ?? null,
+      cliente_nome: cliente?.nome ?? null,
+      cliente_telefone: cliente?.telefone ?? null,
       profissional_nome: um(profissionais)?.nome ?? "—",
-      servico_nome: servico?.nome ?? "—",
+      // Bloqueio nao tem servico; o rotulo entra aqui para a tela nao precisar
+      // saber disso em cada lugar que exibe a linha.
+      servico_nome: ehBloqueio ? "Bloqueado" : (servico?.nome ?? "—"),
       servico_valor: servico?.valor ?? 0,
     };
   });

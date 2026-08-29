@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BanIcon,
   CalendarPlusIcon,
   CheckIcon,
   MoreHorizontalIcon,
@@ -41,14 +42,22 @@ import type {
   ProfissionalRow,
 } from "@/types/database";
 import { AgendaDialog } from "./agenda-dialog";
+import { BloqueioDialog } from "./bloqueio-dialog";
+import { BotaoWhatsApp } from "@/components/shared/botao-whatsapp";
+import { confirmacaoDeAgendamento, lembreteDeHorario } from "@/lib/whatsapp/mensagens";
 
 interface AgendaViewProps {
   agendamentos: AgendamentoDaAgenda[];
+  /** Nome do negócio, usado para assinar as mensagens de WhatsApp. */
+  negocioNome: string;
   profissionais: ProfissionalRow[];
   procedimentos: ProcedimentoRow[];
   clientes: Pick<ClienteRow, "id" | "nome">[];
   data: string;
 }
+
+/** Bloqueio tem cor propria: nao e compromisso, e ausencia. */
+const COR_BLOQUEIO = "border-l-muted-foreground/60 bg-muted/40";
 
 const CORES: Record<AgendamentoStatus, string> = {
   agendado: "border-l-muted-foreground/40",
@@ -64,6 +73,7 @@ const encerrado = (s: AgendamentoStatus) =>
 
 export function AgendaView({
   agendamentos,
+  negocioNome,
   profissionais,
   procedimentos,
   clientes,
@@ -71,6 +81,7 @@ export function AgendaView({
 }: AgendaViewProps) {
   const [pendente, startTransition] = useTransition();
   const [dialogoAberto, setDialogoAberto] = useState(false);
+  const [bloqueioAberto, setBloqueioAberto] = useState(false);
   const [emEdicao, setEmEdicao] = useState<AgendamentoRow | null>(null);
   const [paraExcluir, setParaExcluir] = useState<AgendamentoDaAgenda | null>(null);
   const [paraConcluir, setParaConcluir] = useState<AgendamentoDaAgenda | null>(null);
@@ -115,7 +126,11 @@ export function AgendaView({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex flex-wrap justify-end gap-2">
+        <Button variant="outline" onClick={() => setBloqueioAberto(true)}>
+          <BanIcon className="size-4" aria-hidden="true" />
+          Bloquear horário
+        </Button>
         <Button onClick={abrirCriacao}>
           <CalendarPlusIcon className="size-4" aria-hidden="true" />
           Novo agendamento
@@ -139,9 +154,9 @@ export function AgendaView({
           {agendamentos.map((a) => (
             <li key={a.id}>
               <Card
-                className={`flex items-center gap-4 border-l-4 p-4 ${CORES[a.status]} ${
-                  a.status === "cancelado" ? "opacity-60" : ""
-                }`}
+                className={`flex items-center gap-4 border-l-4 p-4 ${
+                  a.tipo === "bloqueio" ? COR_BLOQUEIO : CORES[a.status]
+                } ${a.status === "cancelado" ? "opacity-60" : ""}`}
               >
                 <div className="w-14 shrink-0">
                   <p className="texto-display text-lg font-semibold tabular-nums">
@@ -153,27 +168,46 @@ export function AgendaView({
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium">
-                    {a.cliente_nome ?? <span className="text-muted-foreground">Encaixe</span>}
-                  </p>
-                  <p className="truncate text-sm text-muted-foreground">{a.servico_nome}</p>
-                  <p className="truncate text-xs text-muted-foreground">
-                    {a.profissional_nome}
-                  </p>
+                  {a.tipo === "bloqueio" ? (
+                    <>
+                      <p className="truncate font-medium text-muted-foreground">
+                        {a.observacoes ?? "Horário bloqueado"}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {a.profissional_nome} · indisponível
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="truncate font-medium">
+                        {a.cliente_nome ?? (
+                          <span className="text-muted-foreground">Encaixe</span>
+                        )}
+                      </p>
+                      <p className="truncate text-sm text-muted-foreground">{a.servico_nome}</p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {a.profissional_nome}
+                      </p>
+                    </>
+                  )}
                 </div>
 
-                <div className="hidden shrink-0 text-right sm:block">
-                  <p className="text-sm font-medium tabular-nums">
-                    {formatCurrency(a.servico_valor)}
-                  </p>
-                </div>
+                {a.tipo === "atendimento" ? (
+                  <div className="hidden shrink-0 text-right sm:block">
+                    <p className="text-sm font-medium tabular-nums">
+                      {formatCurrency(a.servico_valor)}
+                    </p>
+                  </div>
+                ) : null}
 
-                <Badge
-                  variant={a.status === "confirmado" ? "default" : "outline"}
-                  className="hidden shrink-0 sm:inline-flex"
-                >
-                  {AGENDAMENTO_STATUS_LABEL[a.status]}
-                </Badge>
+                {a.tipo === "atendimento" ? (
+                  <Badge
+                    variant={a.status === "confirmado" ? "default" : "outline"}
+                    className="hidden shrink-0 sm:inline-flex"
+                  >
+                    {AGENDAMENTO_STATUS_LABEL[a.status]}
+                  </Badge>
+                ) : null}
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -187,6 +221,38 @@ export function AgendaView({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    {/* Só aparece quando há telefone: um botão que abre uma
+                        conversa vazia parece defeito. */}
+                    {a.tipo === "atendimento" && a.cliente_nome ? (
+                      <>
+                        <BotaoWhatsApp
+                          variante="item"
+                          rotulo="Confirmar pelo WhatsApp"
+                          telefone={a.cliente_telefone}
+                          mensagem={confirmacaoDeAgendamento({
+                            clienteNome: a.cliente_nome,
+                            negocioNome,
+                            profissionalNome: a.profissional_nome,
+                            servicoNome: a.servico_nome,
+                            data: a.data,
+                            hora: a.hora_inicio.slice(0, 5),
+                          })}
+                        />
+                        <BotaoWhatsApp
+                          variante="item"
+                          rotulo="Lembrar do horário"
+                          telefone={a.cliente_telefone}
+                          mensagem={lembreteDeHorario({
+                            clienteNome: a.cliente_nome,
+                            negocioNome,
+                            servicoNome: a.servico_nome,
+                            hora: a.hora_inicio.slice(0, 5),
+                          })}
+                        />
+                        <DropdownMenuSeparator />
+                      </>
+                    ) : null}
+
                     {a.status === "agendado" ? (
                       <DropdownMenuItem onSelect={() => mudarStatus(a, "confirmado")}>
                         <CheckIcon aria-hidden="true" />
@@ -194,7 +260,7 @@ export function AgendaView({
                       </DropdownMenuItem>
                     ) : null}
 
-                    {!encerrado(a.status) ? (
+                    {a.tipo === "atendimento" && !encerrado(a.status) ? (
                       <DropdownMenuItem onSelect={() => setParaConcluir(a)}>
                         <ReceiptTextIcon aria-hidden="true" />
                         Lançar atendimento
@@ -242,6 +308,13 @@ export function AgendaView({
           ))}
         </ul>
       )}
+
+      <BloqueioDialog
+        aberto={bloqueioAberto}
+        onAbertoChange={setBloqueioAberto}
+        profissionais={profissionais}
+        dataPadrao={data}
+      />
 
       <AgendaDialog
         aberto={dialogoAberto}

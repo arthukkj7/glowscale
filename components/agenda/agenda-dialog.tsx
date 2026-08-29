@@ -80,7 +80,7 @@ function valoresIniciais(
   return {
     cliente_id: agendamento.cliente_id ?? "",
     profissional_id: agendamento.profissional_id,
-    procedimento_id: agendamento.procedimento_id,
+    procedimento_id: agendamento.procedimento_id ?? "",
     data: agendamento.data,
     // O banco devolve "14:00:00"; o input type=time quer "14:00".
     hora_inicio: agendamento.hora_inicio.slice(0, 5),

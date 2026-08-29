@@ -9,7 +9,10 @@ import {
   agendamentoSchema,
   agendamentoStatusSchema,
   agendamentoUpdateSchema,
+  dataISO,
+  horaHHMM,
   idUuid,
+  textoOpcional,
 } from "@/lib/validations";
 import type { AgendamentoRow } from "@/types/database";
 import { ErroDeNegocio, sucesso, tratarErro, type ActionResult } from "./result";
@@ -179,6 +182,12 @@ export async function concluirAgendamento(
         "Este agendamento está cancelado. Reabra antes de lançar o atendimento.",
       );
     }
+    // Bloqueio e tempo indisponivel, nao trabalho: nao tem servico, valor nem
+    // comissao para lancar. Sem esta guarda, concluir um almoco geraria um
+    // atendimento sem procedimento e derrubaria a acao no banco.
+    if (agendamento.tipo === "bloqueio" || !agendamento.procedimento_id) {
+      throw new ErroDeNegocio("Um bloqueio de horário não vira atendimento.");
+    }
 
     const [{ data: profissional }, { data: servico }] = await Promise.all([
       supabase
@@ -254,5 +263,78 @@ export async function excluirAgendamento(dados: unknown): Promise<ActionResult<u
     return sucesso(undefined, "Agendamento removido.");
   } catch (erro) {
     return tratarErro("agenda.excluir", erro);
+  }
+}
+
+const bloqueioSchema = z
+  .object({
+    profissional_id: idUuid,
+    data_inicial: dataISO,
+    data_final: dataISO,
+    hora_inicio: horaHHMM,
+    hora_fim: horaHHMM,
+    motivo: textoOpcional(200),
+  })
+  .refine((d) => d.data_final >= d.data_inicial, {
+    message: "A data final deve ser igual ou posterior à inicial.",
+    path: ["data_final"],
+  })
+  .refine((d) => d.hora_fim > d.hora_inicio, {
+    message: "O horário final deve ser maior que o inicial.",
+    path: ["hora_fim"],
+  });
+
+/**
+ * Bloqueia um horario: almoco, folga, feriado, ferias.
+ *
+ * A criacao roda no banco (bloquear_horario) porque um bloqueio de duas
+ * semanas sao catorze linhas, e cada uma precisa passar pela constraint de
+ * sobreposicao. Fazer isso daqui seriam catorze idas ao banco, e um erro no
+ * meio deixaria metade criada.
+ *
+ * Dias que ja tem cliente marcado sao PULADOS e devolvidos: falhar tudo porque
+ * a terca tem uma cliente obrigaria a pessoa a adivinhar qual dia deu problema.
+ */
+export async function bloquearHorario(
+  dados: unknown,
+): Promise<ActionResult<{ diasBloqueados: number; diasEmConflito: string[] }>> {
+  try {
+    const entrada = bloqueioSchema.parse(dados);
+    await requireActiveSubscription();
+    const supabase = await createClient();
+
+    const { data, error } = await supabase.rpc("bloquear_horario", {
+      p_profissional_id: entrada.profissional_id,
+      p_data_inicial: entrada.data_inicial,
+      p_data_final: entrada.data_final,
+      p_hora_inicio: entrada.hora_inicio,
+      p_hora_fim: entrada.hora_fim,
+      p_motivo: entrada.motivo ?? null,
+    });
+
+    if (error) throw error;
+
+    const linha = data?.[0];
+    const diasBloqueados = linha?.dias_bloqueados ?? 0;
+    const diasEmConflito = linha?.dias_em_conflito ?? [];
+
+    revalidar();
+
+    if (diasBloqueados === 0) {
+      throw new ErroDeNegocio(
+        "Nenhum dia foi bloqueado: já existe compromisso nesse horário em todos eles.",
+      );
+    }
+
+    const mensagem =
+      diasEmConflito.length === 0
+        ? diasBloqueados === 1
+          ? "Horário bloqueado."
+          : `${diasBloqueados} dias bloqueados.`
+        : `${diasBloqueados} bloqueados. ${diasEmConflito.length} dia(s) já tinham compromisso e ficaram de fora.`;
+
+    return sucesso({ diasBloqueados, diasEmConflito }, mensagem);
+  } catch (erro) {
+    return tratarErro("agenda.bloquear", erro);
   }
 }
