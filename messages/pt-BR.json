@@ -138,6 +138,20 @@
     "cadastrarEquipe": "Cadastrar equipe",
     "cadastrarServicos": "Cadastrar serviços",
     "comissoesARepassarCurto": "A repassar este mês",
-    "ficaParaVoceDetalhe": "{valor} fica para você"
+    "ficaParaVoceDetalhe": "{valor} fica para você",
+    "ticketMedio": "Ticket médio",
+    "porAtendimento": "por atendimento",
+    "taxaDeRetorno": "Taxa de retorno",
+    "jaConheciam": "de quem veio já conhecia",
+    "novasENovas": "{novos} novas · {recorrentes} recorrentes",
+    "aniversariantes": "Aniversariantes",
+    "semAniversariantes": "Ninguém faz aniversário nos próximos {dias} dias.",
+    "fazHoje": "hoje",
+    "fazEmDias": "em {dias} dias",
+    "fazAnos": "{idade} anos",
+    "clientesVip": "Quem mais gasta",
+    "semVip": "Ainda sem histórico suficiente para comparar.",
+    "ultimos90": "últimos 90 dias",
+    "parabenizar": "Parabenizar"
   }
 }

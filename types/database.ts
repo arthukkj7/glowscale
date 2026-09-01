@@ -55,6 +55,7 @@ export type ClinicaRow = Timestamps & {
   estado: string | null;
   timezone: string;
   status: ClinicaStatus;
+  tipo_negocio: string | null;
   plano: Plano;
   trial_termina_em: string | null;
 }
@@ -168,6 +169,36 @@ export type ClienteRow = Timestamps & {
   data_nascimento: string | null;
   observacoes: string | null;
   ativo: boolean;
+}
+
+/** Indicadores de um periodo. Devolvido por metricas_do_periodo(). */
+export type MetricasDoPeriodo = {
+  faturamento: number;
+  comissoes: number;
+  atendimentos: number;
+  ticket_medio: number;
+  clientes_atendidos: number;
+  clientes_novos: number;
+  clientes_recorrentes: number;
+  taxa_de_retorno: number;
+}
+
+export type Aniversariante = {
+  id: string;
+  nome: string;
+  telefone: string | null;
+  data_nascimento: string;
+  dias_ate: number;
+  idade: number;
+}
+
+export type ClienteVip = {
+  id: string;
+  nome: string;
+  telefone: string | null;
+  total_gasto: number;
+  total_atendimentos: number;
+  ultimo_atendimento: string;
 }
 
 /** Cliente que nao volta ha um tempo. Devolvida por clientes_inativos(). */
@@ -365,6 +396,18 @@ export type Database = {
           p_motivo?: string | null;
         };
         Returns: { dias_bloqueados: number; dias_em_conflito: string[] }[];
+      };
+      metricas_do_periodo: {
+        Args: { p_data_inicial: string; p_data_final: string };
+        Returns: MetricasDoPeriodo[];
+      };
+      aniversariantes: {
+        Args: { p_dias?: number };
+        Returns: Aniversariante[];
+      };
+      clientes_vip: {
+        Args: { p_dias?: number; p_minimo?: number; p_limite?: number };
+        Returns: ClienteVip[];
       };
       clientes_inativos: {
         Args: { p_dias?: number; p_limite?: number };

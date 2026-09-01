@@ -138,6 +138,20 @@
     "cadastrarEquipe": "Add team",
     "cadastrarServicos": "Add services",
     "comissoesARepassarCurto": "To pay out this month",
-    "ficaParaVoceDetalhe": "{valor} stays with you"
+    "ficaParaVoceDetalhe": "{valor} stays with you",
+    "ticketMedio": "Average ticket",
+    "porAtendimento": "per appointment",
+    "taxaDeRetorno": "Return rate",
+    "jaConheciam": "of visitors were returning",
+    "novasENovas": "{novos} new · {recorrentes} returning",
+    "aniversariantes": "Birthdays",
+    "semAniversariantes": "No birthdays in the next {dias} days.",
+    "fazHoje": "today",
+    "fazEmDias": "in {dias} days",
+    "fazAnos": "turning {idade}",
+    "clientesVip": "Top spenders",
+    "semVip": "Not enough history to compare yet.",
+    "ultimos90": "last 90 days",
+    "parabenizar": "Send wishes"
   }
 }
